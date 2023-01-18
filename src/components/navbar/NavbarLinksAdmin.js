@@ -52,7 +52,7 @@ export default function HeaderLinks(props) {
       p='10px'
       borderRadius='30px'
       boxShadow={shadow}>
-      <SearchBar
+      {/* <SearchBar
         mb={secondary ? { base: "10px", md: "unset" } : "unset"}
         me='10px'
         borderRadius='30px'
@@ -87,7 +87,7 @@ export default function HeaderLinks(props) {
             ETH
           </Text>
         </Text>
-      </Flex>
+      </Flex> */}
       <SidebarResponsive routes={routes} />
       <Menu>
         <MenuButton p='0px'>
@@ -147,7 +147,7 @@ export default function HeaderLinks(props) {
         </MenuList>
       </Menu>
 
-      <Menu>
+      {/* <Menu>
         <MenuButton p='0px'>
           <Icon
             mt='6px'
@@ -204,7 +204,7 @@ export default function HeaderLinks(props) {
         </MenuList>
       </Menu>
 
-      <ThemeEditor navbarIcon={navbarIcon} /> 
+      <ThemeEditor navbarIcon={navbarIcon} />  */}
 
       <Menu>
         <MenuButton p='0px'>
