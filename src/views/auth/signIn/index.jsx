@@ -51,6 +51,8 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { Form, useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { login } from "../../../features/authSlice";
+import { useHistory } from "react-router-dom";
 
 function SignIn() {
   // Chakra color mode
@@ -74,6 +76,7 @@ function SignIn() {
   const [isEmployee, setIsEmployee] = React.useState(false);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // Form validation
   const schema = Yup.object({
@@ -91,8 +94,8 @@ function SignIn() {
       },
       validationSchema: schema,
       onSubmit: (values) => {
-        console.log(JSON.stringify(values));
         dispatch(login(values));
+        history.push("/");
       },
     }
   );
