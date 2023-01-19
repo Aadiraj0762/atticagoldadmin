@@ -1,61 +1,65 @@
-import React from "react";
+import { Navigate, useRoutes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import DashboardLayout from './layouts/dashboard';
+import SimpleLayout from './layouts/simple';
+import BlogPage from './pages/BlogPage';
+import UserPage from './pages/UserPage';
+import LoginPage from './pages/LoginPage';
+import Page404 from './pages/Page404';
+import ProductsPage from './pages/ProductsPage';
+import DashboardAppPage from './pages/DashboardAppPage';
+import GoldRate from './pages/GoldRate';
 
-import { Icon } from "@chakra-ui/react";
-import {
-  MdBarChart,
-  MdPerson,
-  MdHome,
-  MdLock,
-  MdOutlineShoppingCart,
-  MdAttachMoney,
-} from "react-icons/md";
+// ----------------------------------------------------------------------
 
-// Admin Imports
-import MainDashboard from "views/admin/default";
-import NFTMarketplace from "views/admin/marketplace";
-import Profile from "views/admin/profile";
-import DataTables from "views/admin/dataTables";
-import GoldRates from "views/admin/goldRates";
+function Protected({ children }) {
+  const auth = useSelector((state) => state.auth);
+  if (auth.isAuthenticated !== true) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
 
-// Auth Imports
-import SignInCentered from "views/auth/signIn";
+Protected.propTypes = {
+  children: PropTypes.any,
+};
 
-const routes = [
-  {
-    name: "Dashboard",
-    layout: "/admin",
-    path: "/dashboard",
-    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
-    component: MainDashboard,
-  },
-  {
-    name: "Data Tables",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
-    path: "/data-tables",
-    component: DataTables,
-  },
-  {
-    name: "Gold Rates",
-    layout: "/admin",
-    icon: <Icon as={MdAttachMoney} width="20px" height="20px" color="inherit" />,
-    path: "/gold-rates",
-    component: GoldRates,
-  },
-  {
-    name: "Profile",
-    layout: "/admin",
-    path: "/profile",
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
-    component: Profile,
-  },
-  {
-    name: "Sign In",
-    layout: "/auth",
-    path: "/login",
-    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
-    component: SignInCentered,
-  },
-];
+export default function Router() {
+  const routes = useRoutes([
+    {
+      path: '/dashboard',
+      element: (
+        <Protected>
+          <DashboardLayout />
+        </Protected>
+      ),
+      children: [
+        { element: <Navigate to="/dashboard/home" />, index: true },
+        { path: 'home', element: <DashboardAppPage /> },
+        { path: 'gold-rate', element: <GoldRate /> },
+        { path: 'user', element: <UserPage /> },
+        { path: 'products', element: <ProductsPage /> },
+        { path: 'blog', element: <BlogPage /> },
+      ],
+    },
+    {
+      path: 'login',
+      element: <LoginPage />,
+    },
+    {
+      element: <SimpleLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/home" />, index: true },
+        { path: '404', element: <Page404 /> },
+        { path: '*', element: <Navigate to="/404" /> },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/404" replace />,
+    },
+  ]);
 
-export default routes;
+  return routes;
+}

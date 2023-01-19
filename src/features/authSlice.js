@@ -1,9 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState: {
-    isAuthenticated: 0,
+    isAuthenticated: false,
     user: null,
     token: null,
   },
@@ -21,7 +21,7 @@ export const authSlice = createSlice({
   },
 });
 
+export default authSlice.reducer;
+
 // Action creators are generated for each case reducer function
 export const { login, logout } = authSlice.actions;
-
-export default authSlice.reducer;

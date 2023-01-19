@@ -1,70 +1,34 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "assets/css/App.css";
-import {
-  HashRouter,
-  BrowserRouter,
-  Route,
-  Switch,
-  Redirect,
-} from "react-router-dom";
-import AuthLayout from "layouts/auth";
-import AdminLayout from "layouts/admin";
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "theme/theme";
-import { ThemeEditorProvider } from "@hypertheme-editor/chakra-ui";
-import { Provider } from "react-redux";
-import { useSelector } from "react-redux";
-import store from "./store";
-import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+import store from './store';
+import * as serviceWorker from './serviceWorker';
+import reportWebVitals from './reportWebVitals';
+import App from './App';
 
-let persistor = persistStore(store);
+// ----------------------------------------------------------------------
 
-const queryClient = new QueryClient();
-
-function PrivateRoute({ children, ...rest }) {
-  const auth = useSelector((state) => state.auth);
-  return (
-    <Route
-      {...rest}
-      component={({ location }) => {
-        return auth.isAuthenticated === true ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/auth",
-            }}
-          />
-        );
-      }}
-    />
-  );
-}
-
-ReactDOM.render(
-  <ChakraProvider theme={theme}>
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <ThemeEditorProvider>
-              <BrowserRouter>
-                <Switch>
-                  <Route path={`/auth`} component={AuthLayout} />
-                  <PrivateRoute path={`/admin`}>
-                    <AdminLayout />
-                  </PrivateRoute>
-                  <Redirect from="/" to="/admin" exact />
-                </Switch>
-              </BrowserRouter>
-            </ThemeEditorProvider>
-          </PersistGate>
-        </Provider>
-      </QueryClientProvider>
-    </React.StrictMode>
-  </ChakraProvider>,
-  document.getElementById("root")
+const root = ReactDOM.createRoot(document.getElementById('root'));
+const persistor = persistStore(store);
+root.render(
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <HelmetProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </HelmetProvider>
+    </PersistGate>
+  </Provider>
 );
+
+// If you want to enable client cache, register instead.
+serviceWorker.unregister();
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

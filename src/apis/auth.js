@@ -1,36 +1,30 @@
-import axios from "axios";
+import axios from 'axios';
 
-function loginApi(payload) {
-  return axios
-    .post("http://localhost:9000/api/v1.0/auth/login", payload)
-    .then(function (response) {
-      return response;
-    })
-    .catch(function (error) {
-      return error.response;
-    });
+async function loginApi(payload) {
+  try {
+    const response = await axios.post('http://localhost:9000/api/v1.0/auth/login', payload);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
 }
 
-function getUserTypeApi(payload) {
-  return axios
-    .post("http://localhost:9000/api/v1.0/auth/get-user-type", payload)
-    .then(function (response) {
-      return response;
-    })
-    .catch(function (error) {
-      return error;
-    });
+async function getUserTypeApi(payload) {
+  try {
+    const response = await axios.post('http://localhost:9000/api/v1.0/auth/get-user-type', payload);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
 }
 
-function getBranchUserApi(payload) {
-  return axios
-    .post("http://localhost:9000/api/v1.0/auth/get-branch-user", payload)
-    .then(function (response) {
-      return response;
-    })
-    .catch(function (error) {
-      return error;
-    });
+async function getBranchUserApi(payload) {
+  try {
+    const response = await axios.post('http://localhost:9000/api/v1.0/auth/get-branch-user', payload);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
 }
 
 export { loginApi, getUserTypeApi, getBranchUserApi };

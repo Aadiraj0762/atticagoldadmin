@@ -1,34 +1,66 @@
+### v1.6.0
 
-## [1.2.1] 2022-11-01
+###### Oct 17, 2022
 
-🚀 Feature:
--Added TimelineRow
+- Upgrade and restructure the directory.
+- Upgrade some dependencies to the latest versions
 
-## [1.2.0] 2022-08-23
+---
 
-🚀 HyperTheme Editor
+### v1.5.0
 
-- With the help of the guys from Hyperting, we added HyperTheme Editor. You can check the docs [here](https://www.hyperthe.me/documentation/getting-started/community)!
-## [1.1.0] 2022-06-08
+###### Jul 04, 2022
 
-🐛 Bugs solved:
+- Support react 18.
+- Upgrade some dependencies to the latest versions
 
-- Calendar card - Card border bug on dark mode
-- Development Table - Missing content bug
-- Solved the warnings regarding stylis-plugin-rtl
-- Fixed console warnings
+---
 
-## [1.0.1] 2022-04-25
+### v1.4.0
 
-### Multiple design bugs on mobile solved
+###### Apr 12, 2022
 
-- Default - "Daily traffic" card - text align problem on mobile - solved.
-- Navbar - Icons - align problem with all icons on mobile - solved.
-- Profile - "Your storage" card - "More" icon align problem on mobile - solved.
-- Profile - "Complete your profile" card - text align problem on mobile - solved.
+- Update `src/components`.
+- Update `src/sections`.
+- Update `src/pages`.
+- Update `src/layouts`.
+- Update `src/theme`.
+- Upgrade some dependencies to the latest versions
 
-## [1.0.0] 2022-04-18
+---
 
-### Original Release
+### v1.3.0
 
-- Added Chakra UI as base framework
+###### Feb 21, 2022
+
+- Support react-script v5.0.0
+- Source code improvement
+- Upgrade some dependencies to the latest versions
+
+---
+
+### v1.2.0
+
+###### Sep 18, 2021
+
+- Support MIU v5.0.0 official release
+- Upgrade some dependencies to the latest versions
+- Update `src/theme/typography.js`
+- Upgrade some dependencies to the latest versions
+
+---
+
+### v1.1.0
+
+###### Jul 23, 2021
+
+- Support MUI v5.0.0-beta.1
+- Upgrade some dependencies to the latest versions
+
+---
+
+### v1.0.0
+
+###### Jun 28, 2021
+
+Initial release.

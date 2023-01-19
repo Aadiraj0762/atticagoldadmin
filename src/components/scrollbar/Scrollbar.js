@@ -1,38 +1,37 @@
-import { Box } from "@chakra-ui/react";
+import PropTypes from 'prop-types';
+import { memo } from 'react';
+// @mui
+import { Box } from '@mui/material';
+//
+import { StyledRootScrollbar, StyledScrollbar } from './styles';
 
-import React from "react";
+// ----------------------------------------------------------------------
 
-export const renderTrack = ({ style, ...props }) => {
-  const trackStyle = {
-    position: "absolute",
-    maxWidth: "100%",
-    width: 6,
-    transition: "opacity 200ms ease 0s",
-    opacity: 0,
-    background: "transparent",
-    bottom: 2,
-    top: 2,
-    borderRadius: 3,
-    right: 0,
-  };
-  return <div style={{ ...style, ...trackStyle }} {...props} />;
+Scrollbar.propTypes = {
+  sx: PropTypes.object,
+  children: PropTypes.node,
 };
-export const renderThumb = ({ style, ...props }) => {
-  const thumbStyle = {
-    borderRadius: 15,
-    background: "rgba(222, 222, 222, .1)",
-  };
-  return <div style={{ ...style, ...thumbStyle }} {...props} />;
-};
-export const renderView = ({ style, ...props }) => {
-  const viewStyle = {
-    marginBottom: -22,
-  };
+
+function Scrollbar({ children, sx, ...other }) {
+  const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;
+
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
+  if (isMobile) {
+    return (
+      <Box sx={{ overflowX: 'auto', ...sx }} {...other}>
+        {children}
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      me={{ base: "0px !important", lg: "-16px !important" }}
-      style={{ ...style, ...viewStyle }}
-      {...props}
-    />
+    <StyledRootScrollbar>
+      <StyledScrollbar timeout={500} clickOnTrack={false} sx={sx} {...other}>
+        {children}
+      </StyledScrollbar>
+    </StyledRootScrollbar>
   );
-};
+}
+
+export default memo(Scrollbar);
