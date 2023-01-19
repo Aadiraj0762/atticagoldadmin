@@ -53,6 +53,8 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../../features/authSlice";
 import { useHistory } from "react-router-dom";
+import { useQuery, useMutation } from "react-query";
+import { loginApi, getUserTypeApi, getBranchUserApi } from "../../../apis/auth";
 
 function SignIn() {
   // Chakra color mode
@@ -74,10 +76,12 @@ function SignIn() {
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
   const [isEmployee, setIsEmployee] = React.useState(false);
+  const [isDisable, setIsDisable] = React.useState(false);
+  const [employees, setEmployees] = React.useState([]);
+  const [error, setError] = React.useState(null);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const history = useHistory();
-
   // Form validation
   const schema = Yup.object({
     username: Yup.string().required("Username is required"),
@@ -94,8 +98,19 @@ function SignIn() {
       },
       validationSchema: schema,
       onSubmit: (values) => {
-        dispatch(login(values));
-        history.push("/");
+        setError("");
+        loginApi(values)
+          .then(function (data) {
+            if (data.status == 200) {
+              dispatch(login(data.data.data));
+              history.push("/");
+            } else {
+              setError(data.data.message);
+            }
+          })
+          .catch(function (err) {
+            setError(err.message);
+          });
       },
     }
   );
@@ -140,6 +155,13 @@ function SignIn() {
           me="auto"
           mb={{ base: "20px", md: "auto" }}
         >
+          {error && (
+            <Flex justifyContent="center" align="center" mb="24px">
+              <Text color="red" fontSize="sm" fontWeight="500">
+                {error}
+              </Text>
+            </Flex>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -167,13 +189,33 @@ function SignIn() {
               fontWeight="500"
               size="lg"
               onChange={handleChange}
-              onBlur={(e) => {
-                if (e.target.value) {
-                  setIsEmployee(true);
-                } else {
+              onBlur={async (e) => {
+                try {
+                  setIsDisable(true);
+                  if (e.target.value) {
+                    let userType = await getUserTypeApi({
+                      username: e.target.value,
+                    });
+                    if (userType.data.data.userType == "branch") {
+                      let employee = await getBranchUserApi({
+                        username: e.target.value,
+                      });
+                      if (employee.data?.data?.length > 0) {
+                        setEmployees(employee.data.data ?? []);
+                      }
+                      setIsEmployee(true);
+                    } else {
+                      setIsEmployee(false);
+                    }
+                  } else {
+                    setIsEmployee(false);
+                  }
+                  handleBlur(e);
+                  setIsDisable(false);
+                } catch (err) {
                   setIsEmployee(false);
+                  setIsDisable(false);
                 }
-                handleBlur(e);
               }}
             />
             {touched.username && errors.username ? (
@@ -207,9 +249,13 @@ function SignIn() {
                 onChange={handleChange}
                 onBlur={handleBlur}
               >
-                <option value="employee1">Employee 1</option>
-                <option value="employee2">Employee 2</option>
-                <option value="employee3">Employee 3</option>
+                {employees?.map(function (data) {
+                  return (
+                    <option value={data.employeeId} key={data.employeeId}>
+                      {data.employeeId}
+                    </option>
+                  );
+                })}
               </Select>
               {touched.employeeId && errors.employeeId ? (
                 <Flex justifyContent="space-between" align="center" mb="24px">
@@ -265,6 +311,7 @@ function SignIn() {
               h="50"
               mb="24px"
               type="submit"
+              disabled={isDisable}
             >
               Sign In
             </Button>

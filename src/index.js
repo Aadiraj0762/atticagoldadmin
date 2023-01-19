@@ -18,8 +18,11 @@ import { useSelector } from "react-redux";
 import store from "./store";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 let persistor = persistStore(store);
+
+const queryClient = new QueryClient();
 
 function PrivateRoute({ children, ...rest }) {
   const auth = useSelector((state) => state.auth);
@@ -44,21 +47,23 @@ function PrivateRoute({ children, ...rest }) {
 ReactDOM.render(
   <ChakraProvider theme={theme}>
     <React.StrictMode>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ThemeEditorProvider>
-            <BrowserRouter>
-              <Switch>
-                <Route path={`/auth`} component={AuthLayout} />
-                <PrivateRoute path={`/admin`}>
-                  <AdminLayout />
-                </PrivateRoute>
-                <Redirect from="/" to="/admin" exact />
-              </Switch>
-            </BrowserRouter>
-          </ThemeEditorProvider>
-        </PersistGate>
-      </Provider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <ThemeEditorProvider>
+              <BrowserRouter>
+                <Switch>
+                  <Route path={`/auth`} component={AuthLayout} />
+                  <PrivateRoute path={`/admin`}>
+                    <AdminLayout />
+                  </PrivateRoute>
+                  <Redirect from="/" to="/admin" exact />
+                </Switch>
+              </BrowserRouter>
+            </ThemeEditorProvider>
+          </PersistGate>
+        </Provider>
+      </QueryClientProvider>
     </React.StrictMode>
   </ChakraProvider>,
   document.getElementById("root")
