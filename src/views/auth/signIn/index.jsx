@@ -53,7 +53,6 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../../features/authSlice";
 import { useHistory } from "react-router-dom";
-import { useQuery, useMutation } from "react-query";
 import { loginApi, getUserTypeApi, getBranchUserApi } from "../../../apis/auth";
 
 function SignIn() {
