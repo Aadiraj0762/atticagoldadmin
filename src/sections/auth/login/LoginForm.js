@@ -55,7 +55,6 @@ export default function LoginForm() {
       loginApi(values)
         .then((data) => {
           if (data.status === true) {
-            console.log(data.data);
             dispatch(login(data.data));
             navigate('/dashboard', { replace: true });
           } else {

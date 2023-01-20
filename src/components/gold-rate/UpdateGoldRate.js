@@ -1,13 +1,16 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { createGoldRate } from '../../apis/gold-rate';
+import { getGoldRateById, updateGoldRate } from '../../apis/gold-rate';
 
-function CreateGoldRate({ setToggleContainer }) {
-  const [type, setType] = useState('');
-  const form = useRef();
+function UpdateGoldRate({ id, setToggleContainer }) {
+  const [data, setData] = useState({
+    rate: '',
+    type: '',
+    state: '',
+  });
 
   // Form validation
   const schema = Yup.object({
@@ -16,27 +19,37 @@ function CreateGoldRate({ setToggleContainer }) {
     state: Yup.string().required('State is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
-    initialValues: {
-      rate: '',
-      type: '',
-      state: '',
-    },
+  const initialValues = {
+    rate: '',
+    type: '',
+    state: '',
+  };
+
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
+    initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
-      createGoldRate(values).then(() => {
+      updateGoldRate(id, values).then(() => {
         setToggleContainer(false);
-        form.current.reset();
-        setType('');
+        setData(initialValues);
+        setValues(initialValues);
         resetForm();
       });
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      getGoldRateById(id).then((data) => {
+        setData(data.data ?? {});
+        setValues(data.data);
+      });
+    }
+  }, [id]);
+
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
-        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);
@@ -49,6 +62,7 @@ function CreateGoldRate({ setToggleContainer }) {
               name="rate"
               error={touched.rate && errors.rate && true}
               label={touched.rate && errors.rate ? errors.rate : 'Rate'}
+              value={values.rate}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
@@ -62,10 +76,10 @@ function CreateGoldRate({ setToggleContainer }) {
                 id="select"
                 label={touched.rate && errors.rate ? errors.rate : 'Select type'}
                 name="type"
-                value={type}
+                value={values.type}
                 onBlur={handleBlur}
                 onChange={(e) => {
-                  setType(e.target.value);
+                  setData({ ...data, type: e.target.value });
                   handleChange(e);
                 }}
               >
@@ -79,9 +93,10 @@ function CreateGoldRate({ setToggleContainer }) {
               name="state"
               error={touched.state && errors.state && true}
               label={touched.state && errors.state ? errors.state : 'State'}
-              fullWidth
+              value={values.state}
               onBlur={handleBlur}
               onChange={handleChange}
+              fullWidth
             />
           </Grid>
           <Grid item xs={12}>
@@ -95,4 +110,4 @@ function CreateGoldRate({ setToggleContainer }) {
   );
 }
 
-export default CreateGoldRate;
+export default UpdateGoldRate;

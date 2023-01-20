@@ -33,12 +33,13 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 UserListToolbar.propTypes = {
+  handleDelete: PropTypes.func,
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({ handleDelete, numSelected, filterName, onFilterName }) {
   return (
     <StyledRoot
       sx={{
@@ -67,17 +68,16 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              console.log('ok');
+              handleDelete();
+            }}
+          >
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null}
     </StyledRoot>
   );
 }
