@@ -41,7 +41,7 @@ import { deleteBranchById, getBranch } from '../apis/branch';
 const TABLE_HEAD = [
   { id: 'branchId', label: 'Branch Id', alignRight: false },
   { id: 'branchName', label: 'Branch Name', alignRight: false },
-  { id: 'status', label: 'status', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -96,7 +96,7 @@ export default function Branch() {
 
   const [notify, setNotify] = useState({
     open: false,
-    message: 'Hello',
+    message: '',
     severity: 'success',
   });
 

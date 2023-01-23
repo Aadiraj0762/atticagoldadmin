@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
-import BlogPage from './pages/BlogPage';
-import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import GoldRate from './pages/GoldRate';
 import Branch from './pages/Branch';
+import User from './pages/User';
+import Fund from './pages/Fund';
+import Expense from './pages/Expense';
 
 // ----------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ export default function Router() {
         { path: 'home', element: <DashboardAppPage /> },
         { path: 'gold-rate', element: <GoldRate /> },
         { path: 'branch', element: <Branch /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        { path: 'user', element: <User /> },
+        { path: 'fund', element: <Fund /> },
+        { path: 'expense', element: <Expense /> },
       ],
     },
     {

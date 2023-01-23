@@ -77,9 +77,6 @@ function UpdateBranch(props) {
           });
         } else {
           props.setToggleContainer(false);
-          setData(initialValues);
-          setValues(initialValues);
-          resetForm();
           props.setNotify({
             open: true,
             message: 'Branch updated',
@@ -91,6 +88,9 @@ function UpdateBranch(props) {
   });
 
   useEffect(() => {
+    setData(initialValues);
+    setValues(initialValues);
+    resetForm();
     if (props.id) {
       getBranchById(props.id).then((data) => {
         setData({
@@ -254,7 +254,7 @@ function UpdateBranch(props) {
                 value={data.status}
                 onBlur={handleBlur}
                 onChange={(e) => {
-                  setData({ ...data, type: e.target.value });
+                  setData({ ...data, status: e.target.value });
                   handleChange(e);
                 }}
               >

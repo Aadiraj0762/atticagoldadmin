@@ -1,5 +1,7 @@
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 // component
 import SvgColor from '../../../components/svg-color';
 
@@ -29,14 +31,14 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   {
-    title: 'product',
-    path: '/dashboard/products',
-    icon: icon('ic_cart'),
+    title: 'funds',
+    path: '/dashboard/fund',
+    icon: <AttachMoneyIcon sx={{ width: 1, height: 1 }} />,
   },
   {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: icon('ic_blog'),
+    title: 'expenses',
+    path: '/dashboard/expense',
+    icon: <RequestQuoteIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 

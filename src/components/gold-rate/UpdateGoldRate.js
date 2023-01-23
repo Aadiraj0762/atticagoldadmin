@@ -38,9 +38,6 @@ function UpdateGoldRate(props) {
           });
         } else {
           props.setToggleContainer(false);
-          setData(initialValues);
-          setValues(initialValues);
-          resetForm();
           props.setNotify({
             open: true,
             message: 'Gold rate updated',
@@ -52,6 +49,9 @@ function UpdateGoldRate(props) {
   });
 
   useEffect(() => {
+    setData(initialValues);
+    setValues(initialValues);
+    resetForm();
     if (props.id) {
       getGoldRateById(props.id).then((data) => {
         setData(data.data ?? {});

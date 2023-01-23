@@ -8,7 +8,6 @@ import {
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
   Popover,
   Checkbox,
@@ -28,20 +27,23 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateGoldRate, UpdateGoldRate } from '../components/gold-rate';
+import { CreateExpense, UpdateExpense } from '../components/expense';
+import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
-import { GoldRateListHead, GoldRateListToolbar } from '../sections/@dashboard/gold-rate';
+import { ExpenseListHead, ExpenseListToolbar } from '../sections/@dashboard/expense';
 // mock
-import { deleteGoldRateById, getGoldRate } from '../apis/gold-rate';
+import { deleteExpenseById, getExpense } from '../apis/expense';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'rate', label: 'Rate', alignRight: false },
   { id: 'type', label: 'Type', alignRight: false },
-  { id: 'state', label: 'State', alignRight: false },
+  { id: 'amount', label: 'Amount', alignRight: false },
+  { id: 'branchId', label: 'Branch Id', alignRight: false },
+  { id: 'note', label: 'Note', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -77,7 +79,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function GoldRate() {
+export default function Expense() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
@@ -101,7 +103,7 @@ export default function GoldRate() {
   });
 
   useEffect(() => {
-    getGoldRate().then((data) => {
+    getExpense().then((data) => {
       setData(data.data);
     });
   }, [toggleContainer]);
@@ -163,8 +165,8 @@ export default function GoldRate() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteGoldRateById(openId).then(() => {
-      getGoldRate().then((data) => {
+    deleteExpenseById(openId).then(() => {
+      getExpense().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -173,15 +175,15 @@ export default function GoldRate() {
   };
 
   const handleDeleteSelected = () => {
-    deleteGoldRateById(selected).then(() => {
-      getGoldRate().then((data) => {
+    deleteExpenseById(selected).then(() => {
+      getExpense().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Gold rate deleted',
+        message: 'Expense deleted',
         severity: 'success',
       });
     });
@@ -208,7 +210,7 @@ export default function GoldRate() {
   return (
     <>
       <Helmet>
-        <title> Gold Rate | Minimal UI </title>
+        <title> Expense | Minimal UI </title>
       </Helmet>
 
       <Snackbar
@@ -236,7 +238,7 @@ export default function GoldRate() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Gold Rate
+            Expense
           </Typography>
           <Button
             variant="contained"
@@ -246,12 +248,12 @@ export default function GoldRate() {
               setToggleContainerType('create');
             }}
           >
-            New Gold Rate
+            New Expense
           </Button>
         </Stack>
 
         <Card>
-          <GoldRateListToolbar
+          <ExpenseListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -264,7 +266,7 @@ export default function GoldRate() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <GoldRateListHead
+                <ExpenseListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -275,7 +277,7 @@ export default function GoldRate() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, rate, type, state, createdAt } = row;
+                    const { _id, type, amount, branchId, note, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -283,15 +285,20 @@ export default function GoldRate() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-
-                        <TableCell align="left">{rate}</TableCell>
-
-                        <TableCell align="left">{sentenceCase(type)}</TableCell>
-
-                        <TableCell align="left">{sentenceCase(state)}</TableCell>
-
+                        <TableCell align="left">{type}</TableCell>
+                        <TableCell align="left">{amount}</TableCell>
+                        <TableCell align="left">{branchId}</TableCell>
+                        <TableCell align="left">{note}</TableCell>
+                        <TableCell align="left">
+                          <Label
+                            color={
+                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
+                            }
+                          >
+                            {sentenceCase(status)}
+                          </Label>
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
-
                         <TableCell align="right">
                           <IconButton
                             size="large"
@@ -372,7 +379,7 @@ export default function GoldRate() {
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Create Gold Rate
+            Create Expense
           </Typography>
           <Button
             variant="contained"
@@ -385,7 +392,7 @@ export default function GoldRate() {
           </Button>
         </Stack>
 
-        <CreateGoldRate setToggleContainer={setToggleContainer} setNotify={setNotify} />
+        <CreateExpense setToggleContainer={setToggleContainer} setNotify={setNotify} />
       </Container>
 
       <Container
@@ -394,7 +401,7 @@ export default function GoldRate() {
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Update Gold Rate
+            Update Expense
           </Typography>
           <Button
             variant="contained"
@@ -407,7 +414,7 @@ export default function GoldRate() {
           </Button>
         </Stack>
 
-        <UpdateGoldRate setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
+        <UpdateExpense setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
       <Popover
@@ -463,7 +470,7 @@ export default function GoldRate() {
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want to delete?
+            Do you want branchId delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button
