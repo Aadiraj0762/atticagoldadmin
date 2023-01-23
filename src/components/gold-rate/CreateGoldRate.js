@@ -24,16 +24,24 @@ function CreateGoldRate(props) {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createGoldRate(values).then(() => {
-        props.setToggleContainer(false);
-        form.current.reset();
-        setType('');
-        resetForm();
-        props.setNotify({
-          open: true,
-          message: 'Gold rate created',
-          severity: 'success',
-        });
+      createGoldRate(values).then((data) => {
+        if (data.status === false) {
+          props.setNotify({
+            open: true,
+            message: 'Gold rate not created',
+            severity: 'error',
+          });
+        } else {
+          props.setToggleContainer(false);
+          form.current.reset();
+          setType('');
+          resetForm();
+          props.setNotify({
+            open: true,
+            message: 'Gold rate created',
+            severity: 'success',
+          });
+        }
       });
     },
   });
@@ -65,7 +73,7 @@ function CreateGoldRate(props) {
               <Select
                 labelId="select-label"
                 id="select"
-                label={touched.rate && errors.rate ? errors.rate : 'Select type'}
+                label={touched.type && errors.type ? errors.type : 'Select type'}
                 name="type"
                 value={type}
                 onBlur={handleBlur}

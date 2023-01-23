@@ -10,6 +10,7 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import GoldRate from './pages/GoldRate';
+import Branch from './pages/Branch';
 
 // ----------------------------------------------------------------------
 
@@ -38,6 +39,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/home" />, index: true },
         { path: 'home', element: <DashboardAppPage /> },
         { path: 'gold-rate', element: <GoldRate /> },
+        { path: 'branch', element: <Branch /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },

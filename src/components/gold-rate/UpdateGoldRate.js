@@ -29,16 +29,24 @@ function UpdateGoldRate(props) {
     initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
-      updateGoldRate(props.id, values).then(() => {
-        props.setToggleContainer(false);
-        setData(initialValues);
-        setValues(initialValues);
-        resetForm();
-        props.setNotify({
-          open: true,
-          message: 'Gold rate updated',
-          severity: 'success',
-        });
+      updateGoldRate(props.id, values).then((data) => {
+        if (data.status === false) {
+          props.setNotify({
+            open: true,
+            message: 'Gold rate not updated',
+            severity: 'error',
+          });
+        } else {
+          props.setToggleContainer(false);
+          setData(initialValues);
+          setValues(initialValues);
+          resetForm();
+          props.setNotify({
+            open: true,
+            message: 'Gold rate updated',
+            severity: 'success',
+          });
+        }
       });
     },
   });
@@ -79,7 +87,7 @@ function UpdateGoldRate(props) {
               <Select
                 labelId="select-label"
                 id="select"
-                label={touched.rate && errors.rate ? errors.rate : 'Select type'}
+                label={touched.type && errors.type ? errors.type : 'Select type'}
                 name="type"
                 value={values.type}
                 onBlur={handleBlur}
