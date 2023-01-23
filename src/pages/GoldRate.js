@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef } from 'react';
 // @mui
 import {
   Card,
@@ -23,7 +23,9 @@ import {
   TablePagination,
   Modal,
   Box,
+  Snackbar,
 } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
 import { CreateGoldRate, UpdateGoldRate } from '../components/gold-rate';
@@ -92,6 +94,12 @@ export default function GoldRate() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+  const [notify, setNotify] = useState({
+    open: false,
+    message: 'Hello',
+    severity: 'success',
+  });
 
   useEffect(() => {
     getGoldRate().then((data) => {
@@ -172,6 +180,11 @@ export default function GoldRate() {
       });
       handleCloseDeleteModal();
       setSelected([]);
+      setNotify({
+        open: true,
+        message: 'Gold rate deleted',
+        severity: 'success',
+      });
     });
   };
 
@@ -187,11 +200,39 @@ export default function GoldRate() {
     p: 4,
   };
 
+  function AlertComponent(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  }
+
+  const Alert = forwardRef(AlertComponent);
+
   return (
     <>
       <Helmet>
         <title> Gold Rate | Minimal UI </title>
       </Helmet>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={notify.open}
+        onClose={() => {
+          setNotify({ ...notify, open: false });
+        }}
+        autoHideDuration={3000}
+      >
+        <Alert
+          onClose={() => {
+            setNotify({ ...notify, open: false });
+          }}
+          severity={notify.severity}
+          sx={{ width: '100%', color: 'white' }}
+        >
+          {notify.message}
+        </Alert>
+      </Snackbar>
 
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -345,7 +386,7 @@ export default function GoldRate() {
           </Button>
         </Stack>
 
-        <CreateGoldRate setToggleContainer={setToggleContainer} />
+        <CreateGoldRate setToggleContainer={setToggleContainer} setNotify={setNotify} />
       </Container>
 
       <Container
@@ -367,7 +408,7 @@ export default function GoldRate() {
           </Button>
         </Stack>
 
-        <UpdateGoldRate setToggleContainer={setToggleContainer} id={openId} />
+        <UpdateGoldRate setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
       <Popover

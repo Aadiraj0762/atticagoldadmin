@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createGoldRate } from '../../apis/gold-rate';
 
-function CreateGoldRate({ setToggleContainer }) {
+function CreateGoldRate(props) {
   const [type, setType] = useState('');
   const form = useRef();
 
@@ -25,10 +25,15 @@ function CreateGoldRate({ setToggleContainer }) {
     validationSchema: schema,
     onSubmit: (values) => {
       createGoldRate(values).then(() => {
-        setToggleContainer(false);
+        props.setToggleContainer(false);
         form.current.reset();
         setType('');
         resetForm();
+        props.setNotify({
+          open: true,
+          message: 'Gold rate created',
+          severity: 'success',
+        });
       });
     },
   });

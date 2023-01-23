@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getGoldRateById, updateGoldRate } from '../../apis/gold-rate';
 
-function UpdateGoldRate({ id, setToggleContainer }) {
+function UpdateGoldRate(props) {
   const [data, setData] = useState({
     rate: '',
     type: '',
@@ -29,23 +29,28 @@ function UpdateGoldRate({ id, setToggleContainer }) {
     initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
-      updateGoldRate(id, values).then(() => {
-        setToggleContainer(false);
+      updateGoldRate(props.id, values).then(() => {
+        props.setToggleContainer(false);
         setData(initialValues);
         setValues(initialValues);
         resetForm();
+        props.setNotify({
+          open: true,
+          message: 'Gold rate updated',
+          severity: 'success',
+        });
       });
     },
   });
 
   useEffect(() => {
-    if (id) {
-      getGoldRateById(id).then((data) => {
+    if (props.id) {
+      getGoldRateById(props.id).then((data) => {
         setData(data.data ?? {});
         setValues(data.data);
       });
     }
-  }, [id]);
+  }, [props.id]);
 
   return (
     <Card sx={{ p: 4, my: 4 }}>
