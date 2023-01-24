@@ -6,14 +6,6 @@ import * as Yup from 'yup';
 import { getExpenseById, updateExpense } from '../../apis/expense';
 
 function UpdateExpense(props) {
-  const [data, setData] = useState({
-    type: '',
-    amount: '',
-    branchId: '',
-    note: '',
-    status: '',
-  });
-
   // Form validation
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
@@ -56,12 +48,10 @@ function UpdateExpense(props) {
   });
 
   useEffect(() => {
-    setData(initialValues);
     setValues(initialValues);
     resetForm();
     if (props.id) {
       getExpenseById(props.id).then((data) => {
-        setData(data.data ?? {});
         setValues(data.data ?? {});
       });
     }
@@ -80,7 +70,7 @@ function UpdateExpense(props) {
           <Grid item xs={4}>
             <TextField
               name="type"
-              value={data.type}
+              value={values.type}
               error={touched.type && errors.type && true}
               label={touched.type && errors.type ? errors.type : 'Type'}
               fullWidth
@@ -91,7 +81,7 @@ function UpdateExpense(props) {
           <Grid item xs={4}>
             <TextField
               name="amount"
-              value={data.amount}
+              value={values.amount}
               error={touched.amount && errors.amount && true}
               label={touched.amount && errors.amount ? errors.amount : 'Amount'}
               fullWidth
@@ -102,7 +92,7 @@ function UpdateExpense(props) {
           <Grid item xs={4}>
             <TextField
               name="branchId"
-              value={data.branchId}
+              value={values.branchId}
               error={touched.branchId && errors.branchId && true}
               label={touched.branchId && errors.branchId ? errors.branchId : 'Branch id'}
               fullWidth
@@ -113,7 +103,7 @@ function UpdateExpense(props) {
           <Grid item xs={4}>
             <TextField
               name="note"
-              value={data.note}
+              value={values.note}
               error={touched.note && errors.note && true}
               label={touched.note && errors.note ? errors.note : 'Note'}
               fullWidth
@@ -129,12 +119,9 @@ function UpdateExpense(props) {
                 id="select"
                 label={touched.status && errors.status ? errors.status : 'Select status'}
                 name="status"
-                value={data.status}
+                value={values.status}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setData({ ...data, status: e.target.value });
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 <MenuItem value="pending">Pending</MenuItem>
                 <MenuItem value="approved">Approved</MenuItem>

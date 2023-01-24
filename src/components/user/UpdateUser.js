@@ -6,14 +6,6 @@ import * as Yup from 'yup';
 import { getUserById, updateUser } from '../../apis/user';
 
 function UpdateUser(props) {
-  const [data, setData] = useState({
-    username: '',
-    password: '',
-    userType: '',
-    employeeId: '',
-    status: '',
-  });
-
   // Form validation
   const schema = Yup.object({
     username: Yup.string().required('Username is required'),
@@ -55,12 +47,10 @@ function UpdateUser(props) {
   });
 
   useEffect(() => {
-    setData(initialValues);
     setValues(initialValues);
     resetForm();
     if (props.id) {
       getUserById(props.id).then((data) => {
-        setData(data.data ?? {});
         setValues(data.data ?? {});
       });
     }
@@ -79,7 +69,7 @@ function UpdateUser(props) {
           <Grid item xs={4}>
             <TextField
               name="username"
-              value={data.username}
+              value={values.username}
               error={touched.username && errors.username && true}
               label={touched.username && errors.username ? errors.username : 'Username'}
               fullWidth
@@ -90,7 +80,7 @@ function UpdateUser(props) {
           <Grid item xs={4}>
             <TextField
               name="password"
-              value={data.password}
+              value={values.password}
               error={touched.password && errors.password && true}
               label={touched.password && errors.password ? errors.password : 'Password'}
               fullWidth
@@ -106,12 +96,9 @@ function UpdateUser(props) {
                 id="select"
                 label={touched.userType && errors.userType ? errors.userType : 'Select user type'}
                 name="userType"
-                value={data.userType}
+                value={values.userType}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setData({ ...data, userType: e.target.value });
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="hr">hr</MenuItem>
@@ -123,7 +110,7 @@ function UpdateUser(props) {
           <Grid item xs={4}>
             <TextField
               name="employeeId"
-              value={data.employeeId}
+              value={values.employeeId}
               error={touched.employeeId && errors.employeeId && true}
               label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Employee Id'}
               fullWidth
@@ -139,12 +126,9 @@ function UpdateUser(props) {
                 id="select"
                 label={touched.status && errors.status ? errors.status : 'Select status'}
                 name="status"
-                value={data.status}
+                value={values.status}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setData({ ...data, status: e.target.value });
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 <MenuItem value="active">Active</MenuItem>
                 <MenuItem value="deactive">Deactive</MenuItem>

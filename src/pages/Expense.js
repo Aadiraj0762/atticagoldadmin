@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateExpense, UpdateExpense } from '../components/expense';
+import { UpdateExpense } from '../components/expense';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
@@ -240,16 +240,6 @@ export default function Expense() {
           <Typography variant="h4" gutterBottom>
             Expense
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-              setToggleContainerType('create');
-            }}
-          >
-            New Expense
-          </Button>
         </Stack>
 
         <Card>
@@ -371,28 +361,6 @@ export default function Expense() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
-      </Container>
-
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Create Expense
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <CreateExpense setToggleContainer={setToggleContainer} setNotify={setNotify} />
       </Container>
 
       <Container

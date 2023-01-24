@@ -6,15 +6,6 @@ import * as Yup from 'yup';
 import { getFundById, updateFund } from '../../apis/fund';
 
 function UpdateFund(props) {
-  const [data, setData] = useState({
-    type: '',
-    amount: '',
-    from: '',
-    to: '',
-    note: '',
-    status: '',
-  });
-
   // Form validation
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
@@ -58,12 +49,10 @@ function UpdateFund(props) {
   });
 
   useEffect(() => {
-    setData(initialValues);
     setValues(initialValues);
     resetForm();
     if (props.id) {
       getFundById(props.id).then((data) => {
-        setData(data.data ?? {});
         setValues(data.data ?? {});
       });
     }
@@ -82,7 +71,7 @@ function UpdateFund(props) {
           <Grid item xs={4}>
             <TextField
               name="type"
-              value={data.type}
+              value={values.type}
               error={touched.type && errors.type && true}
               label={touched.type && errors.type ? errors.type : 'Type'}
               fullWidth
@@ -93,7 +82,7 @@ function UpdateFund(props) {
           <Grid item xs={4}>
             <TextField
               name="amount"
-              value={data.amount}
+              value={values.amount}
               error={touched.amount && errors.amount && true}
               label={touched.amount && errors.amount ? errors.amount : 'Amount'}
               fullWidth
@@ -104,7 +93,7 @@ function UpdateFund(props) {
           <Grid item xs={4}>
             <TextField
               name="from"
-              value={data.from}
+              value={values.from}
               error={touched.from && errors.from && true}
               label={touched.from && errors.from ? errors.from : 'From'}
               fullWidth
@@ -115,7 +104,7 @@ function UpdateFund(props) {
           <Grid item xs={4}>
             <TextField
               name="to"
-              value={data.to}
+              value={values.to}
               error={touched.to && errors.to && true}
               label={touched.to && errors.to ? errors.to : 'To'}
               fullWidth
@@ -126,7 +115,7 @@ function UpdateFund(props) {
           <Grid item xs={4}>
             <TextField
               name="note"
-              value={data.note}
+              value={values.note}
               error={touched.note && errors.note && true}
               label={touched.note && errors.note ? errors.note : 'Note'}
               fullWidth
@@ -142,12 +131,9 @@ function UpdateFund(props) {
                 id="select"
                 label={touched.status && errors.status ? errors.status : 'Select status'}
                 name="status"
-                value={data.status}
+                value={values.status}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setData({ ...data, status: e.target.value });
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 <MenuItem value="pending">Pending</MenuItem>
                 <MenuItem value="approved">Approved</MenuItem>

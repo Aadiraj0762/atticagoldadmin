@@ -6,20 +6,6 @@ import * as Yup from 'yup';
 import { getBranchById, updateBranch } from '../../apis/branch';
 
 function UpdateBranch(props) {
-  const [data, setData] = useState({
-    branchId: '',
-    branchName: '',
-    address: '',
-    area: '',
-    city: '',
-    state: '',
-    pincode: '',
-    landmark: '',
-    longitude: '',
-    latitude: '',
-    status: '',
-  });
-
   // Form validation
   const schema = Yup.object({
     branchId: Yup.string().required('Branch id is required'),
@@ -88,24 +74,10 @@ function UpdateBranch(props) {
   });
 
   useEffect(() => {
-    setData(initialValues);
     setValues(initialValues);
     resetForm();
     if (props.id) {
       getBranchById(props.id).then((data) => {
-        setData({
-          branchId: data.data.branchId ?? '',
-          branchName: data.data.branchName ?? '',
-          address: data.data.address.address ?? '',
-          area: data.data.address.area ?? '',
-          city: data.data.address.city ?? '',
-          state: data.data.address.state ?? '',
-          pincode: data.data.address.pincode ?? '',
-          landmark: data.data.address.landmark ?? '',
-          longitude: data.data.address.longitude ?? '',
-          latitude: data.data.address.latitude ?? '',
-          status: data.data.status ?? '',
-        });
         setValues({
           branchId: data.data.branchId ?? '',
           branchName: data.data.branchName ?? '',
@@ -136,7 +108,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="branchId"
-              value={data.branchId}
+              value={values.branchId}
               error={touched.branchId && errors.branchId && true}
               label={touched.branchId && errors.branchId ? errors.branchId : 'Branch Id'}
               fullWidth
@@ -147,7 +119,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="branchName"
-              value={data.branchName}
+              value={values.branchName}
               error={touched.branchName && errors.branchName && true}
               label={touched.branchName && errors.branchName ? errors.branchName : 'Branch Name'}
               fullWidth
@@ -158,7 +130,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="address"
-              value={data.address}
+              value={values.address}
               error={touched.address && errors.address && true}
               label={touched.address && errors.address ? errors.address : 'Address'}
               fullWidth
@@ -169,7 +141,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="area"
-              value={data.area}
+              value={values.area}
               error={touched.area && errors.area && true}
               label={touched.area && errors.area ? errors.area : 'Area'}
               fullWidth
@@ -180,7 +152,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="city"
-              value={data.city}
+              value={values.city}
               error={touched.city && errors.city && true}
               label={touched.city && errors.city ? errors.city : 'City'}
               fullWidth
@@ -191,7 +163,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="state"
-              value={data.state}
+              value={values.state}
               error={touched.state && errors.state && true}
               label={touched.state && errors.state ? errors.state : 'State'}
               fullWidth
@@ -202,7 +174,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="pincode"
-              value={data.pincode}
+              value={values.pincode}
               error={touched.pincode && errors.pincode && true}
               label={touched.pincode && errors.pincode ? errors.pincode : 'Pincode'}
               fullWidth
@@ -213,7 +185,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="landmark"
-              value={data.landmark}
+              value={values.landmark}
               error={touched.landmark && errors.landmark && true}
               label={touched.landmark && errors.landmark ? errors.landmark : 'Landmark'}
               fullWidth
@@ -224,7 +196,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="longitude"
-              value={data.longitude}
+              value={values.longitude}
               error={touched.longitude && errors.longitude && true}
               label={touched.longitude && errors.longitude ? errors.longitude : 'Longitude'}
               fullWidth
@@ -235,7 +207,7 @@ function UpdateBranch(props) {
           <Grid item xs={4}>
             <TextField
               name="latitude"
-              value={data.latitude}
+              value={values.latitude}
               error={touched.latitude && errors.latitude && true}
               label={touched.latitude && errors.latitude ? errors.latitude : 'Latitude'}
               fullWidth
@@ -251,12 +223,9 @@ function UpdateBranch(props) {
                 id="select"
                 label={touched.status && errors.status ? errors.status : 'Select status'}
                 name="status"
-                value={data.status}
+                value={values.status}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setData({ ...data, status: e.target.value });
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 <MenuItem value="active">Active</MenuItem>
                 <MenuItem value="deactive">Deactive</MenuItem>

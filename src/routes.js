@@ -11,6 +11,8 @@ import Branch from './pages/Branch';
 import User from './pages/User';
 import Fund from './pages/Fund';
 import Expense from './pages/Expense';
+import Leave from './pages/Leave';
+import Attendance from './pages/Attendance';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +45,8 @@ export default function Router() {
         { path: 'user', element: <User /> },
         { path: 'fund', element: <Fund /> },
         { path: 'expense', element: <Expense /> },
+        { path: 'leave', element: <Leave /> },
+        { path: 'attendance', element: <Attendance /> },
       ],
     },
     {

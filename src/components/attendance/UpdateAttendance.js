@@ -3,38 +3,36 @@ import { LoadingButton } from '@mui/lab';
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { getGoldRateById, updateGoldRate } from '../../apis/gold-rate';
+import { getAttendanceById, updateAttendance } from '../../apis/attendance';
 
-function UpdateGoldRate(props) {
+function UpdateAttendance(props) {
   // Form validation
   const schema = Yup.object({
-    rate: Yup.string().required('Rate is required'),
-    type: Yup.string().required('Type is required'),
-    state: Yup.string().required('State is required'),
+    employeeId: Yup.string().required('Amount is required'),
+    employeePhoto: Yup.string().required('From is required'),
   });
 
   const initialValues = {
-    rate: '',
-    type: '',
-    state: '',
+    employeeId: '',
+    employeePhoto: '',
   };
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
-      updateGoldRate(props.id, values).then((data) => {
+      updateAttendance(props.id, values).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
-            message: 'Gold rate not updated',
+            message: 'Attendance not updated',
             severity: 'error',
           });
         } else {
           props.setToggleContainer(false);
           props.setNotify({
             open: true,
-            message: 'Gold rate updated',
+            message: 'Attendance updated',
             severity: 'success',
           });
         }
@@ -46,8 +44,8 @@ function UpdateGoldRate(props) {
     setValues(initialValues);
     resetForm();
     if (props.id) {
-      getGoldRateById(props.id).then((data) => {
-        setValues(data.data);
+      getAttendanceById(props.id).then((data) => {
+        setValues(data.data ?? {});
       });
     }
   }, [props.id]);
@@ -64,41 +62,24 @@ function UpdateGoldRate(props) {
         <Grid container spacing={3}>
           <Grid item xs={4}>
             <TextField
-              name="rate"
-              value={values.rate}
-              error={touched.rate && errors.rate && true}
-              label={touched.rate && errors.rate ? errors.rate : 'Rate'}
+              name="employeeId"
+              value={values.employeeId}
+              error={touched.employeeId && errors.employeeId && true}
+              label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Employee Id'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
             />
           </Grid>
           <Grid item xs={4}>
-            <FormControl fullWidth error={touched.type && errors.type && true}>
-              <InputLabel id="select-label">Select type</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                name="type"
-                value={values.type}
-                label={touched.type && errors.type ? errors.type : 'Select type'}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="gold">Gold</MenuItem>
-                <MenuItem value="silver">Silver</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={4}>
             <TextField
-              name="state"
-              error={touched.state && errors.state && true}
-              label={touched.state && errors.state ? errors.state : 'State'}
-              value={values.state}
+              name="employeePhoto"
+              value={values.employeePhoto}
+              error={touched.employeePhoto && errors.employeePhoto && true}
+              label={touched.employeePhoto && errors.employeePhoto ? errors.employeePhoto : 'Employee Photo'}
+              fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
-              fullWidth
             />
           </Grid>
           <Grid item xs={12}>
@@ -112,4 +93,4 @@ function UpdateGoldRate(props) {
   );
 }
 
-export default UpdateGoldRate;
+export default UpdateAttendance;

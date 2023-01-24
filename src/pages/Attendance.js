@@ -27,24 +27,20 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { UpdateFund } from '../components/fund';
+import { UpdateAttendance } from '../components/attendance';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
-import { FundListHead, FundListToolbar } from '../sections/@dashboard/fund';
+import { AttendanceListHead, AttendanceListToolbar } from '../sections/@dashboard/attendance';
 // mock
-import { deleteFundById, getFund } from '../apis/fund';
+import { deleteAttendanceById, getAttendance } from '../apis/attendance';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'type', label: 'Type', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'from', label: 'From', alignRight: false },
-  { id: 'to', label: 'To', alignRight: false },
-  { id: 'note', label: 'Note', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'employeeId', label: 'Employee Id', alignRight: false },
+  { id: 'employeePhoto', label: 'Employee Photo', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -80,7 +76,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Fund() {
+export default function Attendance() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
@@ -104,7 +100,7 @@ export default function Fund() {
   });
 
   useEffect(() => {
-    getFund().then((data) => {
+    getAttendance().then((data) => {
       setData(data.data);
     });
   }, [toggleContainer]);
@@ -166,8 +162,8 @@ export default function Fund() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteFundById(openId).then(() => {
-      getFund().then((data) => {
+    deleteAttendanceById(openId).then(() => {
+      getAttendance().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -176,15 +172,15 @@ export default function Fund() {
   };
 
   const handleDeleteSelected = () => {
-    deleteFundById(selected).then(() => {
-      getFund().then((data) => {
+    deleteAttendanceById(selected).then(() => {
+      getAttendance().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Fund deleted',
+        message: 'Attendance deleted',
         severity: 'success',
       });
     });
@@ -211,7 +207,7 @@ export default function Fund() {
   return (
     <>
       <Helmet>
-        <title> Fund | Minimal UI </title>
+        <title> Attendance | Minimal UI </title>
       </Helmet>
 
       <Snackbar
@@ -239,12 +235,12 @@ export default function Fund() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Fund
+            Attendance
           </Typography>
         </Stack>
 
         <Card>
-          <FundListToolbar
+          <AttendanceListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -257,7 +253,7 @@ export default function Fund() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <FundListHead
+                <AttendanceListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -268,7 +264,7 @@ export default function Fund() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, type, amount, from, to, note, status, createdAt } = row;
+                    const { _id, employeeId, employeePhoto, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -276,20 +272,8 @@ export default function Fund() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{type}</TableCell>
-                        <TableCell align="left">{amount}</TableCell>
-                        <TableCell align="left">{from}</TableCell>
-                        <TableCell align="left">{to}</TableCell>
-                        <TableCell align="left">{note}</TableCell>
-                        <TableCell align="left">
-                          <Label
-                            color={
-                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
-                            }
-                          >
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
+                        <TableCell align="left">{employeeId}</TableCell>
+                        <TableCell align="left">{employeePhoto}</TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -371,7 +355,7 @@ export default function Fund() {
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Update Fund
+            Update Attendance
           </Typography>
           <Button
             variant="contained"
@@ -384,7 +368,7 @@ export default function Fund() {
           </Button>
         </Stack>
 
-        <UpdateFund setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
+        <UpdateAttendance setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
       <Popover
@@ -440,7 +424,7 @@ export default function Fund() {
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want to delete?
+            Do you want dates delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button
