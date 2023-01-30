@@ -13,6 +13,7 @@ import Fund from './pages/Fund';
 import Expense from './pages/Expense';
 import Leave from './pages/Leave';
 import Attendance from './pages/Attendance';
+import Employee from './pages/Employee';
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +48,7 @@ export default function Router() {
         { path: 'expense', element: <Expense /> },
         { path: 'leave', element: <Leave /> },
         { path: 'attendance', element: <Attendance /> },
+        { path: 'employee', element: <Employee /> },
       ],
     },
     {

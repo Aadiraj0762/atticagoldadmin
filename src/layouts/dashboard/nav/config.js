@@ -52,6 +52,11 @@ const navConfig = [
     path: '/dashboard/attendance',
     icon: <AccessTimeIcon sx={{ width: 1, height: 1 }} />,
   },
+  {
+    title: 'Employee',
+    path: '/dashboard/employee',
+    icon: icon('ic_user'),
+  },
 ];
 
 export default navConfig;
