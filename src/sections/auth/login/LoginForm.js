@@ -56,7 +56,11 @@ export default function LoginForm() {
         .then((data) => {
           if (data.status === true) {
             dispatch(login(data.data));
-            navigate('/dashboard', { replace: true });
+            if (data.data.userType === 'admin') {
+              navigate('/admin/dashboard', { replace: true });
+            } else {
+              navigate('/404', { replace: true });
+            }
           } else {
             setError(data.response.data.message || data.message);
           }
@@ -68,7 +72,10 @@ export default function LoginForm() {
   });
 
   if (auth.isAuthenticated === true) {
-    return <Navigate to="/dashboard" replace />;
+    if (auth.user.userType === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+    return <Navigate to="/404" replace />;
   }
 
   return (
