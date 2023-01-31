@@ -58,6 +58,8 @@ export default function LoginForm() {
             dispatch(login(data.data));
             if (data.data.userType === 'admin') {
               navigate('/admin/dashboard', { replace: true });
+            } else if (data.data.userType === 'hr') {
+              navigate('/hr/dashboard', { replace: true });
             } else {
               navigate('/404', { replace: true });
             }
@@ -74,6 +76,9 @@ export default function LoginForm() {
   if (auth.isAuthenticated === true) {
     if (auth.user.userType === 'admin') {
       return <Navigate to="/admin/dashboard" replace />;
+    }
+    if (auth.user.userType === 'hr') {
+      return <Navigate to="/hr/dashboard" replace />;
     }
     return <Navigate to="/404" replace />;
   }
@@ -109,7 +114,7 @@ export default function LoginForm() {
                 username: e.target.value,
               });
 
-              if (userType?.data?.userType && userType.data.userType === 'branch') {
+              if (userType?.data?.userType && userType.data.userType !== 'admin') {
                 const employee = await getBranchUserApi({
                   username: e.target.value,
                 });
