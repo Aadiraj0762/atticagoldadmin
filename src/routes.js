@@ -76,7 +76,11 @@ export default function Router() {
       ],
     },
     {
-      path: 'login',
+      path: '/',
+      element: <Navigate to="/login" replace />,
+    },
+    {
+      path: '/login',
       element: <LoginPage />,
     },
     {
