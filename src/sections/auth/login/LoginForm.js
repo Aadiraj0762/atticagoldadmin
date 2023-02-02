@@ -60,6 +60,10 @@ export default function LoginForm() {
               navigate('/admin/dashboard', { replace: true });
             } else if (data.data.userType === 'hr') {
               navigate('/hr/dashboard', { replace: true });
+            } else if (data.data.userType === 'accounts') {
+              navigate('/accounts/dashboard', { replace: true });
+            } else if (data.data.userType === 'branch') {
+              navigate('/branch/dashboard', { replace: true });
             } else {
               navigate('/404', { replace: true });
             }
@@ -79,6 +83,12 @@ export default function LoginForm() {
     }
     if (auth.user.userType === 'hr') {
       return <Navigate to="/hr/dashboard" replace />;
+    }
+    if (auth.user.userType === 'accounts') {
+      return <Navigate to="/accounts/dashboard" replace />;
+    }
+    if (auth.user.userType === 'branch') {
+      return <Navigate to="/branch/dashboard" replace />;
     }
     return <Navigate to="/404" replace />;
   }

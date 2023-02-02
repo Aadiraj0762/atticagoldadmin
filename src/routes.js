@@ -21,6 +21,18 @@ import HrUser from './pages/hr/User';
 import HrLeave from './pages/hr/Leave';
 import HrAttendance from './pages/hr/Attendance';
 import HrEmployee from './pages/hr/Employee';
+import AccountsDashboardLayout from './layouts/dashboard/accounts';
+import AccountsDashboard from './pages/accounts/Dashboard';
+import AccountsGoldRate from './pages/accounts/GoldRate';
+import AccountsBranch from './pages/accounts/Branch';
+import AccountsFund from './pages/accounts/Fund';
+import AccountsExpense from './pages/accounts/Expense';
+import BranchDashboardLayout from './layouts/dashboard/branch';
+import BranchDashboard from './pages/branch/Dashboard';
+import BranchFund from './pages/branch/Fund';
+import BranchExpense from './pages/branch/Expense';
+import BranchLeave from './pages/branch/Leave';
+import BranchAttendance from './pages/branch/Attendance';
 
 // ----------------------------------------------------------------------
 
@@ -73,6 +85,38 @@ export default function Router() {
         { path: 'leave', element: <HrLeave /> },
         { path: 'attendance', element: <HrAttendance /> },
         { path: 'employee', element: <HrEmployee /> },
+      ],
+    },
+    {
+      path: '/accounts',
+      element: (
+        <Protected>
+          <AccountsDashboardLayout />
+        </Protected>
+      ),
+      children: [
+        { element: <Navigate to="/accounts/dashboard" />, index: true },
+        { path: 'dashboard', element: <AccountsDashboard /> },
+        { path: 'gold-rate', element: <AccountsGoldRate /> },
+        { path: 'branch', element: <AccountsBranch /> },
+        { path: 'fund', element: <AccountsFund /> },
+        { path: 'expense', element: <AccountsExpense /> },
+      ],
+    },
+    {
+      path: '/branch',
+      element: (
+        <Protected>
+          <BranchDashboardLayout />
+        </Protected>
+      ),
+      children: [
+        { element: <Navigate to="/branch/dashboard" />, index: true },
+        { path: 'dashboard', element: <BranchDashboard /> },
+        { path: 'fund', element: <BranchFund /> },
+        { path: 'expense', element: <BranchExpense /> },
+        { path: 'leave', element: <BranchLeave /> },
+        { path: 'attendance', element: <BranchAttendance /> },
       ],
     },
     {
