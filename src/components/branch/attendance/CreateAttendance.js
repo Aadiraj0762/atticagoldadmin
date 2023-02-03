@@ -2,9 +2,23 @@ import { TextField, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Webcam from 'react-webcam';
+import { useCallback, useRef, useState } from 'react';
 import { createAttendance } from '../../../apis/branch/attendance';
 
 function CreateAttendance(props) {
+  const [img, setImg] = useState(null);
+  const webcamRef = useRef(null);
+  const videoConstraints = {
+    width: 420,
+    height: 420,
+    facingMode: 'user',
+  };
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImg(imageSrc);
+  }, [webcamRef]);
+
   // Form validation
   const schema = Yup.object({
     employeeId: Yup.string().required('Amount is required'),
@@ -59,15 +73,29 @@ function CreateAttendance(props) {
             />
           </Grid>
           <Grid item xs={4}>
-            <TextField
-              name="employeePhoto"
-              value={values.employeePhoto}
-              error={touched.employeePhoto && errors.employeePhoto && true}
-              label={touched.employeePhoto && errors.employeePhoto ? errors.employeePhoto : 'Employee Photo'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            {img === null ? (
+              <>
+                <Webcam
+                  mirrored
+                  audio={false}
+                  height={400}
+                  width={400}
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  videoConstraints={videoConstraints}
+                />
+                <button type="button" onClick={capture}>
+                  Capture photo
+                </button>
+              </>
+            ) : (
+              <>
+                <img src={img} alt="screenshot" />
+                <button type="button" onClick={() => setImg(null)}>
+                  Retake
+                </button>
+              </>
+            )}
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">
