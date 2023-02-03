@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 // mocks_
 import account from '../../../../_mock/account';
 import { logout } from '../../../../features/authSlice';
@@ -26,6 +27,7 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const auth = useSelector((state) => state.auth);
   const dispach = useDispatch();
+  const navigate = useNavigate();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -101,6 +103,7 @@ export default function AccountPopover() {
           onClick={() => {
             dispach(logout());
             handleClose();
+            navigate('/');
           }}
           sx={{ m: 1 }}
         >

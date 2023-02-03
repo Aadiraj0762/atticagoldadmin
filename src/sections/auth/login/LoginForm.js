@@ -56,17 +56,7 @@ export default function LoginForm() {
         .then((data) => {
           if (data.status === true) {
             dispatch(login(data.data));
-            if (data.data.userType === 'admin') {
-              navigate('/admin/dashboard', { replace: true });
-            } else if (data.data.userType === 'hr') {
-              navigate('/hr/dashboard', { replace: true });
-            } else if (data.data.userType === 'accounts') {
-              navigate('/accounts/dashboard', { replace: true });
-            } else if (data.data.userType === 'branch') {
-              navigate('/branch/dashboard', { replace: true });
-            } else {
-              navigate('/404', { replace: true });
-            }
+            window.location.reload();
           } else {
             setError(data.response.data.message || data.message);
           }
@@ -79,18 +69,18 @@ export default function LoginForm() {
 
   if (auth.isAuthenticated === true) {
     if (auth.user.userType === 'admin') {
-      return <Navigate to="/admin/dashboard" replace />;
+      return <Navigate to="/admin/dashboard" />;
     }
     if (auth.user.userType === 'hr') {
-      return <Navigate to="/hr/dashboard" replace />;
+      return <Navigate to="/hr/dashboard" />;
     }
     if (auth.user.userType === 'accounts') {
-      return <Navigate to="/accounts/dashboard" replace />;
+      return <Navigate to="/accounts/dashboard" />;
     }
     if (auth.user.userType === 'branch') {
-      return <Navigate to="/branch/dashboard" replace />;
+      return <Navigate to="/branch/dashboard" />;
     }
-    return <Navigate to="/404" replace />;
+    return <Navigate to="/404" />;
   }
 
   return (
