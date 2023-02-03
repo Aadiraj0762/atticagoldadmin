@@ -1,3 +1,4 @@
+import CreateAttendance from './CreateAttendance';
 import UpdateAttendance from './UpdateAttendance';
 
-export { UpdateAttendance };
+export { CreateAttendance, UpdateAttendance };

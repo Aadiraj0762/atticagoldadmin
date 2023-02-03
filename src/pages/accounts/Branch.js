@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateBranch, UpdateBranch } from '../../components/accounts/branch';
+import { UpdateBranch } from '../../components/accounts/branch';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -238,16 +238,6 @@ export default function Branch() {
           <Typography variant="h4" gutterBottom>
             Branch
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-              setToggleContainerType('create');
-            }}
-          >
-            New Branch
-          </Button>
         </Stack>
 
         <Card>
@@ -361,28 +351,6 @@ export default function Branch() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
-      </Container>
-
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Create Branch
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <CreateBranch setToggleContainer={setToggleContainer} setNotify={setNotify} />
       </Container>
 
       <Container

@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { UpdateAttendance } from '../../components/branch/attendance';
+import { CreateAttendance, UpdateAttendance } from '../../components/branch/attendance';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
@@ -236,6 +236,16 @@ export default function Attendance() {
           <Typography variant="h4" gutterBottom>
             Attendance
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+              setToggleContainerType('create');
+            }}
+          >
+            New Attendance
+          </Button>
         </Stack>
 
         <Card>
@@ -346,6 +356,28 @@ export default function Attendance() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+      </Container>
+
+      <Container
+        maxWidth="xl"
+        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
+      >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Create Attendance
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <CreateAttendance setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
       <Container

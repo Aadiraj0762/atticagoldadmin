@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { UpdateFund } from '../../components/branch/fund';
+import { CreateFund, UpdateFund } from '../../components/branch/fund';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -241,6 +241,16 @@ export default function Fund() {
           <Typography variant="h4" gutterBottom>
             Fund
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+              setToggleContainerType('create');
+            }}
+          >
+            New Fund
+          </Button>
         </Stack>
 
         <Card>
@@ -363,6 +373,28 @@ export default function Fund() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+      </Container>
+
+      <Container
+        maxWidth="xl"
+        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
+      >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Create Fund
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <CreateFund setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
       <Container

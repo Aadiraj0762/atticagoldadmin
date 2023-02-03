@@ -1,3 +1,4 @@
+import CreateExpense from './CreateExpense';
 import UpdateExpense from './UpdateExpense';
 
-export { UpdateExpense };
+export { CreateExpense, UpdateExpense };

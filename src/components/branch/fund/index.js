@@ -1,3 +1,4 @@
+import CreateFund from './CreateFund';
 import UpdateFund from './UpdateFund';
 
-export { UpdateFund };
+export { CreateFund, UpdateFund };
