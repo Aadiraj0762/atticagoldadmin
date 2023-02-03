@@ -4,6 +4,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SellIcon from '@mui/icons-material/Sell';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -51,6 +52,11 @@ const navConfig = [
     title: 'Attendance',
     path: '/admin/attendance',
     icon: <AccessTimeIcon sx={{ width: 1, height: 1 }} />,
+  },
+  {
+    title: 'Sale',
+    path: '/admin/sale',
+    icon: <SellIcon sx={{ width: 1, height: 1 }} />,
   },
   {
     title: 'Employee',

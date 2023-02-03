@@ -11,6 +11,7 @@ import AdminBranch from './pages/admin/Branch';
 import AdminUser from './pages/admin/User';
 import AdminFund from './pages/admin/Fund';
 import AdminExpense from './pages/admin/Expense';
+import AdminSale from './pages/admin/Sale';
 import AdminLeave from './pages/admin/Leave';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminEmployee from './pages/admin/Employee';
@@ -27,12 +28,14 @@ import AccountsGoldRate from './pages/accounts/GoldRate';
 import AccountsBranch from './pages/accounts/Branch';
 import AccountsFund from './pages/accounts/Fund';
 import AccountsExpense from './pages/accounts/Expense';
+import AccountsSale from './pages/accounts/Sale';
 import BranchDashboardLayout from './layouts/dashboard/branch';
 import BranchDashboard from './pages/branch/Dashboard';
 import BranchFund from './pages/branch/Fund';
 import BranchExpense from './pages/branch/Expense';
 import BranchLeave from './pages/branch/Leave';
 import BranchAttendance from './pages/branch/Attendance';
+import BranchSale from './pages/branch/Sale';
 
 // ----------------------------------------------------------------------
 
@@ -65,6 +68,7 @@ export default function Router() {
         { path: 'user', element: <AdminUser /> },
         { path: 'fund', element: <AdminFund /> },
         { path: 'expense', element: <AdminExpense /> },
+        { path: 'sale', element: <AdminSale /> },
         { path: 'leave', element: <AdminLeave /> },
         { path: 'attendance', element: <AdminAttendance /> },
         { path: 'employee', element: <AdminEmployee /> },
@@ -101,6 +105,7 @@ export default function Router() {
         { path: 'branch', element: <AccountsBranch /> },
         { path: 'fund', element: <AccountsFund /> },
         { path: 'expense', element: <AccountsExpense /> },
+        { path: 'sale', element: <AccountsSale /> },
       ],
     },
     {
@@ -117,6 +122,7 @@ export default function Router() {
         { path: 'expense', element: <BranchExpense /> },
         { path: 'leave', element: <BranchLeave /> },
         { path: 'attendance', element: <BranchAttendance /> },
+        { path: 'sale', element: <BranchSale /> },
       ],
     },
     {

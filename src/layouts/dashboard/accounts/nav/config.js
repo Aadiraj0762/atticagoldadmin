@@ -2,6 +2,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import SellIcon from '@mui/icons-material/Sell';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -34,6 +35,11 @@ const navConfig = [
     title: 'expenses',
     path: '/accounts/expense',
     icon: <RequestQuoteIcon sx={{ width: 1, height: 1 }} />,
+  },
+  {
+    title: 'Sale',
+    path: '/accounts/sale',
+    icon: <SellIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 
