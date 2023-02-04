@@ -9,11 +9,13 @@ import { createAttendance } from '../../../apis/branch/attendance';
 function CreateAttendance(props) {
   const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
+
   const videoConstraints = {
     width: 420,
     height: 420,
     facingMode: 'user',
   };
+
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImg(imageSrc);
