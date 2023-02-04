@@ -74,7 +74,7 @@ function CreateAttendance(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12}>
             {img === null ? (
               <>
                 <Webcam
