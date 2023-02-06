@@ -31,7 +31,7 @@ function CreateLeave(props) {
     branchId: Yup.string().required('Branch id is required'),
     employeeId: Yup.string().required('Employee Id is required'),
     leaveType: Yup.string().required('Leave type is required'),
-    proof: Yup.string().required('Proof is required'),
+    proof: Yup.object().required('Proof is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
     status: Yup.string().required('Status is required'),
@@ -42,7 +42,7 @@ function CreateLeave(props) {
       branchId: '',
       employeeId: '',
       leaveType: '',
-      proof: '',
+      proof: {},
       dates: [],
       note: '',
       status: '',
@@ -84,6 +84,7 @@ function CreateLeave(props) {
           handleSubmit(e);
         }}
         autoComplete="off"
+        encType="multipart/form-data"
       >
         <Grid container spacing={3}>
           <Grid item xs={4}>
@@ -122,12 +123,13 @@ function CreateLeave(props) {
           <Grid item xs={4}>
             <TextField
               name="proof"
-              value={values.proof}
-              error={touched.proof && errors.proof && true}
-              label={touched.proof && errors.proof ? errors.proof : 'Proof'}
+              type={'file'}
               fullWidth
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={(e) => {
+                setValues({ ...values, proof: e.target.files[0] });
+              }}
+              required
             />
           </Grid>
           <Grid item xs={4}>
