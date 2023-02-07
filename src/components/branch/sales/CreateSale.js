@@ -24,12 +24,12 @@ function CreateSale(props) {
     {
       field: 'address',
       headerName: 'Address',
-      width: '250',
+      width: '350',
     },
     {
       field: 'pincode',
       headerName: 'Pincode',
-      width: '150',
+      width: '200',
     },
     {
       field: 'type',
