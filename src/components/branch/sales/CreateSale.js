@@ -1,10 +1,54 @@
-import { TextField, Typography, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
+import {
+  TextField,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Card,
+  Grid,
+  Box,
+  Button,
+  Stack,
+} from '@mui/material';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Iconify from '../../iconify';
 import { createSales } from '../../../apis/branch/sales';
 
 function CreateSale(props) {
+  const columns = [
+    { field: 'id', headerName: 'ID' },
+    {
+      field: 'address',
+      headerName: 'Address',
+      width: '250',
+    },
+    {
+      field: 'pincode',
+      headerName: 'Pincode',
+      width: '150',
+    },
+    {
+      field: 'type',
+      headerName: 'Type',
+    },
+  ];
+
+  const rows = [
+    { id: 1, pincode: '11001', address: 'Jon', type: 'Home' },
+    { id: 2, pincode: '11001', address: 'Cersei', type: 'Office' },
+    { id: 3, pincode: '47004', address: 'Jaime', type: 'Home' },
+    { id: 4, pincode: '47004', address: 'Arya', type: 'Home' },
+    { id: 5, pincode: '11001', address: 'Daenerys', type: null },
+    { id: 6, pincode: '11001', address: null, type: 'Office' },
+    { id: 7, pincode: '11001', address: 'Ferrara', type: 'Home' },
+    { id: 8, pincode: '11001', address: 'Rossini', type: 'Office' },
+    { id: 9, pincode: '11001', address: 'Harvey', type: 'Offce' },
+  ];
+
   // Form validation
   const schema = Yup.object({
     cusid: Yup.string().required('Customer id is required'),
@@ -58,17 +102,17 @@ function CreateSale(props) {
   });
 
   return (
-    <Card sx={{ p: 4, my: 4 }}>
-      <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-        Customer Details
-      </Typography>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit(e);
-        }}
-        autoComplete="off"
-      >
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(e);
+      }}
+      autoComplete="off"
+    >
+      <Card sx={{ p: 4, my: 4 }}>
+        <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+          Customer Details
+        </Typography>
         <Grid container spacing={3}>
           <Grid item xs={4}>
             <TextField
@@ -205,6 +249,26 @@ function CreateSale(props) {
             />
           </Grid>
           <Grid item xs={12}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+              <Typography variant="h4" gutterBottom>
+                Customer Address
+              </Typography>
+              <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                New Address
+              </Button>
+            </Stack>
+            <Box sx={{ height: 400, width: '100%' }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                experimentalFeatures={{ newEditingApi: true }}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
             <LoadingButton size="large" name="submit" type="button" variant="contained">
               Pre
             </LoadingButton>
@@ -213,8 +277,8 @@ function CreateSale(props) {
             </LoadingButton>
           </Grid>
         </Grid>
-      </form>
-    </Card>
+      </Card>
+    </form>
   );
 }
 
