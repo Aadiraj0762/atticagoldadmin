@@ -301,7 +301,7 @@ function CreateSale(props) {
             </Grid>
             <Grid item xs={12}>
               <LoadingButton size="large" name="submit" type="button" variant="contained">
-                Pre
+                Prev
               </LoadingButton>
               <LoadingButton
                 size="large"
@@ -316,14 +316,59 @@ function CreateSale(props) {
             </Grid>
           </Grid>
         </Card>
+
         <Card sx={{ display: step === 2 ? 'block' : 'none', p: 4, my: 4 }}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Ornament Details
           </Typography>
           <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <TextField
+                name="name"
+                value={values.name}
+                error={touched.name && errors.name && true}
+                label={touched.name && errors.name ? errors.name : 'Name'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="phone"
+                value={values.phone}
+                error={touched.phone && errors.phone && true}
+                label={touched.phone && errors.phone ? errors.phone : 'Phone'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="email"
+                value={values.email}
+                error={touched.email && errors.email && true}
+                label={touched.email && errors.email ? errors.email : 'Email id'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="dob"
+                value={values.dob}
+                error={touched.dob && errors.dob && true}
+                label={touched.dob && errors.dob ? errors.dob : 'DOB'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
             <Grid item xs={12}>
               <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(1)}>
-                Pre
+                Prev
               </LoadingButton>
               <LoadingButton
                 size="large"
@@ -339,6 +384,7 @@ function CreateSale(props) {
           </Grid>
         </Card>
       </form>
+
       <Modal
         open={addressModal}
         onClose={() => setAddressModal(false)}
