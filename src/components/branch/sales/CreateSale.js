@@ -35,11 +35,12 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: 2
+  borderRadius: 2,
 };
 
 function CreateSale(props) {
   const [addressModal, setAddressModal] = useState(false);
+  const [step, setStep] = useState(1);
 
   // Form validation
   const schema = Yup.object({
@@ -102,7 +103,7 @@ function CreateSale(props) {
         }}
         autoComplete="off"
       >
-        <Card sx={{ p: 4, my: 4 }}>
+        <Card sx={{ display: step === 1 ? 'block' : 'none', p: 4, my: 4 }}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Customer Details
           </Typography>
@@ -302,7 +303,36 @@ function CreateSale(props) {
               <LoadingButton size="large" name="submit" type="button" variant="contained">
                 Pre
               </LoadingButton>
-              <LoadingButton size="large" name="submit" type="button" variant="contained" sx={{ ml: 2 }}>
+              <LoadingButton
+                size="large"
+                name="submit"
+                type="button"
+                variant="contained"
+                sx={{ ml: 2 }}
+                onClick={() => setStep(2)}
+              >
+                Next
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Card>
+        <Card sx={{ display: step === 2 ? 'block' : 'none', p: 4, my: 4 }}>
+          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+            Ornament Details
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(1)}>
+                Pre
+              </LoadingButton>
+              <LoadingButton
+                size="large"
+                name="submit"
+                type="button"
+                variant="contained"
+                sx={{ ml: 2 }}
+                onClick={() => setStep(2)}
+              >
                 Next
               </LoadingButton>
             </Grid>
