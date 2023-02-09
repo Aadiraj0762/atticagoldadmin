@@ -795,7 +795,7 @@ function CreateSale(props) {
               />
             </Grid>
             <Grid item xs={12}>
-              <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(4)}>
+              <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(5)}>
                 Prev
               </LoadingButton>
               <LoadingButton
