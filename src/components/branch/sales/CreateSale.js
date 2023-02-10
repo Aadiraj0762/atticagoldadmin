@@ -32,16 +32,21 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 600,
+  width: 800,
+  maxHeight: '95%',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
   borderRadius: 2,
+  overflow: 'auto',
 };
 
 function CreateSale(props) {
   const [addressModal, setAddressModal] = useState(false);
   const [customerModal, setCustomerModal] = useState(false);
+  const [ornamentModal, setOrnamentModal] = useState(false);
+  const [releaseModal, setReleaseModal] = useState(false);
+  const [bankModal, setBankModal] = useState(false);
   const [step, setStep] = useState(1);
 
   // Form validation
@@ -108,7 +113,7 @@ function CreateSale(props) {
         <Card sx={{ display: step === 1 ? 'block' : 'none', p: 4, my: 4 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
             <Typography variant="h4" gutterBottom>
-              Customer Details
+              Customers
             </Typography>
             <Button
               variant="contained"
@@ -194,7 +199,6 @@ function CreateSale(props) {
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <TableHead>
-                  <TableCell align="left" />
                   <TableCell align="left">Address</TableCell>
                   <TableCell align="left">Pincode</TableCell>
                   <TableCell align="left">Type</TableCell>
@@ -202,9 +206,6 @@ function CreateSale(props) {
                 </TableHead>
                 <TableBody>
                   <TableRow hover key={1} tabIndex={-1}>
-                    <TableCell padding="checkbox">
-                      <Checkbox />
-                    </TableCell>
                     <TableCell align="left">B123 Someware in mumbai</TableCell>
                     <TableCell align="left">43004</TableCell>
                     <TableCell align="left">Home</TableCell>
@@ -215,9 +216,6 @@ function CreateSale(props) {
                     </TableCell>
                   </TableRow>
                   <TableRow hover key={2} tabIndex={-1}>
-                    <TableCell padding="checkbox">
-                      <Checkbox />
-                    </TableCell>
                     <TableCell align="left">B123 Someware in mumbai, maharastra</TableCell>
                     <TableCell align="left">43004</TableCell>
                     <TableCell align="left">Office</TableCell>
@@ -401,6 +399,64 @@ function CreateSale(props) {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
+                <Typography variant="h4" gutterBottom>
+                  Bank
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="eva:plus-fill" />}
+                  onClick={() => setBankModal(true)}
+                >
+                  New Bank
+                </Button>
+              </Stack>
+              <Box sx={{ height: 200, width: '100%' }}>
+                <TableContainer sx={{ overflow: 'auto' }}>
+                  <Table>
+                    <TableHead>
+                      <TableCell align="left" />
+                      <TableCell align="left">Name</TableCell>
+                      <TableCell align="left">Email</TableCell>
+                      <TableCell align="left">Phone</TableCell>
+                      <TableCell align="left">Gender</TableCell>
+                      <TableCell align="left">Action</TableCell>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow hover key={1} tabIndex={-1}>
+                        <TableCell padding="checkbox">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell align="left">Arjun</TableCell>
+                        <TableCell align="left">arjun@gmail.com</TableCell>
+                        <TableCell align="left">2323234342</TableCell>
+                        <TableCell align="left">Male</TableCell>
+                        <TableCell align="left">
+                          <Button variant="contained" startIcon={<DeleteIcon />}>
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow hover key={1} tabIndex={-1}>
+                        <TableCell padding="checkbox">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell align="left">Ravi</TableCell>
+                        <TableCell align="left">ravi@gmail.com</TableCell>
+                        <TableCell align="left">87293862963</TableCell>
+                        <TableCell align="left">Male</TableCell>
+                        <TableCell align="left">
+                          <Button variant="contained" startIcon={<DeleteIcon />}>
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
               <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(2)}>
                 Prev
               </LoadingButton>
@@ -419,186 +475,63 @@ function CreateSale(props) {
         </Card>
 
         <Card sx={{ display: step === 4 ? 'block' : 'none', p: 4, my: 4 }}>
-          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Releases Details
-          </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
+            <Typography variant="h4" gutterBottom>
+              Release
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={() => setReleaseModal(true)}
+            >
+              New Release
+            </Button>
+          </Stack>
+          <Box sx={{ height: 400, width: '100%' }}>
+            <TableContainer sx={{ minWidth: 800 }}>
+              <Table>
+                <TableHead>
+                  <TableCell align="left" />
+                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Phone</TableCell>
+                  <TableCell align="left">Gender</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableHead>
+                <TableBody>
+                  <TableRow hover key={1} tabIndex={-1}>
+                    <TableCell padding="checkbox">
+                      <Checkbox />
+                    </TableCell>
+                    <TableCell align="left">Arjun</TableCell>
+                    <TableCell align="left">arjun@gmail.com</TableCell>
+                    <TableCell align="left">2323234342</TableCell>
+                    <TableCell align="left">Male</TableCell>
+                    <TableCell align="left">
+                      <Button variant="contained" startIcon={<DeleteIcon />}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover key={1} tabIndex={-1}>
+                    <TableCell padding="checkbox">
+                      <Checkbox />
+                    </TableCell>
+                    <TableCell align="left">Ravi</TableCell>
+                    <TableCell align="left">ravi@gmail.com</TableCell>
+                    <TableCell align="left">87293862963</TableCell>
+                    <TableCell align="left">Male</TableCell>
+                    <TableCell align="left">
+                      <Button variant="contained" startIcon={<DeleteIcon />}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
           <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                name="weight"
-                value={values.weight}
-                error={touched.weight && errors.weight && true}
-                label={touched.weight && errors.weight ? errors.weight : 'Weight'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="pledgeamount"
-                value={values.pledgeamount}
-                error={touched.pledgeamount && errors.pledgeamount && true}
-                label={touched.pledgeamount && errors.pledgeamount ? errors.pledgeamount : 'Pledgeamount'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="payableamount"
-                value={values.payableamount}
-                error={touched.payableamount && errors.payableamount && true}
-                label={touched.payableamount && errors.payableamount ? errors.payableamount : 'Payableamount'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="stoneweight"
-                value={values.stoneweight}
-                error={touched.stoneweight && errors.stoneweight && true}
-                label={touched.stoneweight && errors.stoneweight ? errors.stoneweight : 'Stone Weight'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <FormControl fullWidth error={touched.payablemode && errors.payablemode && true}>
-                <InputLabel id="select-label">Select payablemode</InputLabel>
-                <Select
-                  labelId="select-label"
-                  id="select"
-                  label={touched.payablemode && errors.payablemode ? errors.payablemode : 'Select payablemode'}
-                  name="payablemode"
-                  value={values.payablemode}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="cash">Cash</MenuItem>
-                  <MenuItem value="bank">Bank</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="bankid"
-                value={values.bankid}
-                error={touched.bankid && errors.bankid && true}
-                label={touched.bankid && errors.bankid ? errors.bankid : 'bankid'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="pledgeddate"
-                value={values.pledgeddate}
-                error={touched.pledgeddate && errors.pledgeddate && true}
-                label={touched.pledgeddate && errors.pledgeddate ? errors.pledgeddate : 'pledgeddate'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="pledgedin"
-                value={values.pledgedin}
-                error={touched.pledgedin && errors.pledgedin && true}
-                label={touched.pledgedin && errors.pledgedin ? errors.pledgedin : 'pledgedin'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="branch"
-                value={values.branch}
-                error={touched.branch && errors.branch && true}
-                label={touched.branch && errors.branch ? errors.branch : 'branch'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="pledgeid"
-                value={values.pledgeid}
-                error={touched.pledgeid && errors.pledgeid && true}
-                label={touched.pledgeid && errors.pledgeid ? errors.pledgeid : 'pledgeid'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="attach"
-                value={values.attach}
-                error={touched.attach && errors.attach && true}
-                label={touched.attach && errors.attach ? errors.attach : 'attach'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="releasedate"
-                value={values.releasedate}
-                error={touched.releasedate && errors.releasedate && true}
-                label={touched.releasedate && errors.releasedate ? errors.releasedate : 'releasedate'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="comments"
-                value={values.comments}
-                error={touched.comments && errors.comments && true}
-                label={touched.comments && errors.comments ? errors.comments : 'comments'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="empid"
-                value={values.empid}
-                error={touched.empid && errors.empid && true}
-                label={touched.empid && errors.empid ? errors.empid : 'empid'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <FormControl fullWidth error={touched.status && errors.status && true}>
-                <InputLabel id="select-label">Select status</InputLabel>
-                <Select
-                  labelId="select-label"
-                  id="select"
-                  label={touched.status && errors.status ? errors.status : 'Select status'}
-                  name="status"
-                  value={values.status}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
             <Grid item xs={12}>
               <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(3)}>
                 Prev
@@ -618,76 +551,56 @@ function CreateSale(props) {
         </Card>
 
         <Card sx={{ display: step === 5 ? 'block' : 'none', p: 4, my: 4 }}>
-          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Ornament Details
-          </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
+            <Typography variant="h4" gutterBottom>
+              Ornaments
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={() => setOrnamentModal(true)}
+            >
+              New Ornament
+            </Button>
+          </Stack>
+          <Box sx={{ height: 400, width: '100%' }}>
+            <TableContainer sx={{ minWidth: 800 }}>
+              <Table>
+                <TableHead>
+                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Phone</TableCell>
+                  <TableCell align="left">Gender</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableHead>
+                <TableBody>
+                  <TableRow hover key={1} tabIndex={-1}>
+                    <TableCell align="left">Arjun</TableCell>
+                    <TableCell align="left">arjun@gmail.com</TableCell>
+                    <TableCell align="left">2323234342</TableCell>
+                    <TableCell align="left">Male</TableCell>
+                    <TableCell align="left">
+                      <Button variant="contained" startIcon={<DeleteIcon />}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover key={1} tabIndex={-1}>
+                    <TableCell align="left">Ravi</TableCell>
+                    <TableCell align="left">ravi@gmail.com</TableCell>
+                    <TableCell align="left">87293862963</TableCell>
+                    <TableCell align="left">Male</TableCell>
+                    <TableCell align="left">
+                      <Button variant="contained" startIcon={<DeleteIcon />}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
           <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                name="ornaments"
-                value={values.ornaments}
-                error={touched.ornaments && errors.ornaments && true}
-                label={touched.ornaments && errors.ornaments ? errors.ornaments : 'Ornaments'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="count"
-                value={values.count}
-                error={touched.count && errors.count && true}
-                label={touched.count && errors.count ? errors.count : 'Count'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="grossweight"
-                value={values.grossweight}
-                error={touched.grossweight && errors.grossweight && true}
-                label={touched.grossweight && errors.grossweight ? errors.grossweight : 'Gross Weight'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="stoneweight"
-                value={values.stoneweight}
-                error={touched.stoneweight && errors.stoneweight && true}
-                label={touched.stoneweight && errors.stoneweight ? errors.stoneweight : 'Stone Weight'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="purity"
-                value={values.purity}
-                error={touched.purity && errors.purity && true}
-                label={touched.purity && errors.purity ? errors.purity : 'Purity'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="billid"
-                value={values.billid}
-                error={touched.billid && errors.billid && true}
-                label={touched.billid && errors.billid ? errors.billid : 'billid'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
             <Grid item xs={12}>
               <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(4)}>
                 Prev
@@ -698,113 +611,7 @@ function CreateSale(props) {
                 type="button"
                 variant="contained"
                 sx={{ ml: 3 }}
-                onClick={() => setStep(6)}
-              >
-                Next
-              </LoadingButton>
-            </Grid>
-          </Grid>
-        </Card>
-
-        <Card sx={{ display: step === 6 ? 'block' : 'none', p: 4, my: 4 }}>
-          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Bank Details
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                name="accno"
-                value={values.accno}
-                error={touched.accno && errors.accno && true}
-                label={touched.accno && errors.accno ? errors.accno : 'Account No'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="accname"
-                value={values.accname}
-                error={touched.accname && errors.accname && true}
-                label={touched.accname && errors.accname ? errors.accname : 'Account Name'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="ifsccode"
-                value={values.ifsccode}
-                error={touched.ifsccode && errors.ifsccode && true}
-                label={touched.ifsccode && errors.ifsccode ? errors.ifsccode : 'ifsccode'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="bank"
-                value={values.bank}
-                error={touched.bank && errors.bank && true}
-                label={touched.bank && errors.bank ? errors.bank : 'Bank name'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="branch"
-                value={values.branch}
-                error={touched.branch && errors.branch && true}
-                label={touched.branch && errors.branch ? errors.branch : 'Bank branch'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <FormControl fullWidth error={touched.prooftype && errors.prooftype && true}>
-                <InputLabel id="select-label">Select prooftype</InputLabel>
-                <Select
-                  labelId="select-label"
-                  id="select"
-                  label={touched.prooftype && errors.prooftype ? errors.prooftype : 'Select prooftype'}
-                  name="prooftype"
-                  value={values.prooftype}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="check">Check</MenuItem>
-                  <MenuItem value="passbook">Passbook</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="proofupload"
-                value={values.proofupload}
-                error={touched.proofupload && errors.proofupload && true}
-                label={touched.proofupload && errors.proofupload ? errors.proofupload : 'Bank proofupload'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(5)}>
-                Prev
-              </LoadingButton>
-              <LoadingButton
-                size="large"
-                name="submit"
-                type="button"
-                variant="contained"
-                sx={{ ml: 3 }}
-                onClick={() => setStep(6)}
+                onClick={() => setStep(5)}
               >
                 Submit
               </LoadingButton>
@@ -1166,6 +973,449 @@ function CreateSale(props) {
                 value={values.proofupload}
                 error={touched.proofupload && errors.proofupload && true}
                 label={touched.proofupload && errors.proofupload ? errors.proofupload : 'Proofupload'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <LoadingButton size="large" name="submit" type="button" variant="contained">
+                Add
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={releaseModal}
+        onClose={() => setReleaseModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+            Release
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <TextField
+                name="weight"
+                value={values.weight}
+                error={touched.weight && errors.weight && true}
+                label={touched.weight && errors.weight ? errors.weight : 'Weight'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="pledgeamount"
+                value={values.pledgeamount}
+                error={touched.pledgeamount && errors.pledgeamount && true}
+                label={touched.pledgeamount && errors.pledgeamount ? errors.pledgeamount : 'Pledgeamount'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="payableamount"
+                value={values.payableamount}
+                error={touched.payableamount && errors.payableamount && true}
+                label={touched.payableamount && errors.payableamount ? errors.payableamount : 'Payableamount'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="stoneweight"
+                value={values.stoneweight}
+                error={touched.stoneweight && errors.stoneweight && true}
+                label={touched.stoneweight && errors.stoneweight ? errors.stoneweight : 'Stone Weight'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth error={touched.payablemode && errors.payablemode && true}>
+                <InputLabel id="select-label">Select payablemode</InputLabel>
+                <Select
+                  labelId="select-label"
+                  id="select"
+                  label={touched.payablemode && errors.payablemode ? errors.payablemode : 'Select payablemode'}
+                  name="payablemode"
+                  value={values.payablemode}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="cash">Cash</MenuItem>
+                  <MenuItem value="bank">Bank</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="bankid"
+                value={values.bankid}
+                error={touched.bankid && errors.bankid && true}
+                label={touched.bankid && errors.bankid ? errors.bankid : 'bankid'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="pledgeddate"
+                value={values.pledgeddate}
+                error={touched.pledgeddate && errors.pledgeddate && true}
+                label={touched.pledgeddate && errors.pledgeddate ? errors.pledgeddate : 'pledgeddate'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="pledgedin"
+                value={values.pledgedin}
+                error={touched.pledgedin && errors.pledgedin && true}
+                label={touched.pledgedin && errors.pledgedin ? errors.pledgedin : 'pledgedin'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="branch"
+                value={values.branch}
+                error={touched.branch && errors.branch && true}
+                label={touched.branch && errors.branch ? errors.branch : 'branch'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="pledgeid"
+                value={values.pledgeid}
+                error={touched.pledgeid && errors.pledgeid && true}
+                label={touched.pledgeid && errors.pledgeid ? errors.pledgeid : 'pledgeid'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="attach"
+                value={values.attach}
+                error={touched.attach && errors.attach && true}
+                label={touched.attach && errors.attach ? errors.attach : 'attach'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="releasedate"
+                value={values.releasedate}
+                error={touched.releasedate && errors.releasedate && true}
+                label={touched.releasedate && errors.releasedate ? errors.releasedate : 'releasedate'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="comments"
+                value={values.comments}
+                error={touched.comments && errors.comments && true}
+                label={touched.comments && errors.comments ? errors.comments : 'comments'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="empid"
+                value={values.empid}
+                error={touched.empid && errors.empid && true}
+                label={touched.empid && errors.empid ? errors.empid : 'empid'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth error={touched.status && errors.status && true}>
+                <InputLabel id="select-label">Select status</InputLabel>
+                <Select
+                  labelId="select-label"
+                  id="select"
+                  label={touched.status && errors.status ? errors.status : 'Select status'}
+                  name="status"
+                  value={values.status}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="active">Active</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
+                <Typography variant="h4" gutterBottom>
+                  Bank
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="eva:plus-fill" />}
+                  onClick={() => setBankModal(true)}
+                >
+                  New Bank
+                </Button>
+              </Stack>
+              <Box sx={{ height: 200, width: '100%' }}>
+                <TableContainer sx={{ overflow: 'auto' }}>
+                  <Table>
+                    <TableHead>
+                      <TableCell align="left" />
+                      <TableCell align="left">Name</TableCell>
+                      <TableCell align="left">Email</TableCell>
+                      <TableCell align="left">Phone</TableCell>
+                      <TableCell align="left">Gender</TableCell>
+                      <TableCell align="left">Action</TableCell>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow hover key={1} tabIndex={-1}>
+                        <TableCell padding="checkbox">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell align="left">Arjun</TableCell>
+                        <TableCell align="left">arjun@gmail.com</TableCell>
+                        <TableCell align="left">2323234342</TableCell>
+                        <TableCell align="left">Male</TableCell>
+                        <TableCell align="left">
+                          <Button variant="contained" startIcon={<DeleteIcon />}>
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow hover key={1} tabIndex={-1}>
+                        <TableCell padding="checkbox">
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell align="left">Ravi</TableCell>
+                        <TableCell align="left">ravi@gmail.com</TableCell>
+                        <TableCell align="left">87293862963</TableCell>
+                        <TableCell align="left">Male</TableCell>
+                        <TableCell align="left">
+                          <Button variant="contained" startIcon={<DeleteIcon />}>
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <LoadingButton size="large" name="submit" type="button" variant="contained">
+                Add
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={ornamentModal}
+        onClose={() => setOrnamentModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+            Ornaments
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <TextField
+                name="ornaments"
+                value={values.ornaments}
+                error={touched.ornaments && errors.ornaments && true}
+                label={touched.ornaments && errors.ornaments ? errors.ornaments : 'Ornaments'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="count"
+                value={values.count}
+                error={touched.count && errors.count && true}
+                label={touched.count && errors.count ? errors.count : 'Count'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="grossweight"
+                value={values.grossweight}
+                error={touched.grossweight && errors.grossweight && true}
+                label={touched.grossweight && errors.grossweight ? errors.grossweight : 'Gross Weight'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="stoneweight"
+                value={values.stoneweight}
+                error={touched.stoneweight && errors.stoneweight && true}
+                label={touched.stoneweight && errors.stoneweight ? errors.stoneweight : 'Stone Weight'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="purity"
+                value={values.purity}
+                error={touched.purity && errors.purity && true}
+                label={touched.purity && errors.purity ? errors.purity : 'Purity'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="billid"
+                value={values.billid}
+                error={touched.billid && errors.billid && true}
+                label={touched.billid && errors.billid ? errors.billid : 'billid'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <LoadingButton size="large" name="submit" type="button" variant="contained">
+                Add
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={bankModal}
+        onClose={() => setBankModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+            Bank
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <TextField
+                name="accno"
+                value={values.accno}
+                error={touched.accno && errors.accno && true}
+                label={touched.accno && errors.accno ? errors.accno : 'Account No'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="accname"
+                value={values.accname}
+                error={touched.accname && errors.accname && true}
+                label={touched.accname && errors.accname ? errors.accname : 'Account Name'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="ifsccode"
+                value={values.ifsccode}
+                error={touched.ifsccode && errors.ifsccode && true}
+                label={touched.ifsccode && errors.ifsccode ? errors.ifsccode : 'ifsccode'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="bank"
+                value={values.bank}
+                error={touched.bank && errors.bank && true}
+                label={touched.bank && errors.bank ? errors.bank : 'Bank name'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="branch"
+                value={values.branch}
+                error={touched.branch && errors.branch && true}
+                label={touched.branch && errors.branch ? errors.branch : 'Bank branch'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth error={touched.prooftype && errors.prooftype && true}>
+                <InputLabel id="select-label">Select prooftype</InputLabel>
+                <Select
+                  labelId="select-label"
+                  id="select"
+                  label={touched.prooftype && errors.prooftype ? errors.prooftype : 'Select prooftype'}
+                  name="prooftype"
+                  value={values.prooftype}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="check">Check</MenuItem>
+                  <MenuItem value="passbook">Passbook</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="proofupload"
+                value={values.proofupload}
+                error={touched.proofupload && errors.proofupload && true}
+                label={touched.proofupload && errors.proofupload ? errors.proofupload : 'Bank proofupload'}
                 fullWidth
                 onBlur={handleBlur}
                 onChange={handleChange}

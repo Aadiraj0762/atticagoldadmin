@@ -31,7 +31,6 @@ function CreateLeave(props) {
     branchId: Yup.string().required('Branch id is required'),
     employeeId: Yup.string().required('Employee Id is required'),
     leaveType: Yup.string().required('Leave type is required'),
-    proof: Yup.object().required('Proof is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
     status: Yup.string().required('Status is required'),
@@ -43,13 +42,23 @@ function CreateLeave(props) {
       employeeId: '',
       leaveType: '',
       proof: {},
-      dates: [],
+      dates: [moment(moment().format('YYYY-MM-DD'))],
       note: '',
       status: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createLeave(values).then((data) => {
+      const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        if (key === 'dates') {
+          values.dates.forEach((date) => {
+            formData.append('dates[]', date.format('YYYY-MM-DD'));
+          });
+        } else {
+          formData.append(key, values[key]);
+        }
+      });
+      createLeave(formData).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
