@@ -51,7 +51,17 @@ function UpdateLeave(props) {
     initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
-      updateLeave(props.id, values).then((data) => {
+      const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        if (key === 'dates') {
+          values.dates.forEach((date) => {
+            formData.append('dates[]', date.format('YYYY-MM-DD'));
+          });
+        } else {
+          formData.append(key, values[key]);
+        }
+      });
+      updateLeave(props.id, formData).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
@@ -100,6 +110,7 @@ function UpdateLeave(props) {
           handleSubmit(e);
         }}
         autoComplete="off"
+        encType="multipart/form-data"
       >
         <Grid container spacing={3}>
           <Grid item xs={4}>
@@ -138,12 +149,12 @@ function UpdateLeave(props) {
           <Grid item xs={4}>
             <TextField
               name="proof"
-              value={values.proof}
-              error={touched.proof && errors.proof && true}
-              label={touched.proof && errors.proof ? errors.proof : 'Proof'}
+              type={'file'}
               fullWidth
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={(e) => {
+                setValues({ ...values, proof: e.target.files[0] });
+              }}
             />
           </Grid>
           <Grid item xs={4}>
