@@ -26,6 +26,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import Iconify from '../../iconify';
 import { createSales } from '../../../apis/branch/sales';
+import Customer from './customer';
 
 const style = {
   position: 'absolute',
@@ -103,6 +104,8 @@ function CreateSale(props) {
 
   return (
     <>
+      <Customer step={step} setStep={setStep} {...props}/>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -110,78 +113,6 @@ function CreateSale(props) {
         }}
         autoComplete="off"
       >
-        <Card sx={{ display: step === 1 ? 'block' : 'none', p: 4, my: 4 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
-            <Typography variant="h4" gutterBottom>
-              Customers
-            </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={() => setCustomerModal(true)}
-            >
-              New Customer
-            </Button>
-          </Stack>
-          <Box sx={{ height: 400, width: '100%' }}>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <TableHead>
-                  <TableCell align="left" />
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Phone</TableCell>
-                  <TableCell align="left">Gender</TableCell>
-                  <TableCell align="left">Action</TableCell>
-                </TableHead>
-                <TableBody>
-                  <TableRow hover key={1} tabIndex={-1}>
-                    <TableCell padding="checkbox">
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell align="left">Arjun</TableCell>
-                    <TableCell align="left">arjun@gmail.com</TableCell>
-                    <TableCell align="left">2323234342</TableCell>
-                    <TableCell align="left">Male</TableCell>
-                    <TableCell align="left">
-                      <Button variant="contained" startIcon={<DeleteIcon />}>
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow hover key={1} tabIndex={-1}>
-                    <TableCell padding="checkbox">
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell align="left">Ravi</TableCell>
-                    <TableCell align="left">ravi@gmail.com</TableCell>
-                    <TableCell align="left">87293862963</TableCell>
-                    <TableCell align="left">Male</TableCell>
-                    <TableCell align="left">
-                      <Button variant="contained" startIcon={<DeleteIcon />}>
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-          <LoadingButton size="large" name="submit" type="button" variant="contained">
-            Prev
-          </LoadingButton>
-          <LoadingButton
-            size="large"
-            name="submit"
-            type="button"
-            variant="contained"
-            sx={{ ml: 2 }}
-            onClick={() => setStep(2)}
-          >
-            Next
-          </LoadingButton>
-        </Card>
-
         <Card sx={{ display: step === 2 ? 'block' : 'none', p: 4, my: 4 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
             <Typography variant="h4" gutterBottom>
