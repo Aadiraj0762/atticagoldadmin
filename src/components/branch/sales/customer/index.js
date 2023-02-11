@@ -44,10 +44,9 @@ const style = {
   overflow: 'auto',
 };
 
-function Customer({ step, setStep, setNotify }) {
+function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
-  const [selectedId, setSelectedId] = useState(null);
   const [customerModal, setCustomerModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
@@ -118,10 +117,10 @@ function Customer({ step, setStep, setNotify }) {
   });
 
   const handleSelect = (id) => {
-    if (selectedId && selectedId === id) {
-      setSelectedId(null);
+    if (selectedUserId && selectedUserId === id) {
+      setSelectedUserId(null);
     } else {
-      setSelectedId(id);
+      setSelectedUserId(id);
     }
   };
 
@@ -165,7 +164,7 @@ function Customer({ step, setStep, setNotify }) {
                 {data.map((e) => (
                   <TableRow hover key={e._id} tabIndex={-1}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={selectedId === e._id} onChange={() => handleSelect(e._id)} />
+                      <Checkbox checked={selectedUserId === e._id} onChange={() => handleSelect(e._id)} />
                     </TableCell>
                     <TableCell align="left">{e.name}</TableCell>
                     <TableCell align="left">{e.email}</TableCell>
@@ -220,7 +219,17 @@ function Customer({ step, setStep, setNotify }) {
           type="button"
           variant="contained"
           sx={{ ml: 2 }}
-          onClick={() => setStep(2)}
+          onClick={() => {
+            if (!selectedUserId) {
+              setNotify({
+                open: true,
+                message: 'Please select customer',
+                severity: 'info',
+              });
+            } else {
+              setStep(2);
+            }
+          }}
         >
           Next
         </LoadingButton>
