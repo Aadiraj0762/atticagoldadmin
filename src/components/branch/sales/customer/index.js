@@ -508,7 +508,7 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want branchId delete?
+            Do you want to delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button variant="contained" color="error" onClick={() => handleDelete()}>

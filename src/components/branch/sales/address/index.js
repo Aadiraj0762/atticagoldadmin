@@ -61,7 +61,7 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
 
   // Form validation
   const schema = Yup.object({
-    address: Yup.string().required('Address id is required'),
+    address: Yup.string().required('Address is required'),
     area: Yup.string().required('Area is required'),
     city: Yup.string().required('City is required'),
     state: Yup.string().required('State is required'),
@@ -383,7 +383,7 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want branchId delete?
+            Do you want to delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button variant="contained" color="error" onClick={() => handleDelete()}>
