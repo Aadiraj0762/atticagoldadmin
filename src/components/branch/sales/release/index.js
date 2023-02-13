@@ -25,6 +25,7 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
+import moment from 'moment';
 import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
 import { getReleaseByCustomerId, createRelease, deleteReleaseById } from '../../../../apis/branch/release';
@@ -180,7 +181,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
                     <TableCell align="left">{sentenceCase(e.pledgedIn)}</TableCell>
                     <TableCell align="left">{e.weight}</TableCell>
                     <TableCell align="left">{e.pledgeAmount}</TableCell>
-                    <TableCell align="left">{sentenceCase(e.pledgedDate)}</TableCell>
+                    <TableCell align="left">{moment(e.pledgedDate).format("YYYY-MM-DD")}</TableCell>
                     <TableCell align="left">{e.payableAmount}</TableCell>
                     <TableCell align="left">
                       <Button

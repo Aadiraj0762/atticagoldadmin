@@ -254,6 +254,12 @@ function CreateSale(props) {
                       message: 'Please select bank',
                       severity: 'info',
                     });
+                  } else if (values.saleType === 'pledged' && !selectedReleaseId) {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please select release',
+                      severity: 'info',
+                    });
                   } else {
                     setStep(4);
                   }
