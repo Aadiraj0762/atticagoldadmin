@@ -30,6 +30,7 @@ import Customer from './customer';
 import Address from './address';
 import Bank from './bank';
 import Release from './release';
+import Ornament from './ornament';
 
 const style = {
   position: 'absolute',
@@ -46,9 +47,7 @@ const style = {
 };
 
 function CreateSale(props) {
-  const [ornamentModal, setOrnamentModal] = useState(false);
-  const [releaseModal, setReleaseModal] = useState(false);
-  const [bankModal, setBankModal] = useState(false);
+  const [ornaments, setOrnaments] = useState([]);
   const [step, setStep] = useState(1);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedBankId, setSelectedBankId] = useState(null);
@@ -59,8 +58,10 @@ function CreateSale(props) {
     saleType: Yup.string().required('Customer id is required'),
     dop: Yup.string().required('DOP is required'),
     paymentType: Yup.string().required('Payment type is required'),
+    cashAmount: Yup.string().required('Cash amount is required'),
+    bankAmount: Yup.string().required('Bank amount is required'),
     margin: Yup.string().required('Margin is required'),
-    status: Yup.string().required('DOB is required'),
+    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
@@ -216,8 +217,8 @@ function CreateSale(props) {
                   onBlur={handleBlur}
                   onChange={handleChange}
                 >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="deactive">Deactive</MenuItem>
+                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="success">Success</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -271,161 +272,8 @@ function CreateSale(props) {
           </Grid>
         </Card>
 
-        <Card sx={{ display: step === 4 ? 'block' : 'none', p: 4, my: 4 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
-            <Typography variant="h4" gutterBottom>
-              Ornaments
-            </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={() => setOrnamentModal(true)}
-            >
-              New Ornament
-            </Button>
-          </Stack>
-          <Box sx={{ height: 400, width: '100%' }}>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <TableHead>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Phone</TableCell>
-                  <TableCell align="left">Gender</TableCell>
-                  <TableCell align="left">Action</TableCell>
-                </TableHead>
-                <TableBody>
-                  <TableRow hover key={1} tabIndex={-1}>
-                    <TableCell align="left">Arjun</TableCell>
-                    <TableCell align="left">arjun@gmail.com</TableCell>
-                    <TableCell align="left">2323234342</TableCell>
-                    <TableCell align="left">Male</TableCell>
-                    <TableCell align="left">
-                      <Button variant="contained" startIcon={<DeleteIcon />}>
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow hover key={1} tabIndex={-1}>
-                    <TableCell align="left">Ravi</TableCell>
-                    <TableCell align="left">ravi@gmail.com</TableCell>
-                    <TableCell align="left">87293862963</TableCell>
-                    <TableCell align="left">Male</TableCell>
-                    <TableCell align="left">
-                      <Button variant="contained" startIcon={<DeleteIcon />}>
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(3)}>
-                Prev
-              </LoadingButton>
-              <LoadingButton
-                size="large"
-                name="submit"
-                type="button"
-                variant="contained"
-                sx={{ ml: 3 }}
-                onClick={() => setStep(5)}
-              >
-                Submit
-              </LoadingButton>
-            </Grid>
-          </Grid>
-        </Card>
+        <Ornament step={step} setStep={setStep} ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
       </form>
-
-      <Modal
-        open={ornamentModal}
-        onClose={() => setOrnamentModal(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Ornaments
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                name="ornaments"
-                value={values.ornaments}
-                error={touched.ornaments && errors.ornaments && true}
-                label={touched.ornaments && errors.ornaments ? errors.ornaments : 'Ornaments'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="count"
-                value={values.count}
-                error={touched.count && errors.count && true}
-                label={touched.count && errors.count ? errors.count : 'Count'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="grossweight"
-                value={values.grossweight}
-                error={touched.grossweight && errors.grossweight && true}
-                label={touched.grossweight && errors.grossweight ? errors.grossweight : 'Gross Weight'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="stoneweight"
-                value={values.stoneweight}
-                error={touched.stoneweight && errors.stoneweight && true}
-                label={touched.stoneweight && errors.stoneweight ? errors.stoneweight : 'Stone Weight'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="purity"
-                value={values.purity}
-                error={touched.purity && errors.purity && true}
-                label={touched.purity && errors.purity ? errors.purity : 'Purity'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="billid"
-                value={values.billid}
-                error={touched.billid && errors.billid && true}
-                label={touched.billid && errors.billid ? errors.billid : 'billid'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <LoadingButton size="large" name="submit" type="button" variant="contained">
-                Add
-              </LoadingButton>
-            </Grid>
-          </Grid>
-        </Box>
-      </Modal>
     </>
   );
 }

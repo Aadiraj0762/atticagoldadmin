@@ -112,14 +112,6 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
     },
   });
 
-  const handleSelect = (id) => {
-    if (selectedUserId && selectedUserId === id) {
-      setSelectedUserId(null);
-    } else {
-      setSelectedUserId(id);
-    }
-  };
-
   const handleDelete = () => {
     deleteAddressById(selectedUserId, openId).then(() => {
       getAddressById(selectedUserId).then((data) => {
