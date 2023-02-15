@@ -210,9 +210,6 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
             </Table>
           </TableContainer>
         </Box>
-        <LoadingButton size="large" name="submit" type="button" variant="contained">
-          Prev
-        </LoadingButton>
         <LoadingButton
           size="large"
           name="submit"
@@ -227,7 +224,7 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
                 severity: 'info',
               });
             } else {
-              setStep(2);
+              setStep(step + 1);
             }
           }}
         >

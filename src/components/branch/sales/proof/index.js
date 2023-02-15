@@ -1,10 +1,6 @@
 import {
   TextField,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Card,
   Grid,
   Box,
@@ -17,7 +13,6 @@ import {
   TableContainer,
   TableHead,
   Modal,
-  Checkbox,
   Paper,
 } from '@mui/material';
 import { sentenceCase } from 'change-case';
@@ -25,8 +20,7 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
-import moment from 'moment';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Iconify from '../../../iconify';
 
 const style = {
@@ -44,87 +38,69 @@ const style = {
   border: 'none',
 };
 
-function Ornament({ setNotify, ornaments, setOrnaments }) {
+function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocument }) {
   const [openId, setOpenId] = useState(null);
-  const [ornamentModal, setOrnamentModal] = useState(false);
+  const [ornamentModal, setProofDocumentModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
 
   // Form validation
   const schema = Yup.object({
-    ornamentType: Yup.string().required('Ornament type is required'),
-    quantity: Yup.string().required('Quantity is required'),
-    grossWeight: Yup.string().required('Gross weight is required'),
-    stoneWeight: Yup.string().required('Stone weight is required'),
-    netWeight: Yup.string().required('Net weight is required'),
-    purity: Yup.string().required('Purity is required'),
-    netAmount: Yup.string().required('Net amount is required'),
+    documentType: Yup.string().required('Document type is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
-      ornamentType: '',
-      quantity: '',
-      grossWeight: '',
-      stoneWeight: '',
-      netWeight: '',
-      purity: '',
-      netAmount: '',
+      documentType: '',
+      documentNo: '',
+      documentFile: {},
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      setOrnaments([...ornaments, values]);
-      setOrnamentModal(false);
+      setProofDocument([...proofDocument, values]);
+      setProofDocumentModal(false);
       setNotify({
         open: true,
-        message: 'Ornament created',
+        message: 'Proof document uploaded',
         severity: 'success',
       });
     },
   });
 
   const handleDelete = () => {
-    setOrnaments(ornaments.filter((e, index) => index !== openId));
+    setProofDocument(proofDocument.filter((e, index) => index !== openId));
     handleCloseDeleteModal();
   };
 
   return (
     <>
-      <Grid item xs={12}>
+      <Card sx={{ display: step === 4 ? 'block' : 'none', p: 4, my: 4 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
           <Typography variant="h4" gutterBottom>
-            Ornament Details
+            Proof Documents
           </Typography>
           <Button
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={() => setOrnamentModal(true)}
+            onClick={() => setProofDocumentModal(true)}
           >
-            New Ornament
+            Upload document
           </Button>
         </Stack>
         <Box sx={{ height: 200, width: '100%' }}>
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left">Ornament Type</TableCell>
-                <TableCell align="left">Purity</TableCell>
-                <TableCell align="left">Quantity</TableCell>
-                <TableCell align="left">Net amount</TableCell>
-                <TableCell align="left">Net weight</TableCell>
-                <TableCell align="left">Gross weight</TableCell>
+                <TableCell align="left">Document Type</TableCell>
+                <TableCell align="left">Document No</TableCell>
                 <TableCell align="left">Action</TableCell>
               </TableHead>
               <TableBody>
-                {ornaments?.map((e, index) => (
+                {proofDocument?.map((e, index) => (
                   <TableRow hover key={index} tabIndex={-1}>
-                    <TableCell align="left">{e.ornamentType}</TableCell>
-                    <TableCell align="left">{e.purity}</TableCell>
-                    <TableCell align="left">{e.quantity}</TableCell>
-                    <TableCell align="left">{sentenceCase(e.netAmount)}</TableCell>
-                    <TableCell align="left">{e.netWeight}</TableCell>
-                    <TableCell align="left">{e.grossWeight}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.documentType)}</TableCell>
+                    <TableCell align="left">{e.documentNo}</TableCell>
                     <TableCell align="left">
                       <Button
                         variant="contained"
@@ -139,7 +115,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                     </TableCell>
                   </TableRow>
                 ))}
-                {ornaments.length === 0 && (
+                {proofDocument.length === 0 && (
                   <TableRow>
                     <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
                       <Paper
@@ -147,7 +123,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                           textAlign: 'center',
                         }}
                       >
-                        <Typography paragraph>No ornaments in table</Typography>
+                        <Typography paragraph>No proof document in table</Typography>
                       </Paper>
                     </TableCell>
                   </TableRow>
@@ -156,31 +132,55 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
             </Table>
           </TableContainer>
         </Box>
-      </Grid>
+        <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(step - 1)}>
+          Prev
+        </LoadingButton>
+        <LoadingButton
+          size="large"
+          name="submit"
+          type="button"
+          variant="contained"
+          sx={{ ml: 2 }}
+          onClick={() => {
+            if (proofDocument.length === 0) {
+              setNotify({
+                open: true,
+                message: 'Please upload proof document',
+                severity: 'info',
+              });
+            } else {
+              setStep(step + 1);
+            }
+          }}
+        >
+          Next
+        </LoadingButton>
+      </Card>
 
       <Modal
         open={ornamentModal}
-        onClose={() => setOrnamentModal(false)}
+        onClose={() => setProofDocumentModal(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Ornaments
+            Proof Document
           </Typography>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit(e);
             }}
+            encType="multipart/form-data"
           >
             <Grid container spacing={3}>
               <Grid item xs={4}>
                 <TextField
-                  name="ornamentType"
-                  value={values.ornamentType}
-                  error={touched.ornamentType && errors.ornamentType && true}
-                  label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Ornament type'}
+                  name="documentType"
+                  value={values.documentType}
+                  error={touched.documentType && errors.documentType && true}
+                  label={touched.documentType && errors.documentType ? errors.documentType : 'Document type'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -188,10 +188,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               </Grid>
               <Grid item xs={4}>
                 <TextField
-                  name="quantity"
-                  value={values.quantity}
-                  error={touched.quantity && errors.quantity && true}
-                  label={touched.quantity && errors.quantity ? errors.quantity : 'Quantity'}
+                  name="documentNo"
+                  value={values.documentNo}
+                  error={touched.documentNo && errors.documentNo && true}
+                  label={touched.documentNo && errors.documentNo ? errors.documentNo : 'Document No'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -199,57 +199,14 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               </Grid>
               <Grid item xs={4}>
                 <TextField
-                  name="grossWeight"
-                  value={values.grossWeight}
-                  error={touched.grossWeight && errors.grossWeight && true}
-                  label={touched.grossWeight && errors.grossWeight ? errors.grossWeight : 'Gross Weight'}
+                  name="documentFile"
+                  type={'file'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  name="stoneWeight"
-                  value={values.stoneWeight}
-                  error={touched.stoneWeight && errors.stoneWeight && true}
-                  label={touched.stoneWeight && errors.stoneWeight ? errors.stoneWeight : 'Stone Weight'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  name="netWeight"
-                  value={values.netWeight}
-                  error={touched.netWeight && errors.netWeight && true}
-                  label={touched.netWeight && errors.netWeight ? errors.netWeight : 'Net Weight'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  name="purity"
-                  value={values.purity}
-                  error={touched.purity && errors.purity && true}
-                  label={touched.purity && errors.purity ? errors.purity : 'Purity'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  name="netAmount"
-                  value={values.netAmount}
-                  error={touched.netAmount && errors.netAmount && true}
-                  label={touched.netAmount && errors.netAmount ? errors.netAmount : 'Net Amount'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, documentFile: e.target.files[0] });
+                  }}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
@@ -289,4 +246,4 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
   );
 }
 
-export default Ornament;
+export default ProofDocument;

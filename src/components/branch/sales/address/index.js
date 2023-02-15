@@ -184,7 +184,7 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
             </Table>
           </TableContainer>
         </Box>
-        <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(1)}>
+        <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(step - 1)}>
           Prev
         </LoadingButton>
         <LoadingButton
@@ -201,7 +201,7 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
                 severity: 'info',
               });
             } else {
-              setStep(3);
+              setStep(step + 1);
             }
           }}
         >

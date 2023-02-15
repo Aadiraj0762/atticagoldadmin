@@ -31,6 +31,7 @@ import Address from './address';
 import Bank from './bank';
 import Release from './release';
 import Ornament from './ornament';
+import ProofDocument from './proof';
 
 const style = {
   position: 'absolute',
@@ -48,10 +49,12 @@ const style = {
 
 function CreateSale(props) {
   const [ornaments, setOrnaments] = useState([]);
+  const [proofDocument, setProofDocument] = useState([]);
   const [step, setStep] = useState(1);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedBankId, setSelectedBankId] = useState(null);
   const [selectedReleaseId, setSelectedReleaseId] = useState(null);
+  const payload = {};
 
   // Form validation
   const schema = Yup.object({
@@ -119,6 +122,7 @@ function CreateSale(props) {
           handleSubmit(e);
         }}
         autoComplete="off"
+        encType="multipart/form-data"
       >
         <Card sx={{ display: step === 3 ? 'block' : 'none', p: 4, my: 4 }}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
@@ -222,6 +226,7 @@ function CreateSale(props) {
                 </Select>
               </FormControl>
             </Grid>
+            <Ornament ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
             {values.paymentType === 'bank' && (
               <Bank
                 selectedUserId={selectedUserId}
@@ -239,7 +244,13 @@ function CreateSale(props) {
               />
             )}
             <Grid item xs={12}>
-              <LoadingButton size="large" name="submit" type="button" variant="contained" onClick={() => setStep(2)}>
+              <LoadingButton
+                size="large"
+                name="submit"
+                type="button"
+                variant="contained"
+                onClick={() => setStep(step - 1)}
+              >
                 Prev
               </LoadingButton>
               <LoadingButton
@@ -261,8 +272,14 @@ function CreateSale(props) {
                       message: 'Please select release',
                       severity: 'info',
                     });
+                  } else if (ornaments.length === 0) {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please add ornaments',
+                      severity: 'info',
+                    });
                   } else {
-                    setStep(4);
+                    setStep(step + 1);
                   }
                 }}
               >
@@ -272,7 +289,47 @@ function CreateSale(props) {
           </Grid>
         </Card>
 
-        <Ornament step={step} setStep={setStep} ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
+        <ProofDocument
+          step={step}
+          setStep={setStep}
+          proofDocument={proofDocument}
+          setProofDocument={setProofDocument}
+          {...props}
+        />
+
+        <Card sx={{ display: step === 5 ? 'block' : 'none', p: 4, my: 4 }}>
+          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+            Billing Summary
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              Billing Summary
+            </Grid>
+            <Grid item xs={4}>
+              <LoadingButton
+                size="large"
+                name="submit"
+                type="button"
+                variant="contained"
+                onClick={() => setStep(step - 1)}
+              >
+                Prev
+              </LoadingButton>
+              <LoadingButton
+                size="large"
+                name="submit"
+                type="button"
+                variant="contained"
+                sx={{ ml: 2 }}
+                onClick={() => {
+                  console.log(selectedUserId, ornaments, selectedReleaseId, selectedBankId, proofDocument);
+                }}
+              >
+                Submit
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Card>
       </form>
     </>
   );
