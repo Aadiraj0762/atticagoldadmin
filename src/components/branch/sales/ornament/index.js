@@ -108,13 +108,15 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left">Ornament Type</TableCell>
-                <TableCell align="left">Purity</TableCell>
-                <TableCell align="left">Quantity</TableCell>
-                <TableCell align="left">Net amount</TableCell>
-                <TableCell align="left">Net weight</TableCell>
-                <TableCell align="left">Gross weight</TableCell>
-                <TableCell align="left">Action</TableCell>
+                <TableRow>
+                  <TableCell align="left">Ornament Type</TableCell>
+                  <TableCell align="left">Purity</TableCell>
+                  <TableCell align="left">Quantity</TableCell>
+                  <TableCell align="left">Net amount</TableCell>
+                  <TableCell align="left">Net weight</TableCell>
+                  <TableCell align="left">Gross weight</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {ornaments?.map((e, index) => (
@@ -176,15 +178,21 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
           >
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <TextField
-                  name="ornamentType"
-                  value={values.ornamentType}
-                  error={touched.ornamentType && errors.ornamentType && true}
-                  label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Ornament type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.ornamentType && errors.ornamentType && true}>
+                  <InputLabel id="select-ornamentType">Select ornament type</InputLabel>
+                  <Select
+                    labelId="select-ornamentType"
+                    id="select"
+                    label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Select ornament type'}
+                    name="ornamentType"
+                    value={values.ornamentType}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="gold">Gold</MenuItem>
+                    <MenuItem value="silver">Silver</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={4}>
                 <TextField

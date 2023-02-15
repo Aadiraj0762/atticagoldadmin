@@ -37,6 +37,11 @@ const navConfig = [
     icon: <AccessTimeIcon sx={{ width: 1, height: 1 }} />,
   },
   {
+    title: 'Customer',
+    path: '/branch/customer',
+    icon: icon('ic_user'),
+  },
+  {
     title: 'Sale',
     path: '/branch/sale',
     icon: <SellIcon sx={{ width: 1, height: 1 }} />,

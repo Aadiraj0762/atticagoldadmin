@@ -162,14 +162,16 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left" />
-                <TableCell align="left">Pledge Id</TableCell>
-                <TableCell align="left">Pledged In</TableCell>
-                <TableCell align="left">Weight</TableCell>
-                <TableCell align="left">Pledge amount</TableCell>
-                <TableCell align="left">Pledged date</TableCell>
-                <TableCell align="left">Payable amount</TableCell>
-                <TableCell align="left">Action</TableCell>
+                <TableRow>
+                  <TableCell align="left" />
+                  <TableCell align="left">Pledge Id</TableCell>
+                  <TableCell align="left">Pledged In</TableCell>
+                  <TableCell align="left">Weight</TableCell>
+                  <TableCell align="left">Pledge amount</TableCell>
+                  <TableCell align="left">Pledged date</TableCell>
+                  <TableCell align="left">Payable amount</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {data?.map((e) => (
@@ -181,7 +183,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
                     <TableCell align="left">{sentenceCase(e.pledgedIn)}</TableCell>
                     <TableCell align="left">{e.weight}</TableCell>
                     <TableCell align="left">{e.pledgeAmount}</TableCell>
-                    <TableCell align="left">{moment(e.pledgedDate).format("YYYY-MM-DD")}</TableCell>
+                    <TableCell align="left">{moment(e.pledgedDate).format('YYYY-MM-DD')}</TableCell>
                     <TableCell align="left">{e.payableAmount}</TableCell>
                     <TableCell align="left">
                       <Button

@@ -140,11 +140,13 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left">Address</TableCell>
-                <TableCell align="left">Landmark</TableCell>
-                <TableCell align="left">Pincode</TableCell>
-                <TableCell align="left">Label</TableCell>
-                <TableCell align="left">Action</TableCell>
+                <TableRow>
+                  <TableCell align="left">Address</TableCell>
+                  <TableCell align="left">Landmark</TableCell>
+                  <TableCell align="left">Pincode</TableCell>
+                  <TableCell align="left">Label</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {data?.map((e) => (

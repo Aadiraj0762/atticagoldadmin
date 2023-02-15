@@ -152,13 +152,15 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left" />
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Phone</TableCell>
-                <TableCell align="left">Gender</TableCell>
-                <TableCell align="left">Status</TableCell>
-                <TableCell align="left">Action</TableCell>
+                <TableRow>
+                  <TableCell align="left" />
+                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Phone</TableCell>
+                  <TableCell align="left">Gender</TableCell>
+                  <TableCell align="left">Status</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {data.map((e) => (

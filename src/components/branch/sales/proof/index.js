@@ -2,6 +2,10 @@ import {
   TextField,
   Typography,
   Card,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Grid,
   Box,
   Button,
@@ -92,9 +96,11 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left">Document Type</TableCell>
-                <TableCell align="left">Document No</TableCell>
-                <TableCell align="left">Action</TableCell>
+                <TableRow>
+                  <TableCell align="left">Document Type</TableCell>
+                  <TableCell align="left">Document No</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {proofDocument?.map((e, index) => (
@@ -176,15 +182,20 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
           >
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <TextField
-                  name="documentType"
-                  value={values.documentType}
-                  error={touched.documentType && errors.documentType && true}
-                  label={touched.documentType && errors.documentType ? errors.documentType : 'Document type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.documentType && errors.documentType && true}>
+                  <InputLabel id="select-documentType">Select document type</InputLabel>
+                  <Select
+                    labelId="select-documentType"
+                    id="select"
+                    label={touched.documentType && errors.documentType ? errors.documentType : 'Select document type'}
+                    name="documentType"
+                    value={values.documentType}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="bill">bill</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={4}>
                 <TextField

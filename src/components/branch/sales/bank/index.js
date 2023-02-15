@@ -136,13 +136,15 @@ function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) 
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
-                <TableCell align="left" />
-                <TableCell align="left">Bank</TableCell>
-                <TableCell align="left">Account No</TableCell>
-                <TableCell align="left">Account Holder Name</TableCell>
-                <TableCell align="left">Branch</TableCell>
-                <TableCell align="left">IFSC Code</TableCell>
-                <TableCell align="left">Action</TableCell>
+                <TableRow>
+                  <TableCell align="left" />
+                  <TableCell align="left">Bank</TableCell>
+                  <TableCell align="left">Account No</TableCell>
+                  <TableCell align="left">Account Holder Name</TableCell>
+                  <TableCell align="left">Branch</TableCell>
+                  <TableCell align="left">IFSC Code</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {data?.map((e) => (

@@ -27,23 +27,21 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateLeave, UpdateLeave } from '../../components/branch/leave';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
-import { LeaveListHead, LeaveListToolbar } from '../../sections/@dashboard/leave';
+import { CustomerListHead, CustomerListToolbar } from '../../sections/@dashboard/customer';
 // mock
-import { deleteLeaveById, getLeave } from '../../apis/branch/leave';
+import { deleteCustomerById, getCustomer } from '../../apis/branch/customer';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
-  { id: 'employeeId', label: 'Employee Id', alignRight: false },
-  { id: 'leaveType', label: 'Leave Type', alignRight: false },
-  { id: 'dates', label: 'Dates', alignRight: false },
-  { id: 'note', label: 'Note', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phoneNumber', label: 'Phone', alignRight: false },
+  { id: 'gender', label: 'Gender', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -80,7 +78,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Leave() {
+export default function Customer() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
@@ -89,8 +87,6 @@ export default function Leave() {
   const [orderBy, setOrderBy] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [toggleContainer, setToggleContainer] = useState(false);
-  const [toggleContainerType, setToggleContainerType] = useState('');
   const [data, setData] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState('single');
@@ -104,10 +100,10 @@ export default function Leave() {
   });
 
   useEffect(() => {
-    getLeave().then((data) => {
+    getCustomer().then((data) => {
       setData(data.data);
     });
-  }, [toggleContainer]);
+  }, []);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -166,8 +162,8 @@ export default function Leave() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteLeaveById(openId).then(() => {
-      getLeave().then((data) => {
+    deleteCustomerById(openId).then(() => {
+      getCustomer().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -176,15 +172,15 @@ export default function Leave() {
   };
 
   const handleDeleteSelected = () => {
-    deleteLeaveById(selected).then(() => {
-      getLeave().then((data) => {
+    deleteCustomerById(selected).then(() => {
+      getCustomer().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Leave deleted',
+        message: 'Customer deleted',
         severity: 'success',
       });
     });
@@ -211,7 +207,7 @@ export default function Leave() {
   return (
     <>
       <Helmet>
-        <title> Leave | Minimal UI </title>
+        <title> Customer | Minimal UI </title>
       </Helmet>
 
       <Snackbar
@@ -236,25 +232,15 @@ export default function Leave() {
         </Alert>
       </Snackbar>
 
-      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
+      <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Leave
+            Customer
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-              setToggleContainerType('create');
-            }}
-          >
-            New Leave
-          </Button>
         </Stack>
 
         <Card>
-          <LeaveListToolbar
+          <CustomerListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -267,7 +253,7 @@ export default function Leave() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <LeaveListHead
+                <CustomerListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -278,7 +264,7 @@ export default function Leave() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branchId, employeeId, leaveType, dates, note, status, createdAt } = row;
+                    const { _id, name, email, phoneNumber, gender, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -286,17 +272,14 @@ export default function Leave() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
-                        <TableCell align="left">{leaveType}</TableCell>
-                        <TableCell align="left">
-                          {dates.map((date) => moment(date).format('Y/M/D')).join(', ')}
-                        </TableCell>
-                        <TableCell align="left">{note}</TableCell>
+                        <TableCell align="left">{sentenceCase(name)}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
+                        <TableCell align="left">{phoneNumber}</TableCell>
+                        <TableCell align="left">{sentenceCase(gender)}</TableCell>
                         <TableCell align="left">
                           <Label
                             color={
-                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
+                              (status === 'active' && 'success') || (status === 'deactive' && 'error') || 'warning'
                             }
                           >
                             {sentenceCase(status)}
@@ -377,50 +360,6 @@ export default function Leave() {
         </Card>
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Create Leave
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <CreateLeave setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
-      </Container>
-
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'update' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Update Leave
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <UpdateLeave setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
-      </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -439,17 +378,6 @@ export default function Leave() {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainerType('update');
-            setToggleContainer(!toggleContainer);
-          }}
-        >
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {

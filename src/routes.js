@@ -36,6 +36,7 @@ import BranchExpense from './pages/branch/Expense';
 import BranchLeave from './pages/branch/Leave';
 import BranchAttendance from './pages/branch/Attendance';
 import BranchSale from './pages/branch/Sale';
+import BranchCustomer from './pages/branch/Customer';
 
 // ----------------------------------------------------------------------
 
@@ -122,6 +123,7 @@ export default function Router() {
         { path: 'expense', element: <BranchExpense /> },
         { path: 'leave', element: <BranchLeave /> },
         { path: 'attendance', element: <BranchAttendance /> },
+        { path: 'customer', element: <BranchCustomer /> },
         { path: 'sale', element: <BranchSale /> },
       ],
     },
