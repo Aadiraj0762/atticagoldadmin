@@ -193,7 +193,7 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
                     onBlur={handleBlur}
                     onChange={handleChange}
                   >
-                    <MenuItem value="bill">bill</MenuItem>
+                    <MenuItem value="bill">Bill</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

@@ -43,7 +43,7 @@ const style = {
   overflow: 'auto',
 };
 
-function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) {
+function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [bankModal, setBankModal] = useState(false);
@@ -52,12 +52,12 @@ function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) 
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
 
   useEffect(() => {
-    if (selectedUserId) {
-      getBankById(selectedUserId).then((data) => {
+    if (selectedUser) {
+      getBankById(selectedUser._id).then((data) => {
         setData(data.data);
       });
     }
-  }, [selectedUserId]);
+  }, [selectedUser]);
 
   // Form validation
   const schema = Yup.object({
@@ -82,7 +82,7 @@ function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) 
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createBank({ customerId: selectedUserId, ...values }).then((data) => {
+      createBank({ customerId: selectedUser._id, ...values }).then((data) => {
         if (data.status === false) {
           setNotify({
             open: true,
@@ -90,7 +90,7 @@ function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) 
             severity: 'error',
           });
         } else {
-          getBankById(selectedUserId).then((data) => {
+          getBankById(selectedUser._id).then((data) => {
             setData(data.data);
           });
           setBankModal(false);
@@ -104,17 +104,17 @@ function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) 
     },
   });
 
-  const handleSelect = (id) => {
-    if (selectedBankId && selectedBankId === id) {
-      setSelectedBankId(null);
+  const handleSelect = (bank) => {
+    if (selectedBank && selectedBank._id === bank._id) {
+      setSelectedBank(null);
     } else {
-      setSelectedBankId(id);
+      setSelectedBank(bank);
     }
   };
 
   const handleDelete = () => {
-    deleteBankById(selectedUserId, openId).then(() => {
-      getBankById(selectedUserId).then((data) => {
+    deleteBankById(selectedUser._id, openId).then(() => {
+      getBankById(selectedUser._id).then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -150,11 +150,11 @@ function Bank({ setNotify, selectedUserId, selectedBankId, setSelectedBankId }) 
                 {data?.map((e) => (
                   <TableRow hover key={e._id} tabIndex={-1}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={selectedBankId === e._id} onChange={() => handleSelect(e._id)} />
+                      <Checkbox checked={selectedBank?._id === e._id} onChange={() => handleSelect(e)} />
                     </TableCell>
                     <TableCell align="left">{sentenceCase(e.bankName)}</TableCell>
                     <TableCell align="left">{e.accountNo}</TableCell>
-                    <TableCell align="left">{e.accountHolderName}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.accountHolderName)}</TableCell>
                     <TableCell align="left">{sentenceCase(e.branch)}</TableCell>
                     <TableCell align="left">{e.ifscCode}</TableCell>
                     <TableCell align="left">

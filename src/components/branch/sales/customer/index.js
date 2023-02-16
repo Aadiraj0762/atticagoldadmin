@@ -44,7 +44,7 @@ const style = {
   overflow: 'auto',
 };
 
-function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId }) {
+function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [customerModal, setCustomerModal] = useState(false);
@@ -116,11 +116,11 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
     },
   });
 
-  const handleSelect = (id) => {
-    if (selectedUserId && selectedUserId === id) {
-      setSelectedUserId(null);
+  const handleSelect = (user) => {
+    if (selectedUser && selectedUser._id === user._id) {
+      setSelectedUser(null);
     } else {
-      setSelectedUserId(id);
+      setSelectedUser(user);
     }
   };
 
@@ -166,9 +166,9 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
                 {data.map((e) => (
                   <TableRow hover key={e._id} tabIndex={-1}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={selectedUserId === e._id} onChange={() => handleSelect(e._id)} />
+                      <Checkbox checked={selectedUser?._id === e._id} onChange={() => handleSelect(e)} />
                     </TableCell>
-                    <TableCell align="left">{e.name}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.name)}</TableCell>
                     <TableCell align="left">{e.email}</TableCell>
                     <TableCell align="left">{e.phoneNumber}</TableCell>
                     <TableCell align="left">{sentenceCase(e.gender)}</TableCell>
@@ -219,7 +219,7 @@ function Customer({ step, setStep, setNotify, selectedUserId, setSelectedUserId 
           variant="contained"
           sx={{ ml: 2 }}
           onClick={() => {
-            if (!selectedUserId) {
+            if (!selectedUser) {
               setNotify({
                 open: true,
                 message: 'Please select customer',

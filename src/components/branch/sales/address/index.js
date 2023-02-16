@@ -43,7 +43,7 @@ const style = {
   overflow: 'auto',
 };
 
-function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }) {
+function Address({ step, setStep, setNotify, selectedUser }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [addressModal, setAddressModal] = useState(false);
@@ -52,12 +52,12 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
 
   useEffect(() => {
-    if (selectedUserId) {
-      getAddressById(selectedUserId).then((data) => {
+    if (selectedUser) {
+      getAddressById(selectedUser._id).then((data) => {
         setData(data.data);
       });
     }
-  }, [selectedUserId]);
+  }, [selectedUser]);
 
   // Form validation
   const schema = Yup.object({
@@ -90,7 +90,7 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createAddress({ customerId: selectedUserId, ...values }).then((data) => {
+      createAddress({ customerId: selectedUser._id, ...values }).then((data) => {
         if (data.status === false) {
           setNotify({
             open: true,
@@ -98,7 +98,7 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
             severity: 'error',
           });
         } else {
-          getAddressById(selectedUserId).then((data) => {
+          getAddressById(selectedUser._id).then((data) => {
             setData(data.data);
           });
           setAddressModal(false);
@@ -113,8 +113,8 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
   });
 
   const handleDelete = () => {
-    deleteAddressById(selectedUserId, openId).then(() => {
-      getAddressById(selectedUserId).then((data) => {
+    deleteAddressById(selectedUser._id, openId).then(() => {
+      getAddressById(selectedUser._id).then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -151,8 +151,8 @@ function Address({ step, setStep, setNotify, selectedUserId, setSelectedUserId }
               <TableBody>
                 {data?.map((e) => (
                   <TableRow hover key={e._id} tabIndex={-1}>
-                    <TableCell align="left">{e.address}</TableCell>
-                    <TableCell align="left">{e.landmark}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.address)}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.landmark)}</TableCell>
                     <TableCell align="left">{e.pincode}</TableCell>
                     <TableCell align="left">{sentenceCase(e.label)}</TableCell>
                     <TableCell align="left">

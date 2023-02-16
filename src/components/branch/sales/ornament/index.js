@@ -118,7 +118,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <TableBody>
                 {ornaments?.map((e, index) => (
                   <TableRow hover key={index} tabIndex={-1}>
-                    <TableCell align="left">{e.ornamentType}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
                     <TableCell align="left">{e.purity}</TableCell>
                     <TableCell align="left">{e.quantity}</TableCell>
                     <TableCell align="left">{sentenceCase(e.netAmount)}</TableCell>

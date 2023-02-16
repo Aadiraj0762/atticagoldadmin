@@ -7,24 +7,22 @@ import {
   MenuItem,
   Card,
   Grid,
-  Box,
-  Button,
-  Stack,
   Table,
   TableBody,
   TableRow,
   TableCell,
   TableContainer,
   TableHead,
-  Modal,
-  Checkbox,
+  Paper,
 } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { sentenceCase } from 'change-case';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
-import Iconify from '../../iconify';
 import { createSales } from '../../../apis/branch/sales';
 import Customer from './customer';
 import Address from './address';
@@ -51,9 +49,9 @@ function CreateSale(props) {
   const [ornaments, setOrnaments] = useState([]);
   const [proofDocument, setProofDocument] = useState([]);
   const [step, setStep] = useState(1);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [selectedBankId, setSelectedBankId] = useState(null);
-  const [selectedReleaseId, setSelectedReleaseId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedRelease, setSelectedRelease] = useState(null);
   const payload = {};
 
   // Form validation
@@ -103,18 +101,12 @@ function CreateSale(props) {
       <Customer
         step={step}
         setStep={setStep}
-        selectedUserId={selectedUserId}
-        setSelectedUserId={setSelectedUserId}
+        selectedUser={selectedUser}
+        setSelectedUser={setSelectedUser}
         {...props}
       />
 
-      <Address
-        step={step}
-        setStep={setStep}
-        selectedUserId={selectedUserId}
-        setSelectedUserId={setSelectedUserId}
-        {...props}
-      />
+      <Address step={step} setStep={setStep} selectedUser={selectedUser} {...props} />
 
       <form
         onSubmit={(e) => {
@@ -147,15 +139,18 @@ function CreateSale(props) {
               </FormControl>
             </Grid>
             <Grid item xs={4}>
-              <TextField
-                name="dop"
-                value={values.dop}
-                error={touched.dop && errors.dop && true}
-                label={touched.dop && errors.dop ? errors.dop : 'DOP'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DesktopDatePicker
+                  name="dop"
+                  value={values.dop}
+                  error={touched.dop && errors.dop && true}
+                  label={touched.dop && errors.dop ? errors.dop : 'DOP'}
+                  inputFormat="MM/DD/YYYY"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={4}>
               <FormControl fullWidth error={touched.paymentType && errors.paymentType && true}>
@@ -229,17 +224,17 @@ function CreateSale(props) {
             <Ornament ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
             {values.paymentType === 'bank' && (
               <Bank
-                selectedUserId={selectedUserId}
-                selectedBankId={selectedBankId}
-                setSelectedBankId={setSelectedBankId}
+                selectedUser={selectedUser}
+                selectedBank={selectedBank}
+                setSelectedBank={setSelectedBank}
                 {...props}
               />
             )}
             {values.saleType === 'pledged' && (
               <Release
-                selectedUserId={selectedUserId}
-                selectedReleaseId={selectedReleaseId}
-                setSelectedReleaseId={setSelectedReleaseId}
+                selectedUser={selectedUser}
+                selectedRelease={selectedRelease}
+                setSelectedRelease={setSelectedRelease}
                 {...props}
               />
             )}
@@ -260,13 +255,13 @@ function CreateSale(props) {
                 variant="contained"
                 sx={{ ml: 3 }}
                 onClick={() => {
-                  if (values.paymentType === 'bank' && !selectedBankId) {
+                  if (values.paymentType === 'bank' && !selectedBank) {
                     props.setNotify({
                       open: true,
                       message: 'Please select bank',
                       severity: 'info',
                     });
-                  } else if (values.saleType === 'pledged' && !selectedReleaseId) {
+                  } else if (values.saleType === 'pledged' && !selectedRelease) {
                     props.setNotify({
                       open: true,
                       message: 'Please select release',
@@ -303,9 +298,226 @@ function CreateSale(props) {
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              Billing Summary
+              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                Customer Detail:
+              </Typography>
             </Grid>
             <Grid item xs={4}>
+              <TextField
+                name="name"
+                value={selectedUser?.name}
+                label={'Customer Name'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="address"
+                value={selectedUser?.address[0]?.address}
+                label={'Customer Address'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="saleType"
+                value={sentenceCase(values.saleType)}
+                label={'Billing Type'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                Ornament Detail:
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left">Ornament Type</TableCell>
+                      <TableCell align="left">Purity</TableCell>
+                      <TableCell align="left">Quantity</TableCell>
+                      <TableCell align="left">Net amount</TableCell>
+                      <TableCell align="left">Net weight</TableCell>
+                      <TableCell align="left">Gross weight</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {ornaments?.map((e, index) => (
+                      <TableRow hover key={index} tabIndex={-1}>
+                        <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
+                        <TableCell align="left">{e.purity}</TableCell>
+                        <TableCell align="left">{e.quantity}</TableCell>
+                        <TableCell align="left">{sentenceCase(e.netAmount)}</TableCell>
+                        <TableCell align="left">{e.netWeight}</TableCell>
+                        <TableCell align="left">{e.grossWeight}</TableCell>
+                      </TableRow>
+                    ))}
+                    {ornaments.length === 0 && (
+                      <TableRow>
+                        <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
+                          <Paper
+                            sx={{
+                              textAlign: 'center',
+                            }}
+                          >
+                            <Typography paragraph>No ornaments in table</Typography>
+                          </Paper>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="grossWeight"
+                value={values.grossWeight}
+                label={'Total Gross Weight'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="stoneWeight"
+                value={values.stoneWeight}
+                label={'Total Stone Weight'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="netWeight"
+                value={values.netWeight}
+                label={'Total Net Weight'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="goldRate"
+                value={values.goldRate}
+                label={'Gold Rate'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="netAmount"
+                value={values.netAmount}
+                label={'Net Amount'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="releaseAmount"
+                value={values.releaseAmount}
+                label={'Release Amount'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="netPayable"
+                value={values.netPayable}
+                label={'Net Payable'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="paymentType"
+                value={sentenceCase(values.paymentType)}
+                label={'Payment Type'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            {values.paymentType === 'bank' && (
+              <>
+                <Grid item xs={4}>
+                  <TextField
+                    name="accountHolderName"
+                    value={sentenceCase(selectedBank?.accountHolderName)}
+                    label={'Account Holder Name'}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    name="accountNo"
+                    value={selectedBank?.accountNo}
+                    label={'Account No'}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    name="branch"
+                    value={selectedBank?.branch}
+                    label={'Branch'}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    name="ifscCode"
+                    value={selectedBank?.ifscCode}
+                    label={'IFSC Code'}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+              </>
+            )}
+            <Grid item xs={12}>
               <LoadingButton
                 size="large"
                 name="submit"
@@ -322,7 +534,7 @@ function CreateSale(props) {
                 variant="contained"
                 sx={{ ml: 2 }}
                 onClick={() => {
-                  console.log(selectedUserId, ornaments, selectedReleaseId, selectedBankId, proofDocument);
+                  console.log(selectedUser, ornaments, selectedRelease, selectedBank, proofDocument);
                 }}
               >
                 Submit

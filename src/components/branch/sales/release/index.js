@@ -46,7 +46,7 @@ const style = {
   border: 'none',
 };
 
-function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedReleaseId }) {
+function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [releaseModal, setReleaseModal] = useState(false);
@@ -56,12 +56,12 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
 
   useEffect(() => {
-    if (selectedUserId) {
-      getReleaseByCustomerId(selectedUserId).then((data) => {
+    if (selectedUser) {
+      getReleaseByCustomerId(selectedUser._id).then((data) => {
         setData(data.data);
       });
     }
-  }, [selectedUserId]);
+  }, [selectedUser]);
 
   // Form validation
   const schema = Yup.object({
@@ -84,7 +84,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
     initialValues: {
-      customerId: selectedUserId,
+      customerId: selectedUser?._id,
       weight: '',
       pledgeAmount: '',
       payableAmount: '',
@@ -104,7 +104,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createRelease({ customerId: selectedUserId, ...values }).then((data) => {
+      createRelease({ customerId: selectedUser._id, ...values }).then((data) => {
         if (data.status === false) {
           setNotify({
             open: true,
@@ -112,7 +112,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
             severity: 'error',
           });
         } else {
-          getReleaseByCustomerId(selectedUserId).then((data) => {
+          getReleaseByCustomerId(selectedUser._id).then((data) => {
             setData(data.data);
           });
           setReleaseModal(false);
@@ -126,17 +126,17 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
     },
   });
 
-  const handleSelect = (id) => {
-    if (selectedReleaseId && selectedReleaseId === id) {
-      setSelectedReleaseId(null);
+  const handleSelect = (release) => {
+    if (selectedRelease && selectedRelease._id === release._id) {
+      setSelectedRelease(null);
     } else {
-      setSelectedReleaseId(id);
+      setSelectedRelease(release);
     }
   };
 
   const handleDelete = () => {
     deleteReleaseById(openId).then(() => {
-      getReleaseByCustomerId(selectedUserId).then((data) => {
+      getReleaseByCustomerId(selectedUser._id).then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -177,7 +177,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
                 {data?.map((e) => (
                   <TableRow hover key={e._id} tabIndex={-1}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={selectedReleaseId === e._id} onChange={() => handleSelect(e._id)} />
+                      <Checkbox checked={selectedRelease?._id === e._id} onChange={() => handleSelect(e)} />
                     </TableCell>
                     <TableCell align="left">{e.pledgeId}</TableCell>
                     <TableCell align="left">{sentenceCase(e.pledgedIn)}</TableCell>
@@ -425,7 +425,7 @@ function Release({ setNotify, selectedUserId, selectedReleaseId, setSelectedRele
               </Grid>
               {values.paymentType === 'bank' && (
                 <Bank
-                  selectedUserId={selectedUserId}
+                  selectedUser={selectedUser}
                   selectedBankId={selectedBankId}
                   setSelectedBankId={setSelectedBankId}
                   setNotify={setNotify}
