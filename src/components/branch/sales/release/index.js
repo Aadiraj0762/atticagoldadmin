@@ -21,6 +21,10 @@ import {
   Paper,
 } from '@mui/material';
 import { sentenceCase } from 'change-case';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import moment from 'moment';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -90,12 +94,12 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
       payableAmount: '',
       paymentType: '',
       bankId: selectedBankId,
-      pledgedDate: '',
+      pledgedDate: moment(),
       pledgeId: '',
       pledgedIn: '',
       branch: '',
       releaseDocument: '',
-      releaseDate: '',
+      releaseDate: moment(),
       comments: '',
       documentType: '',
       documentNo: '',
@@ -166,7 +170,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   <TableCell align="left" />
                   <TableCell align="left">Pledge Id</TableCell>
                   <TableCell align="left">Pledged In</TableCell>
-                  <TableCell align="left">Weight</TableCell>
+                  <TableCell align="left">Weight (Grams)</TableCell>
                   <TableCell align="left">Pledge amount</TableCell>
                   <TableCell align="left">Pledged date</TableCell>
                   <TableCell align="left">Payable amount</TableCell>
@@ -247,9 +251,10 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
               <Grid item xs={4}>
                 <TextField
                   name="weight"
+                  type={'number'}
                   value={values.weight}
                   error={touched.weight && errors.weight && true}
-                  label={touched.weight && errors.weight ? errors.weight : 'Weight'}
+                  label={touched.weight && errors.weight ? errors.weight : 'Weight (Grams)'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -258,6 +263,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
               <Grid item xs={4}>
                 <TextField
                   name="pledgeAmount"
+                  type={'number'}
                   value={values.pledgeAmount}
                   error={touched.pledgeAmount && errors.pledgeAmount && true}
                   label={touched.pledgeAmount && errors.pledgeAmount ? errors.pledgeAmount : 'Pledge amount'}
@@ -269,6 +275,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
               <Grid item xs={4}>
                 <TextField
                   name="payableAmount"
+                  type={'number'}
                   value={values.payableAmount}
                   error={touched.payableAmount && errors.payableAmount && true}
                   label={touched.payableAmount && errors.payableAmount ? errors.payableAmount : 'Payable amount'}
@@ -295,15 +302,19 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  name="pledgedDate"
-                  value={values.pledgedDate}
-                  error={touched.pledgedDate && errors.pledgedDate && true}
-                  label={touched.pledgedDate && errors.pledgedDate ? errors.pledgedDate : 'Pledged date'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DesktopDatePicker
+                    name="pledgedDate"
+                    value={values.pledgedDate}
+                    error={touched.pledgedDate && errors.pledgedDate && true}
+                    label={touched.pledgedDate && errors.pledgedDate ? errors.pledgedDate : 'Pledged date'}
+                    inputFormat="MM/DD/YYYY"
+                    onChange={(e) => {
+                      setValues({ ...values, pledgedDate: e });
+                    }}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={4}>
                 <TextField
@@ -352,15 +363,19 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  name="releaseDate"
-                  value={values.releaseDate}
-                  error={touched.releaseDate && errors.releaseDate && true}
-                  label={touched.releaseDate && errors.releaseDate ? errors.releaseDate : 'Release date'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DesktopDatePicker
+                    name="releaseDate"
+                    value={values.releaseDate}
+                    error={touched.releaseDate && errors.releaseDate && true}
+                    label={touched.releaseDate && errors.releaseDate ? errors.releaseDate : 'Release date'}
+                    inputFormat="MM/DD/YYYY"
+                    onChange={(e) => {
+                      setValues({ ...values, releaseDate: e });
+                    }}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={4}>
                 <TextField

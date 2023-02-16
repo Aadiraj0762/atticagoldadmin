@@ -174,6 +174,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="cashAmount"
+                type={'number'}
                 value={values.cashAmount}
                 error={touched.cashAmount && errors.cashAmount && true}
                 label={touched.cashAmount && errors.cashAmount ? errors.cashAmount : 'Cash Amount'}
@@ -186,6 +187,7 @@ function CreateSale(props) {
               <Grid item xs={4}>
                 <TextField
                   name="bankAmount"
+                  type={'number'}
                   value={values.bankAmount}
                   error={touched.bankAmount && errors.bankAmount && true}
                   label={touched.bankAmount && errors.bankAmount ? errors.bankAmount : 'Bank Amount'}
@@ -198,6 +200,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="margin"
+                type={'number'}
                 value={values.margin}
                 error={touched.margin && errors.margin && true}
                 label={touched.margin && errors.margin ? errors.margin : 'Margin'}
