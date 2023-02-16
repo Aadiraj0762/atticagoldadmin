@@ -23,6 +23,7 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
+import moment from 'moment';
 import { createSales } from '../../../apis/branch/sales';
 import Customer from './customer';
 import Address from './address';
@@ -65,10 +66,10 @@ function CreateSale(props) {
     status: Yup.string().required('Status is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
       saleType: '',
-      dop: '',
+      dop: moment(),
       paymentType: '',
       cashAmount: '',
       bankAmount: '',
@@ -146,9 +147,10 @@ function CreateSale(props) {
                   error={touched.dop && errors.dop && true}
                   label={touched.dop && errors.dop ? errors.dop : 'DOP'}
                   inputFormat="MM/DD/YYYY"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(e) => {
+                    setValues({ ...values, dop: e });
+                  }}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
                 />
               </LocalizationProvider>
             </Grid>
