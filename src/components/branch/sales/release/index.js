@@ -29,7 +29,6 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
-import moment from 'moment';
 import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
 import { getReleaseByCustomerId, createRelease, deleteReleaseById } from '../../../../apis/branch/release';
@@ -86,7 +85,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     status: Yup.string().required('status is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
       customerId: selectedUser?._id,
       weight: '',
