@@ -109,9 +109,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   <TableCell align="left">Ornament Type</TableCell>
                   <TableCell align="left">Purity</TableCell>
                   <TableCell align="left">Quantity</TableCell>
-                  <TableCell align="left">Net amount</TableCell>
-                  <TableCell align="left">Net weight</TableCell>
-                  <TableCell align="left">Gross weight</TableCell>
+                  <TableCell align="left">Stone weight (Grams)</TableCell>
+                  <TableCell align="left">Net weight (Grams)</TableCell>
+                  <TableCell align="left">Gross weight (Grams)</TableCell>
+                  <TableCell align="left">Net amount (INR)</TableCell>
                   <TableCell align="left">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -121,9 +122,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                     <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
                     <TableCell align="left">{e.purity}</TableCell>
                     <TableCell align="left">{e.quantity}</TableCell>
-                    <TableCell align="left">{sentenceCase(e.netAmount)}</TableCell>
+                    <TableCell align="left">{e.stoneWeight}</TableCell>
                     <TableCell align="left">{e.netWeight}</TableCell>
                     <TableCell align="left">{e.grossWeight}</TableCell>
+                    <TableCell align="left">{e.netAmount}</TableCell>
                     <TableCell align="left">
                       <Button
                         variant="contained"
@@ -194,6 +196,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <Grid item xs={4}>
                 <TextField
                   name="quantity"
+                  type={'number'}
                   value={values.quantity}
                   error={touched.quantity && errors.quantity && true}
                   label={touched.quantity && errors.quantity ? errors.quantity : 'Quantity'}
@@ -205,9 +208,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <Grid item xs={4}>
                 <TextField
                   name="grossWeight"
+                  type={'number'}
                   value={values.grossWeight}
                   error={touched.grossWeight && errors.grossWeight && true}
-                  label={touched.grossWeight && errors.grossWeight ? errors.grossWeight : 'Gross Weight'}
+                  label={touched.grossWeight && errors.grossWeight ? errors.grossWeight : 'Gross Weight (Grams)'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -216,9 +220,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <Grid item xs={4}>
                 <TextField
                   name="stoneWeight"
+                  type={'number'}
                   value={values.stoneWeight}
                   error={touched.stoneWeight && errors.stoneWeight && true}
-                  label={touched.stoneWeight && errors.stoneWeight ? errors.stoneWeight : 'Stone Weight'}
+                  label={touched.stoneWeight && errors.stoneWeight ? errors.stoneWeight : 'Stone Weight (Grams)'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -227,9 +232,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <Grid item xs={4}>
                 <TextField
                   name="netWeight"
+                  type={'number'}
                   value={values.netWeight}
                   error={touched.netWeight && errors.netWeight && true}
-                  label={touched.netWeight && errors.netWeight ? errors.netWeight : 'Net Weight'}
+                  label={touched.netWeight && errors.netWeight ? errors.netWeight : 'Net Weight (Grams)'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -238,6 +244,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <Grid item xs={4}>
                 <TextField
                   name="purity"
+                  type={'number'}
                   value={values.purity}
                   error={touched.purity && errors.purity && true}
                   label={touched.purity && errors.purity ? errors.purity : 'Purity'}
@@ -249,9 +256,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <Grid item xs={4}>
                 <TextField
                   name="netAmount"
+                  type={'number'}
                   value={values.netAmount}
                   error={touched.netAmount && errors.netAmount && true}
-                  label={touched.netAmount && errors.netAmount ? errors.netAmount : 'Net Amount'}
+                  label={touched.netAmount && errors.netAmount ? errors.netAmount : 'Net Amount (INR)'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
