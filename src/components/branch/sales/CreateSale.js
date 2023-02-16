@@ -329,7 +329,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="saleType"
-                value={sentenceCase(values.saleType)}
+                value={sentenceCase(values.saleType ?? "")}
                 label={'Billing Type'}
                 fullWidth
                 InputProps={{
@@ -463,7 +463,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="paymentType"
-                value={sentenceCase(values.paymentType)}
+                value={sentenceCase(values.paymentType ?? "")}
                 label={'Payment Type'}
                 fullWidth
                 InputProps={{
@@ -476,7 +476,7 @@ function CreateSale(props) {
                 <Grid item xs={4}>
                   <TextField
                     name="accountHolderName"
-                    value={sentenceCase(selectedBank?.accountHolderName)}
+                    value={sentenceCase(selectedBank?.accountHolderName ?? "")}
                     label={'Account Holder Name'}
                     fullWidth
                     InputProps={{
