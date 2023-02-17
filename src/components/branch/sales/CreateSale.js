@@ -24,6 +24,7 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { createSales } from '../../../apis/branch/sales';
 import Customer from './customer';
@@ -49,13 +50,17 @@ const style = {
 };
 
 function CreateSale(props) {
+  const auth = useSelector((state) => state.auth);
   const [ornaments, setOrnaments] = useState([]);
   const [proofDocument, setProofDocument] = useState([]);
   const [step, setStep] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedRelease, setSelectedRelease] = useState([]);
-  const payload = {};
+  const payload = {
+    payableAmount: selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0,
+    netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
+  };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -466,7 +471,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="netAmount"
-                value={ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0}
+                value={payload.netAmount}
                 label={'Net Amount'}
                 fullWidth
                 InputProps={{
@@ -477,7 +482,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="releaseAmount"
-                value={selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0}
+                value={payload.payableAmount}
                 label={'Release Amount'}
                 fullWidth
                 InputProps={{
@@ -488,7 +493,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="netPayable"
-                value={values.netPayable}
+                value={payload.netAmount - payload.payableAmount}
                 label={'Net Payable'}
                 fullWidth
                 InputProps={{
@@ -572,7 +577,7 @@ function CreateSale(props) {
                 variant="contained"
                 sx={{ ml: 2 }}
                 onClick={() => {
-                  console.log(selectedUser, ornaments, selectedRelease, selectedBank, proofDocument);
+                  console.log(selectedUser, ornaments, selectedRelease, selectedBank, proofDocument, auth);
                 }}
               >
                 Submit
