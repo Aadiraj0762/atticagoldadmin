@@ -14,6 +14,7 @@ import {
   TableRow,
   TableCell,
   TableContainer,
+  TablePagination,
   TableHead,
   Modal,
   Paper,
@@ -25,6 +26,7 @@ import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import Iconify from '../../../iconify';
+import Scrollbar from '../../../scrollbar';
 
 const style = {
   position: 'absolute',
@@ -47,6 +49,18 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ornaments.length) : 0;
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
 
   // Form validation
   const schema = Yup.object({
@@ -101,7 +115,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
             New Ornament
           </Button>
         </Stack>
-        <Box sx={{ height: 200, width: '100%' }}>
+        <Scrollbar>
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
@@ -117,7 +131,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ornaments?.map((e, index) => (
+                {ornaments?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                   <TableRow hover key={index} tabIndex={-1}>
                     <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
                     <TableCell align="left">{e.purity}</TableCell>
@@ -140,6 +154,11 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                     </TableCell>
                   </TableRow>
                 ))}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
                 {ornaments.length === 0 && (
                   <TableRow>
                     <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
@@ -156,7 +175,17 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               </TableBody>
             </Table>
           </TableContainer>
-        </Box>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={ornaments.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Scrollbar>
       </Grid>
 
       <Modal

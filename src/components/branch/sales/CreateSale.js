@@ -12,6 +12,7 @@ import {
   TableRow,
   TableCell,
   TableContainer,
+  TablePagination,
   TableHead,
   Paper,
 } from '@mui/material';
@@ -31,6 +32,7 @@ import Bank from './bank';
 import Release from './release';
 import Ornament from './ornament';
 import ProofDocument from './proof';
+import Scrollbar from '../../scrollbar';
 
 const style = {
   position: 'absolute',
@@ -52,8 +54,20 @@ function CreateSale(props) {
   const [step, setStep] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
-  const [selectedRelease, setSelectedRelease] = useState(null);
+  const [selectedRelease, setSelectedRelease] = useState([]);
   const payload = {};
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ornaments.length) : 0;
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
 
   // Form validation
   const schema = Yup.object({
@@ -266,7 +280,7 @@ function CreateSale(props) {
                       message: 'Please select bank',
                       severity: 'info',
                     });
-                  } else if (values.saleType === 'pledged' && !selectedRelease) {
+                  } else if (values.saleType === 'pledged' && selectedRelease.length === 0) {
                     props.setNotify({
                       open: true,
                       message: 'Please select release',
@@ -346,52 +360,69 @@ function CreateSale(props) {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TableContainer sx={{ minWidth: 800 }}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left">Ornament Type</TableCell>
-                      <TableCell align="left">Purity</TableCell>
-                      <TableCell align="left">Quantity</TableCell>
-                      <TableCell align="left">Stone weight (Grams)</TableCell>
-                      <TableCell align="left">Net weight (Grams)</TableCell>
-                      <TableCell align="left">Gross weight (Grams)</TableCell>
-                      <TableCell align="left">Net amount (INR)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {ornaments?.map((e, index) => (
-                      <TableRow hover key={index} tabIndex={-1}>
-                        <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
-                        <TableCell align="left">{e.purity}</TableCell>
-                        <TableCell align="left">{e.quantity}</TableCell>
-                        <TableCell align="left">{e.stoneWeight}</TableCell>
-                        <TableCell align="left">{e.netWeight}</TableCell>
-                        <TableCell align="left">{e.grossWeight}</TableCell>
-                        <TableCell align="left">{e.netAmount}</TableCell>
-                      </TableRow>
-                    ))}
-                    {ornaments.length === 0 && (
+              <Scrollbar>
+                <TableContainer sx={{ minWidth: 800, mb: 1 }}>
+                  <Table>
+                    <TableHead>
                       <TableRow>
-                        <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
-                          <Paper
-                            sx={{
-                              textAlign: 'center',
-                            }}
-                          >
-                            <Typography paragraph>No ornaments in table</Typography>
-                          </Paper>
-                        </TableCell>
+                        <TableCell align="left">Ornament Type</TableCell>
+                        <TableCell align="left">Purity</TableCell>
+                        <TableCell align="left">Quantity</TableCell>
+                        <TableCell align="left">Stone weight (Grams)</TableCell>
+                        <TableCell align="left">Net weight (Grams)</TableCell>
+                        <TableCell align="left">Gross weight (Grams)</TableCell>
+                        <TableCell align="left">Net amount (INR)</TableCell>
                       </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {ornaments?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
+                        <TableRow hover key={index} tabIndex={-1}>
+                          <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
+                          <TableCell align="left">{e.purity}</TableCell>
+                          <TableCell align="left">{e.quantity}</TableCell>
+                          <TableCell align="left">{e.stoneWeight}</TableCell>
+                          <TableCell align="left">{e.netWeight}</TableCell>
+                          <TableCell align="left">{e.grossWeight}</TableCell>
+                          <TableCell align="left">{e.netAmount}</TableCell>
+                        </TableRow>
+                      ))}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                      {ornaments.length === 0 && (
+                        <TableRow>
+                          <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
+                            <Paper
+                              sx={{
+                                textAlign: 'center',
+                              }}
+                            >
+                              <Typography paragraph>No ornaments in table</Typography>
+                            </Paper>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={ornaments.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Scrollbar>
             </Grid>
             <Grid item xs={4}>
               <TextField
                 name="grossWeight"
-                value={values.grossWeight}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0}
                 label={'Total Gross Weight'}
                 fullWidth
                 InputProps={{
@@ -402,7 +433,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="stoneWeight"
-                value={values.stoneWeight}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0}
                 label={'Total Stone Weight'}
                 fullWidth
                 InputProps={{
@@ -413,7 +444,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="netWeight"
-                value={values.netWeight}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0}
                 label={'Total Net Weight'}
                 fullWidth
                 InputProps={{
@@ -435,7 +466,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="netAmount"
-                value={values.netAmount}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0}
                 label={'Net Amount'}
                 fullWidth
                 InputProps={{
@@ -446,7 +477,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="releaseAmount"
-                value={values.releaseAmount}
+                value={selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0}
                 label={'Release Amount'}
                 fullWidth
                 InputProps={{

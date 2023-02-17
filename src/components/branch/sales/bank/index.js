@@ -1,11 +1,6 @@
 import {
   TextField,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Card,
   Grid,
   Box,
   Button,
@@ -15,6 +10,7 @@ import {
   TableRow,
   TableCell,
   TableContainer,
+  TablePagination,
   TableHead,
   Modal,
   Checkbox,
@@ -27,6 +23,7 @@ import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
+import Scrollbar from '../../../scrollbar';
 import { getBankById, createBank, deleteBankById } from '../../../../apis/branch/customer-bank';
 
 const style = {
@@ -50,6 +47,18 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
 
   useEffect(() => {
     if (selectedUser) {
@@ -132,7 +141,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
             New Bank
           </Button>
         </Stack>
-        <Box sx={{ height: 250, width: '100%' }}>
+        <Scrollbar>
           <TableContainer sx={{ minWidth: 800 }}>
             <Table>
               <TableHead>
@@ -147,7 +156,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.map((e) => (
+                {data?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e) => (
                   <TableRow hover key={e._id} tabIndex={-1}>
                     <TableCell padding="checkbox">
                       <Checkbox checked={selectedBank?._id === e._id} onChange={() => handleSelect(e)} />
@@ -171,6 +180,11 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                     </TableCell>
                   </TableRow>
                 ))}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
                 {data.length === 0 && (
                   <TableRow>
                     <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -187,7 +201,17 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
               </TableBody>
             </Table>
           </TableContainer>
-        </Box>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Scrollbar>
       </Grid>
 
       <Modal
