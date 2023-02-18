@@ -64,11 +64,13 @@ function CreateSale(props) {
   const [selectedRelease, setSelectedRelease] = useState([]);
   const payload = {
     goldRate: goldRate?.rate ?? 0,
-    payableAmount: selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0,
+    silverRate: silverRate?.rate ?? 0,
+    payableAmount: 0,
     netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
     grossWeight: ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0,
     stoneWeight: ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0,
     netWeight: ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0,
+    releaseAmount: selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0,
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -105,23 +107,23 @@ function CreateSale(props) {
 
   // Form validation
   const schema = Yup.object({
+    ornamentType: Yup.string().required('Ornament type is required'),
     saleType: Yup.string().required('Customer id is required'),
     dop: Yup.string().required('DOP is required'),
     paymentType: Yup.string().required('Payment type is required'),
-    cashAmount: Yup.string().required('Cash amount is required'),
-    bankAmount: Yup.string().required('Bank amount is required'),
     margin: Yup.string().required('Margin is required'),
     status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
+      ornamentType: '',
       saleType: '',
       dop: moment(),
       paymentType: '',
       cashAmount: '',
       bankAmount: '',
-      margin: '',
+      margin: 3,
       status: '',
     },
     validationSchema: schema,
@@ -144,6 +146,8 @@ function CreateSale(props) {
       });
     },
   });
+
+  payload.payableAmount = payload.netAmount - (payload.netAmount * values.margin) / 100;
 
   return (
     <>
@@ -170,6 +174,23 @@ function CreateSale(props) {
             Billing Details
           </Typography>
           <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <FormControl fullWidth error={touched.ornamentType && errors.ornamentType && true}>
+                <InputLabel id="select-ornamentType">Select ornament type</InputLabel>
+                <Select
+                  labelId="select-ornamentType"
+                  id="select"
+                  label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Select ornament type'}
+                  name="ornamentType"
+                  value={values.ornamentType}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="gold">Gold</MenuItem>
+                  <MenuItem value="silver">Silver</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={4}>
               <FormControl fullWidth error={touched.saleType && errors.saleType && true}>
                 <InputLabel id="select-saleType">Select sale type</InputLabel>
@@ -216,22 +237,28 @@ function CreateSale(props) {
                 >
                   <MenuItem value="bank">Bank</MenuItem>
                   <MenuItem value="cash">Cash</MenuItem>
+                  <MenuItem value="partial">Partial</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="cashAmount"
-                type={'number'}
-                value={values.cashAmount}
-                error={touched.cashAmount && errors.cashAmount && true}
-                label={touched.cashAmount && errors.cashAmount ? errors.cashAmount : 'Cash Amount'}
-                fullWidth
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-            </Grid>
-            {values.paymentType === 'bank' && (
+            {values.paymentType === 'partial' && (
+              <Grid item xs={4}>
+                <TextField
+                  name="cashAmount"
+                  type={'number'}
+                  value={values.cashAmount}
+                  error={touched.cashAmount && errors.cashAmount && true}
+                  label={touched.cashAmount && errors.cashAmount ? errors.cashAmount : 'Cash Amount'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={(e) => {
+                    setValues({ ...values, bankAmount: payload.payableAmount - values.cashAmount });
+                    handleChange(e);
+                  }}
+                />
+              </Grid>
+            )}
+            {values.paymentType === 'partial' && (
               <Grid item xs={4}>
                 <TextField
                   name="bankAmount"
@@ -399,7 +426,6 @@ function CreateSale(props) {
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell align="left">Ornament Type</TableCell>
                         <TableCell align="left">Purity</TableCell>
                         <TableCell align="left">Quantity</TableCell>
                         <TableCell align="left">Stone weight (Grams)</TableCell>
@@ -411,7 +437,6 @@ function CreateSale(props) {
                     <TableBody>
                       {ornaments?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                         <TableRow hover key={index} tabIndex={-1}>
-                          <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
                           <TableCell align="left">{e.purity}</TableCell>
                           <TableCell align="left">{e.quantity}</TableCell>
                           <TableCell align="left">{e.stoneWeight}</TableCell>
@@ -486,17 +511,31 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="goldRate"
-                value={payload.goldRate}
-                label={'Gold Rate'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
+            {values.ornamentType === 'gold' ? (
+              <Grid item xs={4}>
+                <TextField
+                  name="goldRate"
+                  value={payload.goldRate}
+                  label={'Gold Rate'}
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={4}>
+                <TextField
+                  name="silverRate"
+                  value={payload.silverRate}
+                  label={'Silver Rate'}
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Grid>
+            )}
             <Grid item xs={4}>
               <TextField
                 name="netAmount"
@@ -511,7 +550,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="releaseAmount"
-                value={payload.payableAmount}
+                value={payload.releaseAmount}
                 label={'Release Amount'}
                 fullWidth
                 InputProps={{

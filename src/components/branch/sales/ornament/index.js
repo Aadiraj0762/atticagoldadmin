@@ -64,7 +64,6 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
 
   // Form validation
   const schema = Yup.object({
-    ornamentType: Yup.string().required('Ornament type is required'),
     quantity: Yup.string().required('Quantity is required'),
     grossWeight: Yup.string().required('Gross weight is required'),
     stoneWeight: Yup.string().required('Stone weight is required'),
@@ -73,9 +72,8 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
     netAmount: Yup.string().required('Net amount is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
-      ornamentType: '',
       quantity: '',
       grossWeight: '',
       stoneWeight: '',
@@ -120,7 +118,6 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">Ornament Type</TableCell>
                   <TableCell align="left">Purity</TableCell>
                   <TableCell align="left">Quantity</TableCell>
                   <TableCell align="left">Stone weight (Grams)</TableCell>
@@ -133,7 +130,6 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
               <TableBody>
                 {ornaments?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                   <TableRow hover key={index} tabIndex={-1}>
-                    <TableCell align="left">{sentenceCase(e.ornamentType)}</TableCell>
                     <TableCell align="left">{e.purity}</TableCell>
                     <TableCell align="left">{e.quantity}</TableCell>
                     <TableCell align="left">{e.stoneWeight}</TableCell>
@@ -206,23 +202,6 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
           >
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <FormControl fullWidth error={touched.ornamentType && errors.ornamentType && true}>
-                  <InputLabel id="select-ornamentType">Select ornament type</InputLabel>
-                  <Select
-                    labelId="select-ornamentType"
-                    id="select"
-                    label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Select ornament type'}
-                    name="ornamentType"
-                    value={values.ornamentType}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="gold">Gold</MenuItem>
-                    <MenuItem value="silver">Silver</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={4}>
                 <TextField
                   name="quantity"
                   type={'number'}
@@ -243,7 +222,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   label={touched.grossWeight && errors.grossWeight ? errors.grossWeight : 'Gross Weight (Grams)'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, netWeight: e.target.value - values.stoneWeight });
+                    handleChange(e);
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -255,7 +237,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   label={touched.stoneWeight && errors.stoneWeight ? errors.stoneWeight : 'Stone Weight (Grams)'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, netWeight: values.grossWeight - e.target.value });
+                    handleChange(e);
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -268,6 +253,9 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -279,7 +267,10 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   label={touched.purity && errors.purity ? errors.purity : 'Purity'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, netAmount: values.netWeight * e.target.value });
+                    handleChange(e);
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -292,6 +283,9 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
