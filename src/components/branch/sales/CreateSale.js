@@ -23,9 +23,11 @@ import { sentenceCase } from 'change-case';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { getBranchByBranchId } from '../../../apis/branch/branch';
+import { getGoldRateByState } from '../../../apis/branch/gold-rate';
 import { createSales } from '../../../apis/branch/sales';
 import Customer from './customer';
 import Address from './address';
@@ -51,6 +53,9 @@ const style = {
 
 function CreateSale(props) {
   const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
+  const [goldRate, setGoldRate] = useState({});
+  const [silverRate, setSilverRate] = useState({});
   const [ornaments, setOrnaments] = useState([]);
   const [proofDocument, setProofDocument] = useState([]);
   const [step, setStep] = useState(1);
@@ -58,8 +63,12 @@ function CreateSale(props) {
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedRelease, setSelectedRelease] = useState([]);
   const payload = {
+    goldRate: goldRate?.rate ?? 0,
     payableAmount: selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0,
     netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
+    grossWeight: ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0,
+    stoneWeight: ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0,
+    netWeight: ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0,
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -73,6 +82,26 @@ function CreateSale(props) {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
+
+  useEffect(() => {
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+      if (data.data) {
+        getGoldRateByState({
+          state: data.data.state,
+          type: 'gold',
+        }).then((data) => {
+          setGoldRate(data.data);
+        });
+        getGoldRateByState({
+          state: data.data.state,
+          type: 'silver',
+        }).then((data) => {
+          setSilverRate(data.data);
+        });
+      }
+    });
+  }, [auth]);
 
   // Form validation
   const schema = Yup.object({
@@ -427,7 +456,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="grossWeight"
-                value={ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0}
+                value={payload.grossWeight}
                 label={'Total Gross Weight'}
                 fullWidth
                 InputProps={{
@@ -438,7 +467,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="stoneWeight"
-                value={ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0}
+                value={payload.stoneWeight}
                 label={'Total Stone Weight'}
                 fullWidth
                 InputProps={{
@@ -449,7 +478,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="netWeight"
-                value={ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0}
+                value={payload.netWeight}
                 label={'Total Net Weight'}
                 fullWidth
                 InputProps={{
@@ -460,7 +489,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="goldRate"
-                value={values.goldRate}
+                value={payload.goldRate}
                 label={'Gold Rate'}
                 fullWidth
                 InputProps={{
@@ -578,6 +607,7 @@ function CreateSale(props) {
                 sx={{ ml: 2 }}
                 onClick={() => {
                   console.log(selectedUser, ornaments, selectedRelease, selectedBank, proofDocument, auth);
+                  console.log(branch, goldRate, silverRate);
                 }}
               >
                 Submit
