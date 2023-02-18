@@ -39,10 +39,10 @@ import { deleteSalesById, getSales } from '../../apis/branch/sales';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'type', label: 'Type', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
+  { id: 'saleType', label: 'Sale Type', alignRight: false },
+  { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'branchId', label: 'Branch Id', alignRight: false },
-  { id: 'note', label: 'Note', alignRight: false },
+  { id: 'ornamentType', label: 'Ornament Type', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -277,7 +277,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, type, amount, branchId, note, status, createdAt } = row;
+                    const { _id, saleType, netAmount, branchId, ornamentType, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -285,10 +285,10 @@ export default function Sale() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{type}</TableCell>
-                        <TableCell align="left">{amount}</TableCell>
+                        <TableCell align="left">{sentenceCase(saleType)}</TableCell>
+                        <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{branchId}</TableCell>
-                        <TableCell align="left">{note}</TableCell>
+                        <TableCell align="left">{sentenceCase(ornamentType)}</TableCell>
                         <TableCell align="left">
                           <Label
                             color={

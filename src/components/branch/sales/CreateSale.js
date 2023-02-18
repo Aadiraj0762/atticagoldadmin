@@ -64,16 +64,18 @@ function CreateSale(props) {
   const [selectedRelease, setSelectedRelease] = useState([]);
   const payload = {
     employeeId: auth.user.employeeId,
-    customerId: selectedUser.customerId,
-    branchId: branch.branchId,
+    customerId: selectedUser?.customerId,
+    branchId: branch?.branchId,
     goldRate: goldRate?.rate ?? 0,
     releaseId: selectedRelease?.map((e) => e._id),
     silverRate: silverRate?.rate ?? 0,
     netWeight: ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0,
     netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
     payableAmount: 0,
-    bankId: selectedBank._id,
-    proofDocument,
+    bankId: selectedBank?._id,
+    proofDocument: proofDocument?.map((e) => {
+      return { ...e, documentFile: e.documentFile.name };
+    }),
     status: '',
   };
   const [page, setPage] = useState(0);
@@ -132,7 +134,7 @@ function CreateSale(props) {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createSales(values).then((data) => {
+      createSales(payload).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
@@ -152,6 +154,7 @@ function CreateSale(props) {
   });
 
   payload.saleType = values.saleType;
+  payload.ornamentType = values.ornamentType;
   payload.dop = values.dop;
   payload.paymentType = values.paymentType;
   payload.margin = values.margin;
@@ -161,6 +164,7 @@ function CreateSale(props) {
   payload.cashAmount = values.cashAmount;
   payload.bankAmount = values.bankAmount;
   payload.payableAmount = payload.netAmount - (payload.netAmount * values.margin) / 100;
+  payload.status = values.status;
 
   return (
     <>
@@ -176,6 +180,7 @@ function CreateSale(props) {
 
       <form
         onSubmit={(e) => {
+          console.log('Ok');
           e.preventDefault();
           handleSubmit(e);
         }}
@@ -315,7 +320,7 @@ function CreateSale(props) {
               </FormControl>
             </Grid>
             <Ornament ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
-            {values.paymentType === 'bank' && (
+            {(values.paymentType === 'bank' || values.paymentType === 'partial') && (
               <Bank
                 selectedUser={selectedUser}
                 selectedBank={selectedBank}
@@ -651,17 +656,7 @@ function CreateSale(props) {
               >
                 Prev
               </LoadingButton>
-              <LoadingButton
-                size="large"
-                name="submit"
-                type="button"
-                variant="contained"
-                sx={{ ml: 2 }}
-                onClick={() => {
-                  console.log(selectedUser, ornaments, selectedRelease, selectedBank, proofDocument, auth);
-                  console.log(branch, goldRate, silverRate);
-                }}
-              >
+              <LoadingButton size="large" type="submit" variant="contained" sx={{ mx: 2 }}>
                 Submit
               </LoadingButton>
             </Grid>
