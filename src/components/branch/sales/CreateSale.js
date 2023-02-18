@@ -63,14 +63,18 @@ function CreateSale(props) {
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedRelease, setSelectedRelease] = useState([]);
   const payload = {
+    employeeId: auth.user.employeeId,
+    customerId: selectedUser.customerId,
+    branchId: branch.branchId,
     goldRate: goldRate?.rate ?? 0,
+    releaseId: selectedRelease?.map((e) => e._id),
     silverRate: silverRate?.rate ?? 0,
-    payableAmount: 0,
-    netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
-    grossWeight: ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0,
-    stoneWeight: ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0,
     netWeight: ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0,
-    releaseAmount: selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0,
+    netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
+    payableAmount: 0,
+    bankId: selectedBank._id,
+    proofDocument,
+    status: '',
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -147,6 +151,15 @@ function CreateSale(props) {
     },
   });
 
+  payload.saleType = values.saleType;
+  payload.dop = values.dop;
+  payload.paymentType = values.paymentType;
+  payload.margin = values.margin;
+  payload.ornaments = ornaments?.map((e) => {
+    return { ...e, ornamentType: values.ornamentType };
+  });
+  payload.cashAmount = values.cashAmount;
+  payload.bankAmount = values.bankAmount;
   payload.payableAmount = payload.netAmount - (payload.netAmount * values.margin) / 100;
 
   return (
@@ -481,7 +494,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="grossWeight"
-                value={payload.grossWeight}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0}
                 label={'Total Gross Weight'}
                 fullWidth
                 InputProps={{
@@ -492,7 +505,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="stoneWeight"
-                value={payload.stoneWeight}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0}
                 label={'Total Stone Weight'}
                 fullWidth
                 InputProps={{
@@ -550,7 +563,7 @@ function CreateSale(props) {
             <Grid item xs={4}>
               <TextField
                 name="releaseAmount"
-                value={payload.releaseAmount}
+                value={selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0}
                 label={'Release Amount'}
                 fullWidth
                 InputProps={{
