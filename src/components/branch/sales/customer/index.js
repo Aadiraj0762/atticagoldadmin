@@ -74,7 +74,6 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
 
   // Form validation
   const schema = Yup.object({
-    customerId: Yup.string().required('Customer id is required'),
     name: Yup.string().required('Name is required'),
     phoneNumber: Yup.string().required('Phone is required'),
     email: Yup.string().required('Email id is required'),
@@ -90,7 +89,6 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
     initialValues: {
-      customerId: '',
       name: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
@@ -182,17 +180,17 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                     <TableCell padding="checkbox">
                       <Checkbox checked={selectedUser?._id === e._id} onChange={() => handleSelect(e)} />
                     </TableCell>
-                    <TableCell align="left">{sentenceCase(e.name)}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.name ?? '')}</TableCell>
                     <TableCell align="left">{e.email}</TableCell>
                     <TableCell align="left">{e.phoneNumber}</TableCell>
-                    <TableCell align="left">{sentenceCase(e.gender)}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.gender ?? '')}</TableCell>
                     <TableCell align="left">
                       <Label
                         color={
                           (e.status === 'active' && 'success') || (e.status === 'deactive' && 'error') || 'warning'
                         }
                       >
-                        {sentenceCase(e.status)}
+                        {sentenceCase(e.status ?? '')}
                       </Label>
                     </TableCell>
                     <TableCell align="left">
@@ -281,17 +279,6 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
             autoComplete="off"
           >
             <Grid container spacing={3}>
-              <Grid item xs={4}>
-                <TextField
-                  name="customerId"
-                  value={values.customerId}
-                  error={touched.customerId && errors.customerId && true}
-                  label={touched.customerId && errors.customerId ? errors.customerId : 'Customer Id'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
               <Grid item xs={4}>
                 <TextField
                   name="name"
