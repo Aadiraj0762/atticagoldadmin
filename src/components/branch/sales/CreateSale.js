@@ -98,14 +98,14 @@ function CreateSale(props) {
         getGoldRateByState({
           state: data.data.state,
           type: 'gold',
-          createdAt: moment().format('YYYY-MM-DD'),
+          date: moment().format('YYYY-MM-DD'),
         }).then((data) => {
           setGoldRate(data.data);
         });
         getGoldRateByState({
           state: data.data.state,
           type: 'silver',
-          createdAt: moment().format('YYYY-MM-DD'),
+          date: moment().format('YYYY-MM-D'),
         }).then((data) => {
           setSilverRate(data.data);
         });

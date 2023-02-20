@@ -1,4 +1,8 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import moment from 'moment';
 import { LoadingButton } from '@mui/lab';
 import { useState, useRef } from 'react';
 import { useFormik } from 'formik';
@@ -14,17 +18,19 @@ function CreateGoldRate(props) {
     rate: Yup.string().required('Rate is required'),
     type: Yup.string().required('Type is required'),
     state: Yup.string().required('State is required'),
+    date: Yup.string().required('Date is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
       rate: '',
       type: '',
       state: '',
+      date: moment(),
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createGoldRate(values).then((data) => {
+      createGoldRate({ ...values, date: moment(values.date).format('YYYY-MM-DD') }).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
@@ -96,6 +102,21 @@ function CreateGoldRate(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={4}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DesktopDatePicker
+                name="date"
+                value={values.date}
+                error={touched.date && errors.date && true}
+                label={touched.date && errors.date ? errors.date : 'Date'}
+                inputFormat="MM/DD/YYYY"
+                onChange={(e) => {
+                  setValues({ ...values, date: e });
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

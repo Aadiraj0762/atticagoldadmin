@@ -42,7 +42,7 @@ const TABLE_HEAD = [
   { id: 'rate', label: 'Rate', alignRight: false },
   { id: 'type', label: 'Type', alignRight: false },
   { id: 'state', label: 'State', alignRight: false },
-  { id: 'createdAt', label: 'Date', alignRight: false },
+  { id: 'date', label: 'Date', alignRight: false },
   { id: '' },
 ];
 
@@ -275,7 +275,7 @@ export default function GoldRate() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, rate, type, state, createdAt } = row;
+                    const { _id, rate, type, state, date } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -290,7 +290,7 @@ export default function GoldRate() {
 
                         <TableCell align="left">{sentenceCase(state)}</TableCell>
 
-                        <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(date).format('MMM Do YY')}</TableCell>
 
                         <TableCell align="right">
                           <IconButton
