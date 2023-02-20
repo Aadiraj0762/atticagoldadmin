@@ -180,7 +180,6 @@ function CreateSale(props) {
 
       <form
         onSubmit={(e) => {
-          console.log('Ok');
           e.preventDefault();
           handleSubmit(e);
         }}
@@ -352,7 +351,7 @@ function CreateSale(props) {
                 type="button"
                 variant="contained"
                 sx={{ ml: 3 }}
-                onClick={() => {
+                onClick={async () => {
                   if (values.paymentType === 'bank' && !selectedBank) {
                     props.setNotify({
                       open: true,
@@ -369,6 +368,24 @@ function CreateSale(props) {
                     props.setNotify({
                       open: true,
                       message: 'Please add ornaments',
+                      severity: 'info',
+                    });
+                  } else if (!values.ornamentType) {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please select ornament type',
+                      severity: 'info',
+                    });
+                  } else if (!values.saleType) {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please select sale type',
+                      severity: 'info',
+                    });
+                  } else if (!values.paymentType) {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please select payment type',
                       severity: 'info',
                     });
                   } else {
