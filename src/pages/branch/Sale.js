@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateSale, UpdateSale } from '../../components/branch/sales';
+import { CreateSale } from '../../components/branch/sales';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -395,28 +395,6 @@ export default function Sale() {
         <CreateSale setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'update' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Update Sale
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <UpdateSale setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
-      </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -435,17 +413,6 @@ export default function Sale() {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainerType('update');
-            setToggleContainer(!toggleContainer);
-          }}
-        >
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {
