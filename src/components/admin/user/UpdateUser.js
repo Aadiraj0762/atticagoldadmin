@@ -22,7 +22,7 @@ function UpdateUser(props) {
     getEmployee().then((data) => {
       setEmloyees(data.data);
     });
-  });
+  }, []);
 
   const initialValues = {
     username: '',

@@ -17,7 +17,7 @@ function CreateUser(props) {
     getEmployee().then((data) => {
       setEmloyees(data.data);
     });
-  });
+  }, []);
 
   // Form validation
   const schema = Yup.object({
