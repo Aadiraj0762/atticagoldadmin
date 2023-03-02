@@ -60,7 +60,7 @@ function UpdateUser(props) {
     resetForm();
     if (props.id) {
       getUserById(props.id).then((data) => {
-        setValues(data.data ?? {});
+        setValues({ ...data.data, employee: data.data.employee._id });
       });
     }
   }, [props.id]);
@@ -129,7 +129,7 @@ function UpdateUser(props) {
                 onChange={handleChange}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.name}</MenuItem>
+                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
                 ))}
               </Select>
             </FormControl>

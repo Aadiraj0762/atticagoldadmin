@@ -129,7 +129,7 @@ function CreateUser(props) {
                 }}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.name}</MenuItem>
+                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
                 ))}
               </Select>
             </FormControl>
