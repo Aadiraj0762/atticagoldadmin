@@ -263,7 +263,7 @@ export default function Attendance() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employeeId, employeePhoto, createdAt } = row;
+                    const { _id, employee, employeePhoto, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -271,7 +271,7 @@ export default function Attendance() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
+                        <TableCell align="left">{employee?.employeeId}</TableCell>
                         <TableCell align="left">{employeePhoto}</TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
@@ -296,7 +296,7 @@ export default function Attendance() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={5} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -312,7 +312,7 @@ export default function Attendance() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={5} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

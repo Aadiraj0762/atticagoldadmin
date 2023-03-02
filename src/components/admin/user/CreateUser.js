@@ -1,21 +1,30 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createUser } from '../../../apis/admin/user';
+import { getEmployee } from '../../../apis/admin/employee';
 
 function CreateUser(props) {
   const [status, setStatus] = useState('');
   const [userType, setUserType] = useState('');
+  const [employee, setEmployee] = useState('');
+  const [employees, setEmloyees] = useState([]);
   const form = useRef();
+
+  useEffect(() => {
+    getEmployee().then((data) => {
+      setEmloyees(data.data);
+    });
+  });
 
   // Form validation
   const schema = Yup.object({
     username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required'),
     userType: Yup.string().required('User type is required'),
-    employeeId: Yup.string().required('Employee Id is required'),
+    employee: Yup.string().required('Employee Id is required'),
     status: Yup.string().required('Status is required'),
   });
 
@@ -24,7 +33,7 @@ function CreateUser(props) {
       username: '',
       password: '',
       userType: '',
-      employeeId: '',
+      employee: '',
       status: '',
     },
     validationSchema: schema,
@@ -105,14 +114,25 @@ function CreateUser(props) {
             </FormControl>
           </Grid>
           <Grid item xs={4}>
-            <TextField
-              name="employeeId"
-              error={touched.employeeId && errors.employeeId && true}
-              label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Employee Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.employee && errors.employee && true}>
+              <InputLabel id="select-label">Select employee</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.employee && errors.employee ? errors.employee : 'Select employee'}
+                name="employee"
+                value={employee}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setEmployee(e.target.value);
+                  handleChange(e);
+                }}
+              >
+                {employees.map((e) => (
+                  <MenuItem value={e._id}>{e.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>

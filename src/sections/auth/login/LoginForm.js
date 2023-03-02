@@ -153,8 +153,8 @@ export default function LoginForm() {
             }}
           >
             {employees?.map((data) => (
-              <MenuItem value={data.employeeId} key={data.employeeId ?? 0}>
-                {data.employeeId}
+              <MenuItem value={data.employee._id} key={data.employee._id ?? 0}>
+                {data.employee.employeeId}
               </MenuItem>
             ))}
           </Select>

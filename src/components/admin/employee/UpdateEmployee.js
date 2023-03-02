@@ -14,7 +14,6 @@ function UpdateEmployee(props) {
     name: Yup.string().required('Name is required'),
     gender: Yup.string().required('Gender is required'),
     designation: Yup.string().required('Designation is required'),
-    profileImage: Yup.string().required('Profile image is required'),
     employeeId: Yup.string().required('Employee Id is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     alternatePhoneNumber: Yup.string().required('Alternate phone number is required'),
@@ -26,7 +25,6 @@ function UpdateEmployee(props) {
     name: '',
     gender: '',
     designation: '',
-    profileImage: '',
     employeeId: '',
     phoneNumber: '',
     alternatePhoneNumber: '',
@@ -130,17 +128,6 @@ function UpdateEmployee(props) {
           </Grid>
           <Grid item xs={4}>
             <TextField
-              name="profileImage"
-              value={values.profileImage}
-              error={touched.profileImage && errors.profileImage && true}
-              label={touched.profileImage && errors.profileImage ? errors.profileImage : 'Profile Image'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
               name="phoneNumber"
               value={values.phoneNumber}
               error={touched.phoneNumber && errors.phoneNumber && true}
@@ -166,13 +153,13 @@ function UpdateEmployee(props) {
             />
           </Grid>
           <Grid item xs={4}>
-            <LocalizationProvider dateAdapter={AdapterMoment} fullWidth>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
               <DesktopDatePicker
                 label={touched.dob && errors.dob ? errors.dob : 'Select dob'}
                 inputFormat="MM/DD/YYYY"
                 value={values.dob}
                 onChange={handleChange}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </LocalizationProvider>
           </Grid>
