@@ -2,6 +2,6 @@ import axios from 'axios';
 
 export default axios.create({
   baseURL: 'http://localhost:9000',
-  // baseURL: 'http://benaka.gold/api',
+  // baseURL: 'https://benaka.gold/api',
   headers: { Authorization: `Bearer ${localStorage.token}` },
 });
