@@ -63,16 +63,16 @@ function CreateSale(props) {
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedRelease, setSelectedRelease] = useState([]);
   const payload = {
-    employeeId: auth.user.employeeId,
-    customerId: selectedUser?.customerId,
-    branchId: branch?.branchId,
+    employee: auth.user._id,
+    customer: selectedUser?._id,
+    branch: branch?._id,
     goldRate: goldRate?.rate ?? 0,
-    releaseId: selectedRelease?.map((e) => e._id),
+    release: selectedRelease?.map((e) => e._id),
     silverRate: silverRate?.rate ?? 0,
     netWeight: ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0,
     netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
     payableAmount: 0,
-    bankId: selectedBank?._id,
+    bank: selectedBank?._id,
     proofDocument: proofDocument?.map((e) => {
       return { ...e, documentFile: e.documentFile.name };
     }),

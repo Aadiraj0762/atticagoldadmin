@@ -277,7 +277,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, saleType, netAmount, branchId, ornamentType, status, createdAt } = row;
+                    const { _id, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -287,7 +287,7 @@ export default function Sale() {
                         </TableCell>
                         <TableCell align="left">{sentenceCase(saleType)}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchId}</TableCell>
                         <TableCell align="left">{sentenceCase(ornamentType)}</TableCell>
                         <TableCell align="left">
                           <Label
