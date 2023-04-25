@@ -100,7 +100,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
-      customerId: selectedUser?._id,
+      customer: selectedUser?._id,
       weight: '',
       pledgeAmount: '',
       payableAmount: '',
@@ -120,7 +120,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createRelease({ customerId: selectedUser._id, ...values }).then((data) => {
+      createRelease({ customer: selectedUser._id, ...values }).then((data) => {
         if (data.status === false) {
           setNotify({
             open: true,
