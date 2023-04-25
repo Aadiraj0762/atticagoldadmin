@@ -1,17 +1,19 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { useEffect, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createExpense } from '../../../apis/branch/expense';
 
 function CreateExpense(props) {
+  const form = useRef();
+
   // Form validation
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
     amount: Yup.string().required('Amount is required'),
     branchId: Yup.string().required('Branch id is required'),
     note: Yup.string().required('Note is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
@@ -21,7 +23,7 @@ function CreateExpense(props) {
       from: '',
       branchId: '',
       note: '',
-      status: '',
+      status: 'pending',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -34,6 +36,8 @@ function CreateExpense(props) {
           });
         } else {
           props.setToggleContainer(false);
+          form.current.reset();
+          resetForm();
           props.setNotify({
             open: true,
             message: 'Expense created',
@@ -47,6 +51,7 @@ function CreateExpense(props) {
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
+        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);
@@ -97,24 +102,6 @@ function CreateExpense(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="approved">Approved</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">
