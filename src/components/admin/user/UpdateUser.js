@@ -15,7 +15,6 @@ function UpdateUser(props) {
     password: Yup.string().required('Password is required'),
     userType: Yup.string().required('User type is required'),
     employee: Yup.string().required('Employee Id is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const initialValues = {
@@ -23,7 +22,6 @@ function UpdateUser(props) {
     password: '',
     userType: '',
     employee: '',
-    status: '',
   };
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
@@ -62,8 +60,6 @@ function UpdateUser(props) {
       });
     }
   }, [props.id]);
-
-  console.log(employees);
 
   return (
     <Card sx={{ p: 4, my: 4 }}>
@@ -131,23 +127,6 @@ function UpdateUser(props) {
                 {employees.map((e) => (
                   <MenuItem value={e?._id}>{e?.employeeId}</MenuItem>
                 ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="deactive">Deactive</MenuItem>
               </Select>
             </FormControl>
           </Grid>

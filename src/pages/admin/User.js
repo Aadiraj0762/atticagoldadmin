@@ -23,6 +23,7 @@ import {
   Modal,
   Box,
   Snackbar,
+  Switch,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -34,7 +35,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
 // mock
-import { deleteUserById, getUser } from '../../apis/admin/user';
+import { deleteUserById, getUser, updateUser } from '../../apis/admin/user';
 
 // ----------------------------------------------------------------------
 
@@ -206,6 +207,21 @@ export default function User() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status(props) {
+    const [status, setStatus] = useState(props.status === 'active');
+
+    return (
+      <Switch
+        checked={status}
+        onChange={(e) => {
+          updateUser(props._id, { status: e.target.checked ? 'active' : 'deactive' }).then((data) => {
+            setStatus(data.data.status === 'active');
+          });
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -288,7 +304,7 @@ export default function User() {
                         <TableCell align="left">{password}</TableCell>
                         <TableCell align="left">{sentenceCase(userType)}</TableCell>
                         <TableCell align="left">
-                          <Label color={(status !== 'active' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                          <Status status={status} _id={_id} />
                         </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">

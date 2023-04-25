@@ -1,6 +1,6 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getBranchById, updateBranch } from '../../../apis/admin/branch';
@@ -18,7 +18,6 @@ function UpdateBranch(props) {
     landmark: Yup.string().required('Landmark is required'),
     longitude: Yup.string().required('Longitude is required'),
     latitude: Yup.string().required('Latitude is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const initialValues = {
@@ -32,7 +31,6 @@ function UpdateBranch(props) {
     landmark: '',
     longitude: '',
     latitude: '',
-    status: '',
   };
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
@@ -52,7 +50,6 @@ function UpdateBranch(props) {
           longitude: values.longitude,
           latitude: values.latitude,
         },
-        status: values.status,
       };
       updateBranch(props.id, payload).then((data) => {
         if (data.status === false) {
@@ -89,7 +86,6 @@ function UpdateBranch(props) {
           landmark: data.data.address.landmark ?? '',
           longitude: data.data.address.longitude ?? '',
           latitude: data.data.address.latitude ?? '',
-          status: data.data.status ?? '',
         });
       });
     }
@@ -214,23 +210,6 @@ function UpdateBranch(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="deactive">Deactive</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

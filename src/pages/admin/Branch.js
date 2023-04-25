@@ -23,6 +23,7 @@ import {
   Modal,
   Box,
   Snackbar,
+  Switch,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -34,7 +35,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { BranchListHead, BranchListToolbar } from '../../sections/@dashboard/branch';
 // mock
-import { deleteBranchById, getBranch } from '../../apis/admin/branch';
+import { deleteBranchById, getBranch, updateBranch } from '../../apis/admin/branch';
 
 // ----------------------------------------------------------------------
 
@@ -205,6 +206,21 @@ export default function Branch() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status(props) {
+    const [status, setStatus] = useState(props.status === 'active');
+
+    return (
+      <Switch
+        checked={status}
+        onChange={(e) => {
+          updateBranch(props._id, { status: e.target.checked ? 'active' : 'deactive' }).then((data) => {
+            setStatus(data.data.status === 'active');
+          });
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -286,7 +302,7 @@ export default function Branch() {
                         <TableCell align="left">{branchId}</TableCell>
                         <TableCell align="left">{sentenceCase(branchName)}</TableCell>
                         <TableCell align="left">
-                          <Label color={(status !== 'active' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                          <Status status={status} _id={_id} />
                         </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">

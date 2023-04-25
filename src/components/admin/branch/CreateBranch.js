@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import { createBranch } from '../../../apis/admin/branch';
 
 function CreateBranch(props) {
-  const [status, setStatus] = useState('');
   const form = useRef();
 
   // Form validation
@@ -21,7 +20,6 @@ function CreateBranch(props) {
     landmark: Yup.string().required('Landmark is required'),
     longitude: Yup.string().required('Longitude is required'),
     latitude: Yup.string().required('Latitude is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
@@ -36,7 +34,6 @@ function CreateBranch(props) {
       landmark: '',
       longitude: '',
       latitude: '',
-      status: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -53,7 +50,7 @@ function CreateBranch(props) {
           longitude: values.longitude,
           latitude: values.latitude,
         },
-        status: values.status,
+        status: 'active',
       };
       createBranch(payload).then((data) => {
         if (data.status === false) {
@@ -65,7 +62,6 @@ function CreateBranch(props) {
         } else {
           props.setToggleContainer(false);
           form.current.reset();
-          setStatus('');
           resetForm();
           props.setNotify({
             open: true,
@@ -187,26 +183,6 @@ function CreateBranch(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={status}
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  setStatus(e.target.value);
-                  handleChange(e);
-                }}
-              >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="deactive">Deactive</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

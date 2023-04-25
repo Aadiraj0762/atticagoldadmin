@@ -25,7 +25,6 @@ function CreateUser(props) {
     password: Yup.string().required('Password is required'),
     userType: Yup.string().required('User type is required'),
     employee: Yup.string().required('Employee Id is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
@@ -34,7 +33,7 @@ function CreateUser(props) {
       password: '',
       userType: '',
       employee: '',
-      status: '',
+      status: 'active',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -131,26 +130,6 @@ function CreateUser(props) {
                 {employees.map((e) => (
                   <MenuItem value={e._id}>{e.employeeId}</MenuItem>
                 ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={status}
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  setStatus(e.target.value);
-                  handleChange(e);
-                }}
-              >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="deactive">Deactive</MenuItem>
               </Select>
             </FormControl>
           </Grid>
