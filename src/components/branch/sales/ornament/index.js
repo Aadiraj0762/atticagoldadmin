@@ -72,7 +72,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
     netAmount: Yup.string().required('Net amount is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
       quantity: '',
       grossWeight: '',
@@ -85,6 +85,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
     onSubmit: (values) => {
       setOrnaments([...ornaments, values]);
       setOrnamentModal(false);
+      resetForm();
       setNotify({
         open: true,
         message: 'Ornament created',
