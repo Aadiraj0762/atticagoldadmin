@@ -556,6 +556,18 @@ function CreateSale(props) {
             )}
             <Grid item xs={4}>
               <TextField
+                name="margin"
+                type={'number'}
+                value={payload.margin}
+                label={'Margin'}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
                 name="netAmount"
                 value={payload.netAmount}
                 label={'Net Amount'}
