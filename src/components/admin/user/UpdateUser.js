@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getUserById, updateUser } from '../../../apis/admin/user';
-import { getEmployee } from '../../../apis/admin/employee';
+import { getLoginNotCreatedEmployee } from '../../../apis/admin/employee';
 
 function UpdateUser(props) {
   const [employees, setEmloyees] = useState([]);
@@ -17,12 +17,6 @@ function UpdateUser(props) {
     employee: Yup.string().required('Employee Id is required'),
     status: Yup.string().required('Status is required'),
   });
-
-  useEffect(() => {
-    getEmployee().then((data) => {
-      setEmloyees(data.data);
-    });
-  }, []);
 
   const initialValues = {
     username: '',
@@ -60,10 +54,16 @@ function UpdateUser(props) {
     resetForm();
     if (props.id) {
       getUserById(props.id).then((data) => {
-        setValues({ ...data.data, employee: data.data.employee._id });
+        setValues({ ...data.data, employee: data.data?.employee?._id });
+        getLoginNotCreatedEmployee().then((employee) => {
+          const employees = [...employee.data, data.data.employee];
+          setEmloyees(employees.filter((e) => e?._id));
+        });
       });
     }
   }, [props.id]);
+
+  console.log(employees);
 
   return (
     <Card sx={{ p: 4, my: 4 }}>
@@ -129,7 +129,7 @@ function UpdateUser(props) {
                 onChange={handleChange}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                  <MenuItem value={e?._id}>{e?.employeeId}</MenuItem>
                 ))}
               </Select>
             </FormControl>

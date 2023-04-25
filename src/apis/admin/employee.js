@@ -9,6 +9,15 @@ async function getEmployee() {
   }
 }
 
+async function getLoginNotCreatedEmployee() {
+  try {
+    const response = await apiClient.get('/api/v1.0/admin/employee/login-not-created');
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getEmployeeById(id) {
   try {
     const response = await apiClient.get(`/api/v1.0/admin/employee/get/${id}`);
@@ -45,4 +54,4 @@ async function deleteEmployeeById(id) {
   }
 }
 
-export { getEmployee, getEmployeeById, createEmployee, updateEmployee, deleteEmployeeById };
+export { getEmployee, getLoginNotCreatedEmployee, getEmployeeById, createEmployee, updateEmployee, deleteEmployeeById };

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createUser } from '../../../apis/admin/user';
-import { getEmployee } from '../../../apis/admin/employee';
+import { getLoginNotCreatedEmployee } from '../../../apis/admin/employee';
 
 function CreateUser(props) {
   const [status, setStatus] = useState('');
@@ -14,7 +14,7 @@ function CreateUser(props) {
   const form = useRef();
 
   useEffect(() => {
-    getEmployee().then((data) => {
+    getLoginNotCreatedEmployee().then((data) => {
       setEmloyees(data.data);
     });
   }, []);
