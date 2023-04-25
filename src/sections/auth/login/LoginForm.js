@@ -121,7 +121,11 @@ export default function LoginForm() {
                 if (employee?.data?.length > 0) {
                   setEmployees(employee.data ?? []);
                   setIsEmployee(true);
+                } else {
+                  setIsEmployee(false);
                 }
+              } else {
+                setIsEmployee(false);
               }
             } catch (err) {
               setIsEmployee(false);
