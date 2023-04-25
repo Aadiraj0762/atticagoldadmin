@@ -76,7 +76,7 @@ function CreateSale(props) {
     proofDocument: proofDocument?.map((e) => {
       return { ...e, documentFile: e.documentFile.name };
     }),
-    status: '',
+    status: 'pending',
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -120,7 +120,6 @@ function CreateSale(props) {
     dop: Yup.string().required('DOP is required'),
     paymentType: Yup.string().required('Payment type is required'),
     margin: Yup.string().required('Margin is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
@@ -132,7 +131,7 @@ function CreateSale(props) {
       cashAmount: '',
       bankAmount: '',
       margin: 3,
-      status: '',
+      status: 'pending',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -166,7 +165,6 @@ function CreateSale(props) {
   payload.cashAmount = values.cashAmount;
   payload.bankAmount = values.bankAmount;
   payload.payableAmount = payload.netAmount - (payload.netAmount * values.margin) / 100;
-  payload.status = values.status;
 
   return (
     <>
@@ -302,23 +300,6 @@ function CreateSale(props) {
                 onBlur={handleBlur}
                 onChange={handleChange}
               />
-            </Grid>
-            <Grid item xs={4}>
-              <FormControl fullWidth error={touched.status && errors.status && true}>
-                <InputLabel id="select-label">Select status</InputLabel>
-                <Select
-                  labelId="select-label"
-                  id="select"
-                  label={touched.status && errors.status ? errors.status : 'Select status'}
-                  name="status"
-                  value={values.status}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="pending">Pending</MenuItem>
-                  <MenuItem value="success">Success</MenuItem>
-                </Select>
-              </FormControl>
             </Grid>
             <Ornament ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
             {(values.paymentType === 'bank' || values.paymentType === 'partial') && (
