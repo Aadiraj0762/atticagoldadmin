@@ -41,7 +41,7 @@ function CreateEmployee(props) {
         if (data.status === false) {
           props.setNotify({
             open: true,
-            message: 'User not created',
+            message: 'Employee not created',
             severity: 'error',
           });
         } else {
@@ -50,7 +50,7 @@ function CreateEmployee(props) {
           resetForm();
           props.setNotify({
             open: true,
-            message: 'User created',
+            message: 'Employee created',
             severity: 'success',
           });
         }

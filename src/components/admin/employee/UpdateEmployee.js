@@ -40,14 +40,14 @@ function UpdateEmployee(props) {
         if (data.status === false) {
           props.setNotify({
             open: true,
-            message: 'Branch not updated',
+            message: 'Employee not updated',
             severity: 'error',
           });
         } else {
           props.setToggleContainer(false);
           props.setNotify({
             open: true,
-            message: 'Branch updated',
+            message: 'Employee updated',
             severity: 'success',
           });
         }
