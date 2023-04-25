@@ -1,6 +1,6 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid, styled } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -26,6 +26,8 @@ const CustomPickersDay = styled(PickersDay, {
 }));
 
 function CreateLeave(props) {
+  const form = useRef();
+
   // Form validation
   const schema = Yup.object({
     branchId: Yup.string().required('Branch id is required'),
@@ -33,7 +35,6 @@ function CreateLeave(props) {
     leaveType: Yup.string().required('Leave type is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
@@ -44,7 +45,7 @@ function CreateLeave(props) {
       proof: {},
       dates: [moment(moment().format('YYYY-MM-DD'))],
       note: '',
-      status: '',
+      status: 'pending',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -67,6 +68,8 @@ function CreateLeave(props) {
           });
         } else {
           props.setToggleContainer(false);
+          form.current.reset();
+          resetForm();
           props.setNotify({
             open: true,
             message: 'Leave created',
@@ -88,6 +91,7 @@ function CreateLeave(props) {
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
+        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);
@@ -175,27 +179,6 @@ function CreateLeave(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  setValues({ ...values, status: e.target.value });
-                  handleChange(e);
-                }}
-              >
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="approved">Approved</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

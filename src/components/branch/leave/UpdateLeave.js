@@ -34,7 +34,6 @@ function UpdateLeave(props) {
     proof: Yup.string().required('Proof is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const initialValues = {
@@ -44,7 +43,6 @@ function UpdateLeave(props) {
     proof: '',
     dates: [],
     note: '',
-    status: '',
   };
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
@@ -191,27 +189,6 @@ function UpdateLeave(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  setValues({ ...values, status: e.target.value });
-                  handleChange(e);
-                }}
-              >
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="approved">Approved</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">
