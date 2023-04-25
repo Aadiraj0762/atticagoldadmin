@@ -66,6 +66,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
+        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);

@@ -36,6 +36,8 @@ function UpdateFund(props) {
           });
         } else {
           props.setToggleContainer(false);
+          form.current.reset();
+          resetForm();
           props.setNotify({
             open: true,
             message: 'Fund updated',
@@ -59,6 +61,7 @@ function UpdateFund(props) {
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
+        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);

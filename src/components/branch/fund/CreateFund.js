@@ -1,11 +1,13 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createFund } from '../../../apis/branch/fund';
 
 function CreateFund(props) {
+  const form = useRef();
+
   // Form validation
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
@@ -33,10 +35,10 @@ function CreateFund(props) {
             message: 'Fund not created',
             severity: 'error',
           });
-          form.current.reset();
-          resetForm();
         } else {
           props.setToggleContainer(false);
+          form.current.reset();
+          resetForm();
           props.setNotify({
             open: true,
             message: 'Fund created',
@@ -50,6 +52,7 @@ function CreateFund(props) {
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
+        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);
