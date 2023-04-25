@@ -42,7 +42,7 @@ function CreateUser(props) {
         if (data.status === false) {
           props.setNotify({
             open: true,
-            message: 'User not created',
+            message: data.message,
             severity: 'error',
           });
         } else {
