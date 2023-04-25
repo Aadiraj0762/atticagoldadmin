@@ -138,7 +138,7 @@ export default function LoginForm() {
         <FormControl
           sx={{
             width: '100%',
-            display: isEmployee === true ? 'flex' : 'none',
+            display: isEmployee === true ? 'flex' : 'none', 
           }}
           error={touched.employeeId && errors.employeeId && true}
         >
