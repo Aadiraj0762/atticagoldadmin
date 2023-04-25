@@ -1,17 +1,16 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getFundById, updateFund } from '../../../apis/branch/fund';
 
 function UpdateFund(props) {
+  const form = useRef();
   // Form validation
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
     amount: Yup.string().required('Amount is required'),
-    from: Yup.string().required('From is required'),
-    to: Yup.string().required('To is required'),
     note: Yup.string().required('Note is required'),
   });
 

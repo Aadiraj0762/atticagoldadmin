@@ -12,8 +12,6 @@ function CreateFund(props) {
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
     amount: Yup.string().required('Amount is required'),
-    from: Yup.string().required('From is required'),
-    to: Yup.string().required('To is required'),
     note: Yup.string().required('Note is required'),
   });
 
