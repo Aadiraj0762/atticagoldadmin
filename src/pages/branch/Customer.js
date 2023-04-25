@@ -27,6 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
+import { CreateCustomer } from '../../components/branch/customer';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -81,6 +82,7 @@ function applySortFilter(array, comparator, query) {
 export default function Customer() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
+  const [toggleContainer, setToggleContainer] = useState(false);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -103,7 +105,7 @@ export default function Customer() {
     getCustomer().then((data) => {
       setData(data.data);
     });
-  }, []);
+  }, [toggleContainer]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -232,11 +234,20 @@ export default function Customer() {
         </Alert>
       </Snackbar>
 
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Customer
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            New Customer
+          </Button>
         </Stack>
 
         <Card>
@@ -358,6 +369,25 @@ export default function Customer() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+      </Container>
+
+      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'block' : 'none' }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Create Customer
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <CreateCustomer setToggleContainer={setToggleContainer} setNotify={setNotify} />
       </Container>
 
       <Popover
