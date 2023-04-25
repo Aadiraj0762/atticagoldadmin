@@ -33,6 +33,8 @@ function CreateFund(props) {
             message: 'Fund not created',
             severity: 'error',
           });
+          form.current.reset();
+          resetForm();
         } else {
           props.setToggleContainer(false);
           props.setNotify({
