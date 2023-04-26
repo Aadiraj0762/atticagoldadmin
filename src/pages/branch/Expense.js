@@ -41,7 +41,7 @@ import { deleteExpenseById, getExpense } from '../../apis/branch/expense';
 const TABLE_HEAD = [
   { id: 'type', label: 'Type', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Id', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
@@ -277,7 +277,7 @@ export default function Expense() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, type, amount, branchId, note, status, createdAt } = row;
+                    const { _id, type, amount, branch, note, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -287,7 +287,7 @@ export default function Expense() {
                         </TableCell>
                         <TableCell align="left">{type}</TableCell>
                         <TableCell align="left">{amount}</TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchId}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">
                           <Label

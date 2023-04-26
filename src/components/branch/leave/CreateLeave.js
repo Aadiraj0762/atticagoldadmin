@@ -7,7 +7,11 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay, StaticDatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
-import { getLeaveById, createLeave } from '../../../apis/branch/leave';
+import { useSelector } from 'react-redux';
+import { createLeave } from '../../../apis/branch/leave';
+import { createFile } from '../../../apis/branch/fileupload';
+import { getBranchByBranchId } from '../../../apis/branch/branch';
+import { getEmployee } from '../../../apis/branch/employee';
 
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== 'selected',
@@ -26,12 +30,23 @@ const CustomPickersDay = styled(PickersDay, {
 }));
 
 function CreateLeave(props) {
+  const auth = useSelector((state) => state.auth);
+  const [employees, setEmloyees] = useState([]);
   const form = useRef();
+  const [branch, setBranch] = useState({});
+
+  useEffect(() => {
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+    });
+    getEmployee().then((data) => {
+      setEmloyees(data.data);
+    });
+  }, []);
 
   // Form validation
   const schema = Yup.object({
-    branchId: Yup.string().required('Branch id is required'),
-    employeeId: Yup.string().required('Employee Id is required'),
+    employee: Yup.string().required('Employee is required'),
     leaveType: Yup.string().required('Leave type is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
@@ -39,8 +54,8 @@ function CreateLeave(props) {
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: {
-      branchId: '',
-      employeeId: '',
+      branch: '',
+      employee: '',
       leaveType: '',
       proof: {},
       dates: [moment(moment().format('YYYY-MM-DD'))],
@@ -49,17 +64,15 @@ function CreateLeave(props) {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      const formData = new FormData();
-      Object.keys(values).forEach((key) => {
-        if (key === 'dates') {
-          values.dates.forEach((date) => {
-            formData.append('dates[]', date.format('YYYY-MM-DD'));
-          });
-        } else {
-          formData.append(key, values[key]);
-        }
-      });
-      createLeave(formData).then((data) => {
+      const payload = {
+        branch: branch?._id,
+        employee: values.employee,
+        leaveType: values.leaveType,
+        dates: values.dates.map((date) => date.format('YYYY-MM-DD')),
+        note: values.note,
+        status: values.status,
+      };
+      createLeave(payload).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
@@ -67,6 +80,12 @@ function CreateLeave(props) {
             severity: 'error',
           });
         } else {
+          const formData = new FormData();
+          formData.append('uploadId', data.data.uploadId);
+          formData.append('uploadName', data.data.uploadName);
+          formData.append('uploadType', 'proof');
+          formData.append('uploadedFile', values.proof);
+          createFile(formData);
           props.setToggleContainer(false);
           form.current.reset();
           resetForm();
@@ -101,26 +120,25 @@ function CreateLeave(props) {
       >
         <Grid container spacing={3}>
           <Grid item xs={4}>
-            <TextField
-              name="branchId"
-              value={values.branchId}
-              error={touched.branchId && errors.branchId && true}
-              label={touched.branchId && errors.branchId ? errors.branchId : 'Branch Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              name="employeeId"
-              value={values.employeeId}
-              error={touched.employeeId && errors.employeeId && true}
-              label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Employee Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.employee && errors.employee && true}>
+              <InputLabel id="select-label">Select employee</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.employee && errors.employee ? errors.employee : 'Select employee'}
+                name="employee"
+                value={values.employee}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setValues({ ...values, employee: e.target.value });
+                  handleChange(e);
+                }}
+              >
+                {employees.map((e) => (
+                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={4}>
             <TextField

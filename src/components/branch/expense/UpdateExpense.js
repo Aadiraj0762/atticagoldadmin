@@ -1,16 +1,17 @@
-import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
+import { TextField, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getExpenseById, updateExpense } from '../../../apis/branch/expense';
 
 function UpdateExpense(props) {
+  const form = useRef();
+
   // Form validation
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
     amount: Yup.string().required('Amount is required'),
-    branchId: Yup.string().required('Branch id is required'),
     note: Yup.string().required('Note is required'),
   });
 
@@ -18,7 +19,6 @@ function UpdateExpense(props) {
     type: '',
     amount: '',
     from: '',
-    branchId: '',
     note: '',
   };
 
@@ -35,6 +35,8 @@ function UpdateExpense(props) {
           });
         } else {
           props.setToggleContainer(false);
+          form.current.reset();
+          resetForm();
           props.setNotify({
             open: true,
             message: 'Expense updated',
@@ -58,6 +60,7 @@ function UpdateExpense(props) {
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
+        ref={form}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(e);
@@ -82,17 +85,6 @@ function UpdateExpense(props) {
               value={values.amount}
               error={touched.amount && errors.amount && true}
               label={touched.amount && errors.amount ? errors.amount : 'Amount'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              name="branchId"
-              value={values.branchId}
-              error={touched.branchId && errors.branchId && true}
-              label={touched.branchId && errors.branchId ? errors.branchId : 'Branch id'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}

@@ -39,8 +39,8 @@ import { deleteLeaveById, getLeave } from '../../apis/branch/leave';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
-  { id: 'employeeId', label: 'Employee Id', alignRight: false },
+  { id: 'branch', label: 'Branch Id', alignRight: false },
+  { id: 'employee', label: 'Employee Id', alignRight: false },
   { id: 'leaveType', label: 'Leave Type', alignRight: false },
   { id: 'dates', label: 'Dates', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
@@ -278,7 +278,7 @@ export default function Leave() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branchId, employeeId, leaveType, dates, note, status, createdAt } = row;
+                    const { _id, branch, employee, leaveType, dates, note, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -286,8 +286,8 @@ export default function Leave() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
+                        <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{employee?.employeeId}</TableCell>
                         <TableCell align="left">{leaveType}</TableCell>
                         <TableCell align="left">
                           {dates.map((date) => moment(date).format('Y/M/D')).join(', ')}
