@@ -40,7 +40,12 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Today's customers" total={count?.todayCustomers} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary
+              title="Today's customers"
+              total={count?.todayCustomers}
+              color="info"
+              icon={'ant-design:apple-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
@@ -53,7 +58,12 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Today’s physical bills" total={count?.todayPhysicalBills} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary
+              title="Today’s physical bills"
+              total={count?.todayPhysicalBills}
+              color="error"
+              icon={'ant-design:bug-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
@@ -75,7 +85,12 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total net amount" total={count?.totalNetAmount} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary
+              title="Total net amount"
+              total={count?.totalNetAmount}
+              color="error"
+              icon={'ant-design:bug-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
