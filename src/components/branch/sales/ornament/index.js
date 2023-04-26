@@ -24,7 +24,7 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Iconify from '../../../iconify';
 import Scrollbar from '../../../scrollbar';
 
@@ -43,7 +43,7 @@ const style = {
   border: 'none',
 };
 
-function Ornament({ setNotify, ornaments, setOrnaments }) {
+function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, ornamentType }) {
   const [openId, setOpenId] = useState(null);
   const [ornamentModal, setOrnamentModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -99,6 +99,11 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
     handleCloseDeleteModal();
   };
 
+  useEffect(() => {
+    const rate = ornamentType === 'gold' ? goldRate : ornamentType === 'silver' ? silverRate : 0;
+    setValues({ ...values, netAmount: (((values.netWeight ?? 0) * (values.purity ?? 0)) / 100) * rate });
+  }, [values.netWeight, values.purity]);
+
   return (
     <>
       <Grid item xs={12}>
@@ -113,6 +118,11 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
           >
             New Ornament
           </Button>
+        </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
+          <Typography gutterBottom>
+            <b>Gold Rate:</b> {goldRate} <b>Silver Rate:</b> {silverRate}
+          </Typography>
         </Stack>
         <Scrollbar>
           <TableContainer sx={{ minWidth: 800 }}>
@@ -224,7 +234,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   fullWidth
                   onBlur={handleBlur}
                   onChange={(e) => {
-                    setValues({ ...values, netWeight: e.target.value - values.stoneWeight });
+                    setValues({ ...values, netWeight: e.target.value - (values.stoneWeight ?? 0) });
                     handleChange(e);
                   }}
                 />
@@ -239,7 +249,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   fullWidth
                   onBlur={handleBlur}
                   onChange={(e) => {
-                    setValues({ ...values, netWeight: values.grossWeight - e.target.value });
+                    setValues({ ...values, netWeight: (values.grossWeight ?? 0) - e.target.value });
                     handleChange(e);
                   }}
                 />
@@ -268,10 +278,7 @@ function Ornament({ setNotify, ornaments, setOrnaments }) {
                   label={touched.purity && errors.purity ? errors.purity : 'Purity'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={(e) => {
-                    setValues({ ...values, netAmount: values.netWeight * e.target.value });
-                    handleChange(e);
-                  }}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={4}>

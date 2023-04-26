@@ -96,14 +96,14 @@ function CreateSale(props) {
       setBranch(data.data);
       if (data.data) {
         getGoldRateByState({
-          state: data.data.state,
+          state: data.data.address.state,
           type: 'gold',
           date: moment().format('YYYY-MM-DD'),
         }).then((data) => {
           setGoldRate(data.data);
         });
         getGoldRateByState({
-          state: data.data.state,
+          state: data.data.address.state,
           type: 'silver',
           date: moment().format('YYYY-MM-D'),
         }).then((data) => {
@@ -301,7 +301,14 @@ function CreateSale(props) {
                 onChange={handleChange}
               />
             </Grid>
-            <Ornament ornaments={ornaments} setOrnaments={setOrnaments} {...props} />
+            <Ornament
+              ornaments={ornaments}
+              setOrnaments={setOrnaments}
+              silverRate={payload.silverRate}
+              goldRate={payload.goldRate}
+              ornamentType={payload.ornamentType}
+              {...props}
+            />
             {(values.paymentType === 'bank' || values.paymentType === 'partial') && (
               <Bank
                 selectedUser={selectedUser}
