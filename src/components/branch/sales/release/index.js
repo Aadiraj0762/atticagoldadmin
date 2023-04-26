@@ -55,7 +55,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
   const [openId, setOpenId] = useState(null);
   const [releaseModal, setReleaseModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [selectedBankId, setSelectedBankId] = useState(null);
+  const [selectedBank, setSelectedBank] = useState(null);
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [page, setPage] = useState(0);
@@ -105,7 +105,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
       pledgeAmount: '',
       payableAmount: '',
       paymentType: '',
-      bankId: selectedBankId,
+      bank: selectedBank?._id,
       pledgedDate: moment(),
       pledgeId: '',
       pledgedIn: '',
@@ -186,6 +186,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   <TableCell align="left">Pledge amount</TableCell>
                   <TableCell align="left">Pledged date</TableCell>
                   <TableCell align="left">Payable amount</TableCell>
+                  <TableCell align="left">Payment Type</TableCell>
                   <TableCell align="left">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -204,6 +205,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                     <TableCell align="left">{e.pledgeAmount}</TableCell>
                     <TableCell align="left">{moment(e.pledgedDate).format('YYYY-MM-DD')}</TableCell>
                     <TableCell align="left">{e.payableAmount}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.paymentType)}</TableCell>
                     <TableCell align="left">
                       <Button
                         variant="contained"
@@ -220,12 +222,12 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                 ))}
                 {emptyRows > 0 && (
                   <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={9} />
                   </TableRow>
                 )}
                 {data.length === 0 && (
                   <TableRow>
-                    <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                    <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                       <Paper
                         sx={{
                           textAlign: 'center',
@@ -265,7 +267,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (values.paymentType === 'bank' && !selectedBankId) {
+              if (values.paymentType === 'bank' && !selectedBank) {
                 setNotify({
                   open: true,
                   message: 'Please select bank',
@@ -471,8 +473,8 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
               {values.paymentType === 'bank' && (
                 <Bank
                   selectedUser={selectedUser}
-                  selectedBankId={selectedBankId}
-                  setSelectedBankId={setSelectedBankId}
+                  selectedBank={selectedBank}
+                  setSelectedBank={setSelectedBank}
                   setNotify={setNotify}
                 />
               )}
