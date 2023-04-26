@@ -81,8 +81,8 @@ function CreateLeave(props) {
           });
         } else {
           const formData = new FormData();
-          formData.append('uploadId', data.data.uploadId);
-          formData.append('uploadName', data.data.uploadName);
+          formData.append('uploadId', data.data.fileUpload.uploadId);
+          formData.append('uploadName', data.data.fileUpload.uploadName);
           formData.append('uploadType', 'proof');
           formData.append('uploadedFile', values.proof);
           createFile(formData);
