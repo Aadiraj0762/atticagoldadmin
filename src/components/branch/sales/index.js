@@ -1,3 +1,4 @@
 import CreateSale from './CreateSale';
+import SalePrint from './SalePrint';
 
-export { CreateSale };
+export { CreateSale, SalePrint };

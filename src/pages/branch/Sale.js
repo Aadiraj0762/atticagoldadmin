@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateSale } from '../../components/branch/sales';
+import { CreateSale, SalePrint } from '../../components/branch/sales';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -395,6 +395,28 @@ export default function Sale() {
         <CreateSale setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
       </Container>
 
+      <Container
+        maxWidth="xl"
+        sx={{ display: toggleContainer === true && toggleContainerType === 'print' ? 'block' : 'none' }}
+      >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Print Invoice
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <SalePrint id={openId} />
+      </Container>
+
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -413,6 +435,16 @@ export default function Sale() {
           },
         }}
       >
+        <MenuItem
+          onClick={() => {
+            setOpen(null);
+            setToggleContainer(!toggleContainer);
+            setToggleContainerType('print');
+          }}
+        >
+          <Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />
+          Print
+        </MenuItem>
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {
