@@ -2,13 +2,22 @@ import { Helmet } from 'react-helmet-async';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
 // sections
 import { AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } from '../../sections/@dashboard/app';
+import { getCount } from '../../apis/admin/dashboard';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
+  const [count, setCount] = useState(null);
   const theme = useTheme();
+
+  useEffect(() => {
+    getCount().then((data) => {
+      setCount(data.data);
+    });
+  }, []);
 
   return (
     <>
@@ -23,19 +32,54 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary
+              title="Today's gold rate"
+              total={count?.todayGoldRate}
+              icon={'ant-design:android-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="Today's customers" total={count?.todayCustomers} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary
+              title="Today's bills"
+              total={count?.todayBills}
+              color="warning"
+              icon={'ant-design:windows-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="Today’s physical bills" total={count?.todayPhysicalBills} color="error" icon={'ant-design:bug-filled'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Today's pledge bills"
+              total={count?.todayPledgeBills}
+              color="warning"
+              icon={'ant-design:windows-filled'}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Total gross weight"
+              total={count?.totalGrossWeight}
+              color="info"
+              icon={'ant-design:apple-filled'}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Total net amount" total={count?.totalNetAmount} color="error" icon={'ant-design:bug-filled'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Total expenses" total={count?.totalExpenses} icon={'ant-design:android-filled'} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
