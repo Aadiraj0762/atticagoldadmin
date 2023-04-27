@@ -1,14 +1,22 @@
-import { TextField, Card, Grid } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Webcam from 'react-webcam';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { createAttendance } from '../../../apis/branch/attendance';
+import { getEmployee } from '../../../apis/branch/employee';
 
 function CreateAttendance(props) {
   const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
+  const [employees, setEmloyees] = useState([]);
+
+  useEffect(() => {
+    getEmployee().then((data) => {
+      setEmloyees(data.data);
+    });
+  }, []);
 
   const videoConstraints = {
     width: 420,
@@ -23,13 +31,13 @@ function CreateAttendance(props) {
 
   // Form validation
   const schema = Yup.object({
-    employeeId: Yup.string().required('Amount is required'),
-    employeePhoto: Yup.string().required('From is required'),
+    employee: Yup.string().required('Employee is required'),
+    employeePhoto: Yup.string().required('Employee photo is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues } = useFormik({
     initialValues: {
-      employeeId: '',
+      employee: '',
       employeePhoto: '',
     },
     validationSchema: schema,
@@ -64,15 +72,25 @@ function CreateAttendance(props) {
       >
         <Grid container spacing={3}>
           <Grid item xs={4}>
-            <TextField
-              name="employeeId"
-              value={values.employeeId}
-              error={touched.employeeId && errors.employeeId && true}
-              label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Employee Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.employee && errors.employee && true}>
+              <InputLabel id="select-label">Select employee</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.employee && errors.employee ? errors.employee : 'Select employee'}
+                name="employee"
+                value={values.employee}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setValues({ ...values, employee: e.target.value });
+                  handleChange(e);
+                }}
+              >
+                {employees.map((e) => (
+                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             {img === null ? (
