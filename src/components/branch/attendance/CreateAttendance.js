@@ -132,6 +132,7 @@ function CreateAttendance(props) {
             ) : (
               <>
                 <img src={img} alt="screenshot" />
+                <br />
                 <LoadingButton size="small" type="button" variant="contained" onClick={() => setImg(null)}>
                   Retake
                 </LoadingButton>
