@@ -70,7 +70,6 @@ export default function SaleListToolbar({ handleDelete, numSelected, filterName,
         <Tooltip title="Delete">
           <IconButton
             onClick={() => {
-              console.log('ok');
               handleDelete();
             }}
           >

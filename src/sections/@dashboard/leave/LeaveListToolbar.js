@@ -70,7 +70,6 @@ export default function LeaveListToolbar({ handleDelete, numSelected, filterName
         <Tooltip title="Delete">
           <IconButton
             onClick={() => {
-              console.log('ok');
               handleDelete();
             }}
           >

@@ -70,7 +70,6 @@ export default function AttendanceListToolbar({ handleDelete, numSelected, filte
         <Tooltip title="Delete">
           <IconButton
             onClick={() => {
-              console.log('ok');
               handleDelete();
             }}
           >

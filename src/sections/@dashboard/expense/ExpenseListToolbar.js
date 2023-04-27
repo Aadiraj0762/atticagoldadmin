@@ -70,7 +70,6 @@ export default function ExpenseListToolbar({ handleDelete, numSelected, filterNa
         <Tooltip title="Delete">
           <IconButton
             onClick={() => {
-              console.log('ok');
               handleDelete();
             }}
           >

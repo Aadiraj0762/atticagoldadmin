@@ -70,7 +70,6 @@ export default function BranchListToolbar({ handleDelete, numSelected, filterNam
         <Tooltip title="Delete">
           <IconButton
             onClick={() => {
-              console.log('ok');
               handleDelete();
             }}
           >

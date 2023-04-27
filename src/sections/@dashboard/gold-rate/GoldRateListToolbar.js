@@ -70,7 +70,6 @@ export default function GoldRateListToolbar({ handleDelete, numSelected, filterN
         <Tooltip title="Delete">
           <IconButton
             onClick={() => {
-              console.log('ok');
               handleDelete();
             }}
           >
