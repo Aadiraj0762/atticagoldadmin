@@ -12,8 +12,6 @@ export default function SalePrint({ id }) {
     });
   }, [id]);
 
-  console.log(data);
-
   return (
     <>
       <iframe
