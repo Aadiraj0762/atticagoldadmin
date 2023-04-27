@@ -206,7 +206,7 @@ export default function Attendance() {
   return (
     <>
       <Helmet>
-        <title> Attendance | Minimal UI </title>
+        <title> Attendance | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

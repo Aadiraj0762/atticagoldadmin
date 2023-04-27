@@ -209,7 +209,7 @@ export default function Customer() {
   return (
     <>
       <Helmet>
-        <title> Customer | Minimal UI </title>
+        <title> Customer | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

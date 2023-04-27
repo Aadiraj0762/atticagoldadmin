@@ -208,7 +208,7 @@ export default function GoldRate() {
   return (
     <>
       <Helmet>
-        <title> Gold Rate | Minimal UI </title>
+        <title> Gold Rate | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

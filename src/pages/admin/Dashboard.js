@@ -22,7 +22,7 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> Dashboard | Benaka Gold </title>
       </Helmet>
 
       <Container maxWidth="xl">

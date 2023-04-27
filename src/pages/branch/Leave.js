@@ -211,7 +211,7 @@ export default function Leave() {
   return (
     <>
       <Helmet>
-        <title> Leave | Minimal UI </title>
+        <title> Leave | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

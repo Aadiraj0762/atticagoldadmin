@@ -210,7 +210,7 @@ export default function Expense() {
   return (
     <>
       <Helmet>
-        <title> Expense | Minimal UI </title>
+        <title> Expense | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

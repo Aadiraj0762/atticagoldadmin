@@ -211,7 +211,7 @@ export default function Fund() {
   return (
     <>
       <Helmet>
-        <title> Fund | Minimal UI </title>
+        <title> Fund | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

@@ -210,7 +210,7 @@ export default function Employee() {
   return (
     <>
       <Helmet>
-        <title> Employee | Minimal UI </title>
+        <title> Employee | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

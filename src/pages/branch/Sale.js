@@ -210,7 +210,7 @@ export default function Sale() {
   return (
     <>
       <Helmet>
-        <title> Sale | Minimal UI </title>
+        <title> Sale | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -401,7 +401,7 @@ export default function Sale() {
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Print Invoice
+            Invoice
           </Typography>
           <Button
             variant="contained"

@@ -224,7 +224,7 @@ export default function Branch() {
   return (
     <>
       <Helmet>
-        <title> Branch | Minimal UI </title>
+        <title> Branch | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

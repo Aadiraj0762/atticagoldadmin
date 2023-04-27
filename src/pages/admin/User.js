@@ -225,7 +225,7 @@ export default function User() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> User | Benaka Gold </title>
       </Helmet>
 
       <Snackbar

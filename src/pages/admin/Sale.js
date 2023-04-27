@@ -209,7 +209,7 @@ export default function Sale() {
   return (
     <>
       <Helmet>
-        <title> Sale | Minimal UI </title>
+        <title> Sale | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
