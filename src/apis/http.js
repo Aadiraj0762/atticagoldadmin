@@ -1,7 +1,7 @@
 import axios from 'axios';
+import global from '../utils/global';
 
 export default axios.create({
-  baseURL: 'http://192.168.1.34:9000',
-  // baseURL: 'https://benaka.gold/api',
+  baseURL: global.baseURL,
   headers: { Authorization: `Bearer ${localStorage.token}` },
 });

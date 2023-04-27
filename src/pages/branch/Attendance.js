@@ -34,6 +34,7 @@ import Scrollbar from '../../components/scrollbar';
 import { AttendanceListHead, AttendanceListToolbar } from '../../sections/@dashboard/attendance';
 // mock
 import { deleteAttendanceById, getAttendance } from '../../apis/branch/attendance';
+import global from '../../utils/global';
 
 // ----------------------------------------------------------------------
 
@@ -273,7 +274,7 @@ export default function Attendance() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employeeId, employeePhoto, createdAt } = row;
+                    const { _id, employee, attendance, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -281,8 +282,14 @@ export default function Attendance() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
-                        <TableCell align="left">{employeePhoto}</TableCell>
+                        <TableCell align="left">{employee.employeeId}</TableCell>
+                        <TableCell align="left">
+                          <img
+                            src={`${global.baseURL}/${attendance.uploadedFile}`}
+                            alt="attendance"
+                            style={{ width: '80px' }}
+                          />
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton

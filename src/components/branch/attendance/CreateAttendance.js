@@ -35,7 +35,7 @@ function CreateAttendance(props) {
     employee: Yup.string().required('Employee is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: {
       employee: '',
     },
@@ -60,7 +60,7 @@ function CreateAttendance(props) {
           fetch(img)
             .then((res) => res.blob())
             .then((blob) => {
-              const file = new File([blob], data.data.fileUpload.uploadId + '.png', { type: 'image/png' });
+              const file = new File([blob], `${data.data.fileUpload.uploadId}.png`, { type: 'image/png' });
               const formData = new FormData();
               formData.append('uploadId', data.data.fileUpload.uploadId);
               formData.append('uploadName', data.data.fileUpload.uploadName);
@@ -69,6 +69,8 @@ function CreateAttendance(props) {
               createFile(formData);
             });
           props.setToggleContainer(false);
+          resetForm();
+          setImg(null);
           props.setNotify({
             open: true,
             message: 'Attendance created',
