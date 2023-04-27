@@ -285,7 +285,7 @@ export default function Attendance() {
                         <TableCell align="left">{employee.employeeId}</TableCell>
                         <TableCell align="left">
                           <img
-                            src={`${global.baseURL}/${attendance.uploadedFile}`}
+                            src={`${global.baseURL}/${attendance?.uploadedFile}`}
                             alt="attendance"
                             style={{ width: '80px' }}
                           />
@@ -365,27 +365,26 @@ export default function Attendance() {
         </Card>
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Create Attendance
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
+      {toggleContainer === true && toggleContainerType === 'create' && (
+        <Container maxWidth="xl">
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Create Attendance
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mdi:arrow-left" />}
+              onClick={() => {
+                setToggleContainer(!toggleContainer);
+              }}
+            >
+              Back
+            </Button>
+          </Stack>
 
-        <CreateAttendance setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
-      </Container>
+          <CreateAttendance setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
+        </Container>
+      )}
 
       <Popover
         open={Boolean(open)}

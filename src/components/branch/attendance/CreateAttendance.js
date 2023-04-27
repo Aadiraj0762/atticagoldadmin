@@ -124,16 +124,17 @@ function CreateAttendance(props) {
                   screenshotFormat="image/png"
                   videoConstraints={videoConstraints}
                 />
-                <button type="button" onClick={capture}>
+                <br />
+                <LoadingButton size="small" type="button" variant="contained" onClick={capture}>
                   Capture photo
-                </button>
+                </LoadingButton>
               </>
             ) : (
               <>
                 <img src={img} alt="screenshot" />
-                <button type="button" onClick={() => setImg(null)}>
+                <LoadingButton size="small" type="button" variant="contained" onClick={() => setImg(null)}>
                   Retake
-                </button>
+                </LoadingButton>
               </>
             )}
           </Grid>
