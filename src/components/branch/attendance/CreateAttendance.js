@@ -6,6 +6,7 @@ import Webcam from 'react-webcam';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { createAttendance } from '../../../apis/branch/attendance';
 import { getEmployee } from '../../../apis/branch/employee';
+import { createFile } from '../../../apis/branch/fileupload';
 
 function CreateAttendance(props) {
   const [img, setImg] = useState(null);
@@ -32,16 +33,22 @@ function CreateAttendance(props) {
   // Form validation
   const schema = Yup.object({
     employee: Yup.string().required('Employee is required'),
-    employeePhoto: Yup.string().required('Employee photo is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues } = useFormik({
     initialValues: {
       employee: '',
-      employeePhoto: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      if (!img) {
+        props.setNotify({
+          open: true,
+          message: 'Please capture photo',
+          severity: 'info',
+        });
+        return;
+      }
       createAttendance(values).then((data) => {
         if (data.status === false) {
           props.setNotify({
@@ -50,6 +57,17 @@ function CreateAttendance(props) {
             severity: 'error',
           });
         } else {
+          fetch(img)
+            .then((res) => res.blob())
+            .then((blob) => {
+              const file = new File([blob], 'File name', { type: 'image/png' });
+              const formData = new FormData();
+              formData.append('uploadId', data.data.fileUpload.uploadId);
+              formData.append('uploadName', data.data.fileUpload.uploadName);
+              formData.append('uploadType', 'attendance');
+              formData.append('uploadedFile', file);
+              createFile(formData);
+            });
           props.setToggleContainer(false);
           props.setNotify({
             open: true,
