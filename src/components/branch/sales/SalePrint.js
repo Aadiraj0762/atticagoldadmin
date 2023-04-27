@@ -14,11 +14,7 @@ export default function SalePrint({ id }) {
 
   return (
     <>
-      <iframe
-        id="iframe"
-        style={{ display: 'none', height: '0px', width: '0px', position: 'absolute' }}
-        title="pdf"
-      />
+      <iframe id="iframe" style={{ display: 'none', height: '0px', width: '0px', position: 'absolute' }} title="pdf" />
       <div id="pdf">
         <img
           alt="Logo"
@@ -34,28 +30,44 @@ export default function SalePrint({ id }) {
           <br />
           <b>GST:</b> 29AAJCB0171B1Z2
           <br />
-          <div style={{ display: 'block', height: '20px' }}>
-            <div style={{ display: 'inline-block', float: 'left' }}>
-              <b>Bill ID:</b> {data?._id}
-            </div>
-            <div style={{ display: 'inline-block', float: 'right' }}>{new Date(data?.createdAt).toUTCString()}</div>
+          <div style={{ display: 'block', margin: '20px 0' }}>
+            <table style={{ width: '100%', textAlign: 'left' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '50%' }}>
+                    <b>Bill ID:</b> {data?._id}
+                  </td>
+                  <td style={{ width: '50%', textAlign: 'right' }}>{new Date(data?.createdAt).toUTCString()}</td>
+                </tr>
+                <tr>
+                  <td style={{ width: '50%' }}>
+                    <b>Gold Rate:</b> &#8377; {data?.goldRate}
+                  </td>
+                  <td style={{ width: '50%', textAlign: 'right' }} />
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <hr style={{ border: '0', borderBottom: '1px solid' }} />
         <div style={{ margin: '20px 0' }}>
           <table style={{ width: '100%', textAlign: 'left' }}>
-            <tr>
-              <th style={{ width: '40%' }}>Customer Name :</th>
-              <td>{data?.customer?.name}</td>
-            </tr>
-            <tr>
-              <th>Contact :</th>
-              <td>{data?.customer?.phoneNumber}</td>
-            </tr>
-            <tr>
-              <th>Address :</th>
-              <td>{data?.customer?.address[0]?.address}</td>
-            </tr>
+            <tbody>
+              <tr>
+                <th style={{ width: '40%' }}>Customer Name :</th>
+                <td>{data?.customer?.name}</td>
+              </tr>
+              <tr>
+                <th>Contact :</th>
+                <td>{data?.customer?.phoneNumber}</td>
+              </tr>
+              <tr>
+                <th>Address :</th>
+                <td>
+                  {`${data?.customer?.address[0]?.address}, ${data?.customer?.address[0]?.city}, ${data?.customer?.address[0]?.state}, ${data?.customer?.address[0]?.pincode}`}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div style={{ margin: '20px 0' }}>
@@ -67,113 +79,119 @@ export default function SalePrint({ id }) {
               borderCollapse: 'collapse',
             }}
           >
-            <tr>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '5px',
-                }}
-              >
-                Gram
-              </th>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '5px',
-                }}
-              >
-                Stone
-              </th>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '5px',
-                }}
-              >
-                NetW
-              </th>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '5px',
-                }}
-              >
-                Purity
-              </th>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '5px',
-                }}
-              >
-                Amount
-              </th>
-            </tr>
-            {data?.ornaments?.map((e) => (
+            <thead>
               <tr>
-                <td
+                <th
                   style={{
                     border: '1px solid',
                     padding: '5px',
                   }}
                 >
-                  {e.grossWeight}
-                </td>
-                <td
+                  Gram
+                </th>
+                <th
                   style={{
                     border: '1px solid',
                     padding: '5px',
                   }}
                 >
-                  {e.stoneWeight}
-                </td>
-                <td
+                  Stone
+                </th>
+                <th
                   style={{
                     border: '1px solid',
                     padding: '5px',
                   }}
                 >
-                  {e.netWeight}
-                </td>
-                <td
+                  NetW
+                </th>
+                <th
                   style={{
                     border: '1px solid',
                     padding: '5px',
                   }}
                 >
-                  {e.purity}
-                </td>
-                <td
+                  Purity
+                </th>
+                <th
                   style={{
                     border: '1px solid',
                     padding: '5px',
                   }}
                 >
-                  {e.netAmount}
-                </td>
+                  Amount
+                </th>
               </tr>
-            ))}
+            </thead>
+            <tbody>
+              {data?.ornaments?.map((e) => (
+                <tr key={e._id}>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.grossWeight} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.stoneWeight} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.netWeight} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.purity} %
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    &#8377; {e.netAmount}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
         <hr style={{ border: '0', borderBottom: '1px solid' }} />
         <div style={{ display: 'block', margin: '20px 0' }}>
           <table style={{ width: '100%', textAlign: 'left' }}>
-            <tr>
-              <td style={{ width: '50%' }}>Gross Amount</td>
-              <td style={{ width: '50%', textAlign: 'right' }}>50.97</td>
-            </tr>
-            <tr>
-              <td style={{ width: '50%' }}>Release</td>
-              <td style={{ width: '50%', textAlign: 'right' }}>3.06</td>
-            </tr>
-            <tr>
-              <td style={{ width: '50%' }}>Service Charges</td>
-              <td style={{ width: '50%', textAlign: 'right' }}>54.03</td>
-            </tr>
-            <tr>
-              <th style={{ width: '50%' }}>Payable</th>
-              <td style={{ width: '50%', textAlign: 'right' }}>54.03</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td style={{ width: '50%' }}>Gross Amount</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 50.97</td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>Release</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 3.06</td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>Service Charges</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 54.03</td>
+              </tr>
+              <tr>
+                <th style={{ width: '50%' }}>Payable</th>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 54.03</td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <hr style={{ border: '0', borderBottom: '1px solid' }} />
@@ -191,8 +209,10 @@ export default function SalePrint({ id }) {
           pri.document.open();
           pri.document.write(content.innerHTML);
           pri.document.close();
-          pri.focus();
-          pri.print();
+          pri.onload = function () {
+            pri.focus();
+            pri.print();
+          };
         }}
       >
         Print
