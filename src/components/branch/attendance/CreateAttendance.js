@@ -60,7 +60,7 @@ function CreateAttendance(props) {
           fetch(img)
             .then((res) => res.blob())
             .then((blob) => {
-              const file = new File([blob], 'File name', { type: 'image/png' });
+              const file = new File([blob], data.data.fileUpload.uploadId + '.png', { type: 'image/png' });
               const formData = new FormData();
               formData.append('uploadId', data.data.fileUpload.uploadId);
               formData.append('uploadName', data.data.fileUpload.uploadName);
