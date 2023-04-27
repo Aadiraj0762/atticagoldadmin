@@ -268,7 +268,7 @@ export default function Leave() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branchId, employeeId, leaveType, dates, note, status, createdAt } = row;
+                    const { _id, branch, employee, leaveType, dates, note, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -276,8 +276,8 @@ export default function Leave() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
+                        <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{employee?.employeeId}</TableCell>
                         <TableCell align="left">{leaveType}</TableCell>
                         <TableCell align="left">
                           {dates.map((date) => moment(date).format('Y/M/D')).join(', ')}

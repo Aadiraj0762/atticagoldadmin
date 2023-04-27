@@ -407,7 +407,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                     labelId="select-label"
                     id="select"
                     label={
-                      touched.maritalStatus && errors.maritalStatus ? errors.maritalStatus : 'Select maritalStatus'
+                      touched.maritalStatus && errors.maritalStatus ? errors.maritalStatus : 'Select marital status'
                     }
                     name="maritalStatus"
                     value={values.maritalStatus}

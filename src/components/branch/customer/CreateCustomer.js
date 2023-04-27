@@ -195,7 +195,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
           </Grid>
           <Grid item xs={4}>
             <FormControl fullWidth error={touched.maritalStatus && errors.maritalStatus && true}>
-              <InputLabel id="select-label">Select maritalStatus</InputLabel>
+              <InputLabel id="select-label">Select marital status</InputLabel>
               <Select
                 labelId="select-label"
                 id="select"

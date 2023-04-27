@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay, StaticDatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import { getLeaveById, updateLeave } from '../../../apis/admin/leave';
+import { getEmployee } from '../../../apis/admin/employee';
 
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== 'selected',
@@ -26,22 +27,20 @@ const CustomPickersDay = styled(PickersDay, {
 }));
 
 function UpdateLeave(props) {
+  const [employees, setEmloyees] = useState([]);
+
   // Form validation
   const schema = Yup.object({
-    branchId: Yup.string().required('Branch id is required'),
-    employeeId: Yup.string().required('Employee Id is required'),
+    employee: Yup.string().required('Employee Id is required'),
     leaveType: Yup.string().required('Leave type is required'),
-    proof: Yup.string().required('Proof is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
     status: Yup.string().required('Status is required'),
   });
 
   const initialValues = {
-    branchId: '',
-    employeeId: '',
+    employee: '',
     leaveType: '',
-    proof: '',
     dates: [],
     note: '',
     status: '',
@@ -79,12 +78,16 @@ function UpdateLeave(props) {
   };
 
   useEffect(() => {
+    getEmployee().then((data) => {
+      setEmloyees(data.data);
+    });
     setValues(initialValues);
     resetForm();
     if (props.id) {
       getLeaveById(props.id).then((data) => {
         const payload = {
           ...data.data,
+          employee: data.data.employee?._id,
           dates: data.data.dates?.map((item) => moment(moment(item).format('YYYY-MM-DD'))),
         };
         setValues(payload ?? {});
@@ -103,26 +106,25 @@ function UpdateLeave(props) {
       >
         <Grid container spacing={3}>
           <Grid item xs={4}>
-            <TextField
-              name="branchId"
-              value={values.branchId}
-              error={touched.branchId && errors.branchId && true}
-              label={touched.branchId && errors.branchId ? errors.branchId : 'Branch Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              name="employeeId"
-              value={values.employeeId}
-              error={touched.employeeId && errors.employeeId && true}
-              label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Employee Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.employee && errors.employee && true}>
+              <InputLabel id="select-label">Select employee</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.employee && errors.employee ? errors.employee : 'Select employee'}
+                name="employee"
+                value={values.employee}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setValues({ ...values, employee: e.target.value });
+                  handleChange(e);
+                }}
+              >
+                {employees?.map((e) => (
+                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={4}>
             <TextField
@@ -130,17 +132,6 @@ function UpdateLeave(props) {
               value={values.leaveType}
               error={touched.leaveType && errors.leaveType && true}
               label={touched.leaveType && errors.leaveType ? errors.leaveType : 'Leave Type'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              name="proof"
-              value={values.proof}
-              error={touched.proof && errors.proof && true}
-              label={touched.proof && errors.proof ? errors.proof : 'Proof'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}

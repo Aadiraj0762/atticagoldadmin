@@ -283,10 +283,10 @@ export default function Customer() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{sentenceCase(name)}</TableCell>
+                        <TableCell align="left">{sentenceCase(name ?? '')}</TableCell>
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{phoneNumber}</TableCell>
-                        <TableCell align="left">{sentenceCase(gender)}</TableCell>
+                        <TableCell align="left">{sentenceCase(gender ?? '')}</TableCell>
                         <TableCell align="left">
                           <Label
                             color={
