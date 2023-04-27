@@ -119,7 +119,7 @@ function CreateAttendance(props) {
                   height={400}
                   width={400}
                   ref={webcamRef}
-                  screenshotFormat="image/jpeg"
+                  screenshotFormat="image/png"
                   videoConstraints={videoConstraints}
                 />
                 <button type="button" onClick={capture}>
