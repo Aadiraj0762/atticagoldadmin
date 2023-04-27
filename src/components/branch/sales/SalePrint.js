@@ -177,19 +177,21 @@ export default function SalePrint({ id }) {
             <tbody>
               <tr>
                 <td style={{ width: '50%' }}>Gross Amount</td>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 50.97</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {data?.netAmount}</td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Release</td>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 3.06</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>
+                  &#8377; {data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0)}
+                </td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Service Charges</td>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 54.03</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {(data?.netAmount * data?.margin) / 100}</td>
               </tr>
               <tr>
                 <th style={{ width: '50%' }}>Payable</th>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; 54.03</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {data?.payableAmount}</td>
               </tr>
             </tbody>
           </table>
