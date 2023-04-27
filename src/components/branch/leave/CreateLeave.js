@@ -135,7 +135,7 @@ function CreateLeave(props) {
                 }}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                  <MenuItem value={e._id}>{e.employeeId} {e.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
