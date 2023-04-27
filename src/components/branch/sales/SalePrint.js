@@ -17,7 +17,7 @@ export default function SalePrint({ id }) {
   return (
     <>
       <iframe
-        id="ifmcontentstoprint"
+        id="iframe"
         style={{ display: 'none', height: '0px', width: '0px', position: 'absolute' }}
         title="pdf"
       />
@@ -189,7 +189,7 @@ export default function SalePrint({ id }) {
         startIcon={<Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />}
         onClick={() => {
           const content = document.getElementById('pdf');
-          const pri = document.getElementById('ifmcontentstoprint').contentWindow;
+          const pri = document.getElementById('iframe').contentWindow;
           pri.document.open();
           pri.document.write(content.innerHTML);
           pri.document.close();
