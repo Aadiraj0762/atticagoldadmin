@@ -182,13 +182,13 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+      {/* <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <Link variant="subtitle2" underline="hover">
           Forgot password?
         </Link>
-      </Stack>
+      </Stack> */}
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" disabled={isDisable}>
+      <LoadingButton fullWidth size="large" type="submit" variant="contained" disabled={isDisable} sx={{ my: 2 }}>
         Login
       </LoadingButton>
     </form>

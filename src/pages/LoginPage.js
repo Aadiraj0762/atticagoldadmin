@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography } from '@mui/material';
+import { Link, Container, Typography, Box } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -19,7 +19,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
 
 const StyledSection = styled('div')(({ theme }) => ({
   width: '100%',
-  maxWidth: 480,
+  maxWidth: 840,
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -49,33 +49,44 @@ export default function LoginPage() {
       </Helmet>
 
       <StyledRoot>
-        <Logo
+        {/* <Logo
           sx={{
             position: 'fixed',
             top: { xs: 16, sm: 24, md: 40 },
             left: { xs: 16, sm: 24, md: 40 },
           }}
-        />
+        /> */}
 
         {mdUp && (
           <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+            {/* <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
               Hi, Welcome Back
-            </Typography>
-            <img src="/assets/illustrations/illustration_login.png" alt="login" />
+            </Typography> */}
+            <img src="/assets/login.png" alt="login" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </StyledSection>
         )}
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
+            <Box
+              component="div"
+              sx={{
+                width: 96,
+                height: 96,
+                display: 'inline-flex',
+                mx: 'auto',
+                mb: 5,
+              }}
+            >
+              <img alt="Logo" src="/assets/logo.png" />
+            </Box>
+            <Typography variant="h4" gutterBottom sx={{ mb: 5 }}>
+              Sign in to Continue
             </Typography>
 
-            <Typography variant="body2" sx={{ mb: 5 }}>
-              Don’t have an account? {''}
-              <Link variant="subtitle2">Get started</Link>
-            </Typography>
+            {/* <Typography variant="body2" sx={{ mb: 5 }}>
+              Don’t have an account? <Link variant="subtitle2">Get started</Link>
+            </Typography> */}
 
             <LoginForm />
           </StyledContent>
