@@ -39,7 +39,8 @@ import global from '../../utils/global';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'employeeId', label: 'Employee Id', alignRight: false },
+  { id: 'employee', label: 'Employee Id', alignRight: false },
+  { id: 'employee', label: 'Employee Name', alignRight: false },
   { id: 'employeePhoto', label: 'Employee Photo', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -282,7 +283,8 @@ export default function Attendance() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{employee.employeeId}</TableCell>
+                        <TableCell align="left">{employee?.employeeId}</TableCell>
+                        <TableCell align="left">{employee?.name}</TableCell>
                         <TableCell align="left">
                           <img
                             src={`${global.baseURL}/${attendance?.uploadedFile}`}
@@ -313,7 +315,7 @@ export default function Attendance() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={5} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -329,7 +331,7 @@ export default function Attendance() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={5} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

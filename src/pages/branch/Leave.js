@@ -40,7 +40,9 @@ import { deleteLeaveById, getLeave } from '../../apis/branch/leave';
 
 const TABLE_HEAD = [
   { id: 'branch', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Name', alignRight: false },
   { id: 'employee', label: 'Employee Id', alignRight: false },
+  { id: 'employee', label: 'Employee Name', alignRight: false },
   { id: 'leaveType', label: 'Leave Type', alignRight: false },
   { id: 'dates', label: 'Dates', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
@@ -287,7 +289,9 @@ export default function Leave() {
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchName}</TableCell>
                         <TableCell align="left">{employee?.employeeId}</TableCell>
+                        <TableCell align="left">{employee?.name}</TableCell>
                         <TableCell align="left">{leaveType}</TableCell>
                         <TableCell align="left">
                           {dates.map((date) => moment(date).format('Y/M/D')).join(', ')}
@@ -325,7 +329,7 @@ export default function Leave() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={11} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -341,7 +345,7 @@ export default function Leave() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={11} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
