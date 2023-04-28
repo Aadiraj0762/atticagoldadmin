@@ -41,7 +41,7 @@ import global from '../../utils/global';
 const TABLE_HEAD = [
   { id: 'employee', label: 'Employee Id', alignRight: false },
   { id: 'employee', label: 'Employee Name', alignRight: false },
-  { id: 'employeePhoto', label: 'Employee Photo', alignRight: false },
+  { id: 'attendance', label: 'Employee Photo', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
