@@ -39,10 +39,11 @@ import { deleteSalesById, getSales, updateSales } from '../../apis/admin/sales';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'type', label: 'Type', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
-  { id: 'note', label: 'Note', alignRight: false },
+  { id: 'saleType', label: 'Sale Type', alignRight: false },
+  { id: 'netAmount', label: 'Net Amount', alignRight: false },
+  { id: 'branch', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Name', alignRight: false },
+  { id: 'ornamentType', label: 'Ornament Type', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'status', label: 'Reject/Approve', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
@@ -294,6 +295,7 @@ export default function Sale() {
                         <TableCell align="left">{sentenceCase(saleType)}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchName}</TableCell>
                         <TableCell align="left">{sentenceCase(ornamentType)}</TableCell>
                         <TableCell align="left">
                           <Label
@@ -330,7 +332,7 @@ export default function Sale() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -346,7 +348,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

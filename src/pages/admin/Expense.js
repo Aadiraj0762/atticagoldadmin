@@ -42,7 +42,8 @@ import { deleteExpenseById, getExpense, updateExpense } from '../../apis/admin/e
 const TABLE_HEAD = [
   { id: 'type', label: 'Type', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Name', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'status', label: 'Reject/Approve', alignRight: false },
@@ -295,6 +296,7 @@ export default function Expense() {
                         <TableCell align="left">{type}</TableCell>
                         <TableCell align="left">{amount}</TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchName}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">
                           <Label
@@ -331,7 +333,7 @@ export default function Expense() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -347,7 +349,7 @@ export default function Expense() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

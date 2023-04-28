@@ -33,12 +33,14 @@ import Scrollbar from '../../components/scrollbar';
 import { AttendanceListHead, AttendanceListToolbar } from '../../sections/@dashboard/attendance';
 // mock
 import { deleteAttendanceById, getAttendance } from '../../apis/admin/attendance';
+import global from '../../utils/global';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'employeeId', label: 'Employee Id', alignRight: false },
-  { id: 'employeePhoto', label: 'Employee Photo', alignRight: false },
+  { id: 'employee', label: 'Employee Id', alignRight: false },
+  { id: 'employee', label: 'Employee Name', alignRight: false },
+  { id: 'attendance', label: 'Employee Photo', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -262,7 +264,7 @@ export default function Attendance() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employee, employeePhoto, createdAt } = row;
+                    const { _id, employee, attendance, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -271,7 +273,14 @@ export default function Attendance() {
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
                         <TableCell align="left">{employee?.employeeId}</TableCell>
-                        <TableCell align="left">{employeePhoto}</TableCell>
+                        <TableCell align="left">{employee?.name}</TableCell>
+                        <TableCell align="left">
+                          <img
+                            src={`${global.baseURL}/${attendance?.uploadedFile}`}
+                            alt="attendance"
+                            style={{ width: '80px' }}
+                          />
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -295,7 +304,7 @@ export default function Attendance() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={5} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -311,7 +320,7 @@ export default function Attendance() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={5} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
