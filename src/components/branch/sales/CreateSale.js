@@ -191,7 +191,7 @@ function CreateSale(props) {
             Billing Details
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth error={touched.ornamentType && errors.ornamentType && true}>
                 <InputLabel id="select-ornamentType">Select ornament type</InputLabel>
                 <Select
@@ -208,7 +208,7 @@ function CreateSale(props) {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth error={touched.saleType && errors.saleType && true}>
                 <InputLabel id="select-saleType">Select sale type</InputLabel>
                 <Select
@@ -225,7 +225,7 @@ function CreateSale(props) {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DesktopDatePicker
                   name="dop"
@@ -240,7 +240,7 @@ function CreateSale(props) {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth error={touched.paymentType && errors.paymentType && true}>
                 <InputLabel id="select-paymentType">Select payment type</InputLabel>
                 <Select
@@ -259,7 +259,7 @@ function CreateSale(props) {
               </FormControl>
             </Grid>
             {values.paymentType === 'partial' && (
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   name="cashAmount"
                   type={'number'}
@@ -276,7 +276,7 @@ function CreateSale(props) {
               </Grid>
             )}
             {values.paymentType === 'partial' && (
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   name="bankAmount"
                   type={'number'}
@@ -289,7 +289,7 @@ function CreateSale(props) {
                 />
               </Grid>
             )}
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="margin"
                 type={'number'}
@@ -407,7 +407,7 @@ function CreateSale(props) {
                 Customer Detail:
               </Typography>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="name"
                 value={selectedUser?.name}
@@ -418,7 +418,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="address"
                 value={selectedUser?.address[0]?.address}
@@ -429,7 +429,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="saleType"
                 value={sentenceCase(values.saleType ?? '')}
@@ -503,7 +503,7 @@ function CreateSale(props) {
                 />
               </Scrollbar>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="grossWeight"
                 value={ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0}
@@ -514,7 +514,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="stoneWeight"
                 value={ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0}
@@ -525,7 +525,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="netWeight"
                 value={payload.netWeight}
@@ -537,7 +537,7 @@ function CreateSale(props) {
               />
             </Grid>
             {values.ornamentType === 'gold' ? (
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   name="goldRate"
                   value={payload.goldRate}
@@ -549,7 +549,7 @@ function CreateSale(props) {
                 />
               </Grid>
             ) : (
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   name="silverRate"
                   value={payload.silverRate}
@@ -561,7 +561,7 @@ function CreateSale(props) {
                 />
               </Grid>
             )}
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="margin"
                 type={'number'}
@@ -573,7 +573,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="netAmount"
                 value={payload.netAmount}
@@ -584,7 +584,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="releaseAmount"
                 value={selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0}
@@ -595,7 +595,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="netPayable"
                 value={payload.netAmount - payload.payableAmount}
@@ -606,7 +606,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 name="paymentType"
                 value={sentenceCase(values.paymentType ?? '')}
@@ -619,7 +619,7 @@ function CreateSale(props) {
             </Grid>
             {values.paymentType === 'bank' && (
               <>
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     name="accountHolderName"
                     value={sentenceCase(selectedBank?.accountHolderName ?? '')}
@@ -630,7 +630,7 @@ function CreateSale(props) {
                     }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     name="accountNo"
                     value={selectedBank?.accountNo}
@@ -641,7 +641,7 @@ function CreateSale(props) {
                     }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     name="branch"
                     value={selectedBank?.branch}
@@ -652,7 +652,7 @@ function CreateSale(props) {
                     }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     name="ifscCode"
                     value={selectedBank?.ifscCode}

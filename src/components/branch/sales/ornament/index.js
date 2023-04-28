@@ -1,10 +1,6 @@
 import {
   TextField,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
   Box,
   Button,
@@ -33,7 +29,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 900,
+  width: 800,
   maxHeight: '95%',
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -51,6 +47,24 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [width, setWindowWidth] = useState(0);
+
+  const updateDimensions = () => {
+    const width = window.innerWidth;
+    setWindowWidth(width);
+  };
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  if (width < 899) {
+    style.width = "80%";
+  } else {
+    style.width = 800;
+  }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ornaments.length) : 0;
   const handleChangePage = (event, newPage) => {
@@ -212,7 +226,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
             }}
           >
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="quantity"
                   type={'number'}
@@ -224,7 +238,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="grossWeight"
                   type={'number'}
@@ -239,7 +253,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
                   }}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="stoneWeight"
                   type={'number'}
@@ -254,7 +268,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
                   }}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="netWeight"
                   type={'number'}
@@ -269,7 +283,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
                   }}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="purity"
                   type={'number'}
@@ -281,7 +295,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="netAmount"
                   type={'number'}

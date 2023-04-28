@@ -62,7 +62,7 @@ function UpdateGoldRate(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="rate"
               value={values.rate}
@@ -73,7 +73,7 @@ function UpdateGoldRate(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.type && errors.type && true}>
               <InputLabel id="select-label">Select type</InputLabel>
               <Select
@@ -90,7 +90,7 @@ function UpdateGoldRate(props) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="state"
               error={touched.state && errors.state && true}

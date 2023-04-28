@@ -119,7 +119,7 @@ function CreateLeave(props) {
         encType="multipart/form-data"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>
               <Select
@@ -140,7 +140,7 @@ function CreateLeave(props) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="leaveType"
               value={values.leaveType}
@@ -151,7 +151,7 @@ function CreateLeave(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="proof"
               type={'file'}
@@ -163,7 +163,7 @@ function CreateLeave(props) {
               required
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <LocalizationProvider dateAdapter={AdapterMoment} fullWidth>
               <StaticDatePicker
                 displayStaticWrapperAs="desktop"
@@ -187,7 +187,7 @@ function CreateLeave(props) {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="note"
               value={values.note}

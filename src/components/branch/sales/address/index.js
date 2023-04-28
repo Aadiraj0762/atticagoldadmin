@@ -54,6 +54,24 @@ function Address({ step, setStep, setNotify, selectedUser }) {
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [width, setWindowWidth] = useState(0);
+
+  const updateDimensions = () => {
+    const width = window.innerWidth;
+    setWindowWidth(width);
+  };
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  if (width < 899) {
+    style.width = "80%";
+  } else {
+    style.width = 800;
+  }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
   const handleChangePage = (event, newPage) => {
@@ -258,7 +276,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
             autoComplete="off"
           >
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="address"
                   value={values.address}
@@ -269,7 +287,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="area"
                   value={values.area}
@@ -280,7 +298,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="city"
                   value={values.city}
@@ -291,7 +309,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="state"
                   value={values.state}
@@ -302,7 +320,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="pincode"
                   value={values.pincode}
@@ -313,7 +331,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="landmark"
                   value={values.landmark}
@@ -324,7 +342,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="residential"
                   value={values.residential}
@@ -335,7 +353,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.label && errors.label && true}>
                   <InputLabel id="select-label">Select label</InputLabel>
                   <Select
@@ -352,7 +370,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="documentType"
                   value={values.documentType}
@@ -363,7 +381,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="documentNo"
                   value={values.documentNo}
@@ -374,7 +392,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="documentFile"
                   value={values.documentFile}

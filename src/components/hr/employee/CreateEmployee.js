@@ -71,7 +71,7 @@ function CreateEmployee(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="employeeId"
               error={touched.employeeId && errors.employeeId && true}
@@ -81,7 +81,7 @@ function CreateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="name"
               error={touched.name && errors.name && true}
@@ -91,7 +91,7 @@ function CreateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.gender && errors.gender && true}>
               <InputLabel id="select-label">Select gender</InputLabel>
               <Select
@@ -111,7 +111,7 @@ function CreateEmployee(props) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="designation"
               error={touched.designation && errors.designation && true}
@@ -121,7 +121,7 @@ function CreateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="profileImage"
               error={touched.profileImage && errors.profileImage && true}
@@ -131,7 +131,7 @@ function CreateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="phoneNumber"
               error={touched.phoneNumber && errors.phoneNumber && true}
@@ -141,7 +141,7 @@ function CreateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="alternatePhoneNumber"
               error={touched.alternatePhoneNumber && errors.alternatePhoneNumber && true}
@@ -155,7 +155,7 @@ function CreateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <LocalizationProvider dateAdapter={AdapterMoment} error={touched.dob && errors.dob && true}>
               <DesktopDatePicker
                 label={touched.dob && errors.dob ? errors.dob : 'Select DOB'}
@@ -170,7 +170,7 @@ function CreateEmployee(props) {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>
               <InputLabel id="select-label">Select status</InputLabel>
               <Select

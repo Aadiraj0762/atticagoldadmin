@@ -74,7 +74,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="name"
               value={values.name}
@@ -85,7 +85,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="phoneNumber"
               value={values.phoneNumber}
@@ -96,7 +96,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="alternatePhoneNumber"
               value={values.alternatePhoneNumber}
@@ -109,7 +109,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="email"
               value={values.email}
@@ -120,7 +120,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="dob"
               value={values.dob}
@@ -131,7 +131,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.gender && errors.gender && true}>
               <InputLabel id="select-label">Select gender</InputLabel>
               <Select
@@ -149,7 +149,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="otp"
               value={values.otp}
@@ -160,7 +160,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="employmentType"
               value={values.employmentType}
@@ -171,7 +171,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="organisation"
               value={values.organisation}
@@ -182,7 +182,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="annualIncome"
               value={values.annualIncome}
@@ -193,7 +193,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.maritalStatus && errors.maritalStatus && true}>
               <InputLabel id="select-label">Select marital status</InputLabel>
               <Select
@@ -210,7 +210,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="source"
               value={values.source}
@@ -221,7 +221,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="chooseId"
               value={values.chooseId}
@@ -232,7 +232,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="idNo"
               value={values.idNo}
@@ -243,7 +243,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="uploadId"
               value={values.uploadId}
@@ -254,7 +254,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="signature"
               value={values.signature}
@@ -265,7 +265,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="profileImage"
               value={values.profileImage}
@@ -276,7 +276,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>
               <InputLabel id="select-label">Select status</InputLabel>
               <Select

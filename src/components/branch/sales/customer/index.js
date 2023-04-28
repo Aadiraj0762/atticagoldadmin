@@ -55,6 +55,24 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [width, setWindowWidth] = useState(0);
+
+  const updateDimensions = () => {
+    const width = window.innerWidth;
+    setWindowWidth(width);
+  };
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  if (width < 899) {
+    style.width = "80%";
+  } else {
+    style.width = 800;
+  }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
   const handleChangePage = (event, newPage) => {
@@ -279,7 +297,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
             autoComplete="off"
           >
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="name"
                   value={values.name}
@@ -290,7 +308,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="phoneNumber"
                   value={values.phoneNumber}
@@ -301,7 +319,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="alternatePhoneNumber"
                   value={values.alternatePhoneNumber}
@@ -316,7 +334,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="email"
                   value={values.email}
@@ -327,7 +345,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="dob"
                   value={values.dob}
@@ -338,7 +356,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.gender && errors.gender && true}>
                   <InputLabel id="select-label">Select gender</InputLabel>
                   <Select
@@ -356,7 +374,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="otp"
                   value={values.otp}
@@ -367,7 +385,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="employmentType"
                   value={values.employmentType}
@@ -378,7 +396,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="organisation"
                   value={values.organisation}
@@ -389,7 +407,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="annualIncome"
                   value={values.annualIncome}
@@ -400,7 +418,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.maritalStatus && errors.maritalStatus && true}>
                   <InputLabel id="select-label">Select maritalStatus</InputLabel>
                   <Select
@@ -419,7 +437,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="source"
                   value={values.source}
@@ -430,7 +448,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="chooseId"
                   value={values.chooseId}
@@ -441,7 +459,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="idNo"
                   value={values.idNo}
@@ -452,7 +470,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="uploadId"
                   value={values.uploadId}
@@ -463,7 +481,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="signature"
                   value={values.signature}
@@ -474,7 +492,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="profileImage"
                   value={values.profileImage}
@@ -485,7 +503,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.status && errors.status && true}>
                   <InputLabel id="select-label">Select status</InputLabel>
                   <Select

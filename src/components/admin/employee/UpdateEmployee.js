@@ -75,7 +75,7 @@ function UpdateEmployee(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="employeeId"
               value={values.employeeId}
@@ -86,7 +86,7 @@ function UpdateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="name"
               value={values.name}
@@ -97,7 +97,7 @@ function UpdateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.gender && errors.gender && true}>
               <InputLabel id="select-label">Select gender</InputLabel>
               <Select
@@ -115,7 +115,7 @@ function UpdateEmployee(props) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="designation"
               value={values.designation}
@@ -126,7 +126,7 @@ function UpdateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="phoneNumber"
               value={values.phoneNumber}
@@ -137,7 +137,7 @@ function UpdateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="alternatePhoneNumber"
               value={values.alternatePhoneNumber}
@@ -152,7 +152,7 @@ function UpdateEmployee(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DesktopDatePicker
                 label={touched.dob && errors.dob ? errors.dob : 'Select dob'}
@@ -163,7 +163,7 @@ function UpdateEmployee(props) {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>
               <InputLabel id="select-label">Select status</InputLabel>
               <Select

@@ -101,7 +101,7 @@ function UpdateBranch(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="branchId"
               value={values.branchId}
@@ -112,7 +112,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="branchName"
               value={values.branchName}
@@ -123,7 +123,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="address"
               value={values.address}
@@ -134,7 +134,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="area"
               value={values.area}
@@ -145,7 +145,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="city"
               value={values.city}
@@ -156,7 +156,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="state"
               value={values.state}
@@ -167,7 +167,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="pincode"
               value={values.pincode}
@@ -178,7 +178,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="landmark"
               value={values.landmark}
@@ -189,7 +189,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="longitude"
               value={values.longitude}
@@ -200,7 +200,7 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="latitude"
               value={values.latitude}

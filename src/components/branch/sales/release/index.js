@@ -40,7 +40,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 900,
+  width: 800,
   maxHeight: '95%',
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -60,6 +60,24 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [width, setWindowWidth] = useState(0);
+
+  const updateDimensions = () => {
+    const width = window.innerWidth;
+    setWindowWidth(width);
+  };
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  if (width < 899) {
+    style.width = '80%';
+  } else {
+    style.width = 800;
+  }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
   const handleChangePage = (event, newPage) => {
@@ -280,7 +298,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
             autoComplete="off"
           >
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="weight"
                   type={'number'}
@@ -292,7 +310,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="pledgeAmount"
                   type={'number'}
@@ -304,7 +322,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="payableAmount"
                   type={'number'}
@@ -316,7 +334,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.paymentType && errors.paymentType && true}>
                   <InputLabel id="select-paymentType">Select payment type</InputLabel>
                   <Select
@@ -333,7 +351,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DesktopDatePicker
                     name="pledgedDate"
@@ -348,7 +366,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   />
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="pledgeId"
                   value={values.pledgeId}
@@ -359,7 +377,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="pledgedIn"
                   value={values.pledgedIn}
@@ -370,7 +388,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="branch"
                   value={values.branch}
@@ -381,7 +399,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="releaseDocument"
                   value={values.releaseDocument}
@@ -394,7 +412,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DesktopDatePicker
                     name="releaseDate"
@@ -409,7 +427,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   />
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="comments"
                   value={values.comments}
@@ -420,7 +438,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="documentType"
                   value={values.documentType}
@@ -431,7 +449,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="documentNo"
                   value={values.documentNo}
@@ -442,7 +460,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="documentFile"
                   value={values.documentFile}
@@ -453,7 +471,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.status && errors.status && true}>
                   <InputLabel id="select-label">Select status</InputLabel>
                   <Select

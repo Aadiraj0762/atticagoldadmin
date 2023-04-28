@@ -88,7 +88,7 @@ function CreateBranch(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="branchId"
               error={touched.branchId && errors.branchId && true}
@@ -98,7 +98,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="branchName"
               error={touched.branchName && errors.branchName && true}
@@ -108,7 +108,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="address"
               error={touched.address && errors.address && true}
@@ -118,7 +118,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="area"
               error={touched.area && errors.area && true}
@@ -128,7 +128,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="city"
               error={touched.city && errors.city && true}
@@ -138,7 +138,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="state"
               error={touched.state && errors.state && true}
@@ -148,7 +148,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="pincode"
               error={touched.pincode && errors.pincode && true}
@@ -158,7 +158,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="landmark"
               error={touched.landmark && errors.landmark && true}
@@ -168,7 +168,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="longitude"
               error={touched.longitude && errors.longitude && true}
@@ -178,7 +178,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="latitude"
               error={touched.latitude && errors.latitude && true}
@@ -188,7 +188,7 @@ function CreateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>
               <InputLabel id="select-label">Select status</InputLabel>
               <Select

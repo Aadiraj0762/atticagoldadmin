@@ -71,7 +71,7 @@ function UpdateUser(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="username"
               value={values.username}
@@ -82,7 +82,7 @@ function UpdateUser(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="password"
               value={values.password}
@@ -93,7 +93,7 @@ function UpdateUser(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.userType && errors.userType && true}>
               <InputLabel id="select-label">Select user type</InputLabel>
               <Select
@@ -112,7 +112,7 @@ function UpdateUser(props) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>
               <Select

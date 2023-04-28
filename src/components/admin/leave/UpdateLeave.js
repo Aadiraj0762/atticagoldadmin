@@ -29,13 +29,18 @@ const CustomPickersDay = styled(PickersDay, {
 function UpdateLeave(props) {
   const [employees, setEmloyees] = useState([]);
 
+  useEffect(() => {
+    getEmployee().then((data) => {
+      setEmloyees(data.data);
+    });
+  }, []);
+
   // Form validation
   const schema = Yup.object({
     employee: Yup.string().required('Employee Id is required'),
     leaveType: Yup.string().required('Leave type is required'),
     dates: Yup.array().required('Dates is required'),
     note: Yup.string().required('Note is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const initialValues = {
@@ -43,14 +48,19 @@ function UpdateLeave(props) {
     leaveType: '',
     dates: [],
     note: '',
-    status: '',
   };
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
-      updateLeave(props.id, values).then((data) => {
+      const payload = {
+        employee: values.employee,
+        leaveType: values.leaveType,
+        dates: values.dates.map((date) => date.format('YYYY-MM-DD')),
+        note: values.note,
+      };
+      updateLeave(props.id, payload).then((data) => {
         if (data.status === false) {
           props.setNotify({
             open: true,
@@ -78,9 +88,6 @@ function UpdateLeave(props) {
   };
 
   useEffect(() => {
-    getEmployee().then((data) => {
-      setEmloyees(data.data);
-    });
     setValues(initialValues);
     resetForm();
     if (props.id) {
@@ -103,9 +110,10 @@ function UpdateLeave(props) {
           handleSubmit(e);
         }}
         autoComplete="off"
+        encType="multipart/form-data"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>
               <Select
@@ -120,13 +128,13 @@ function UpdateLeave(props) {
                   handleChange(e);
                 }}
               >
-                {employees?.map((e) => (
-                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                {employees.map((e) => (
+                  <MenuItem value={e._id}>{e.employeeId} {e.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="leaveType"
               value={values.leaveType}
@@ -137,7 +145,7 @@ function UpdateLeave(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <LocalizationProvider dateAdapter={AdapterMoment} fullWidth>
               <StaticDatePicker
                 displayStaticWrapperAs="desktop"
@@ -161,7 +169,7 @@ function UpdateLeave(props) {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="note"
               value={values.note}
@@ -171,27 +179,6 @@ function UpdateLeave(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  setValues({ ...values, status: e.target.value });
-                  handleChange(e);
-                }}
-              >
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="approved">Approved</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

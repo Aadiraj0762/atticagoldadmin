@@ -54,7 +54,7 @@ function CreateExpense(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="type"
               value={values.type}
@@ -65,7 +65,7 @@ function CreateExpense(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="amount"
               value={values.amount}
@@ -76,7 +76,7 @@ function CreateExpense(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="branchId"
               value={values.branchId}
@@ -87,7 +87,7 @@ function CreateExpense(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="note"
               value={values.note}
@@ -98,7 +98,7 @@ function CreateExpense(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>
               <InputLabel id="select-label">Select status</InputLabel>
               <Select

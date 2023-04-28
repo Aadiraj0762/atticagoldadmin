@@ -113,7 +113,7 @@ function UpdateLeave(props) {
         encType="multipart/form-data"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>
               <Select
@@ -129,12 +129,12 @@ function UpdateLeave(props) {
                 }}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                  <MenuItem value={e._id}>{e.employeeId} {e.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="leaveType"
               value={values.leaveType}
@@ -145,7 +145,7 @@ function UpdateLeave(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <LocalizationProvider dateAdapter={AdapterMoment} fullWidth>
               <StaticDatePicker
                 displayStaticWrapperAs="desktop"
@@ -169,7 +169,7 @@ function UpdateLeave(props) {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="note"
               value={values.note}

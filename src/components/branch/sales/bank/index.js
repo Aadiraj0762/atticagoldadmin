@@ -49,6 +49,24 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [width, setWindowWidth] = useState(0);
+
+  const updateDimensions = () => {
+    const width = window.innerWidth;
+    setWindowWidth(width);
+  };
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  if (width < 899) {
+    style.width = '80%';
+  } else {
+    style.width = 800;
+  }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
   const handleChangePage = (event, newPage) => {
@@ -232,7 +250,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
             autoComplete="off"
           >
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="accountNo"
                   value={values.accountNo}
@@ -243,7 +261,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="accountHolderName"
                   value={values.accountHolderName}
@@ -258,7 +276,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="ifscCode"
                   value={values.ifscCode}
@@ -269,7 +287,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="bankName"
                   value={values.bankName}
@@ -280,7 +298,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="branch"
                   value={values.branch}
@@ -291,7 +309,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="proofType"
                   value={values.proofType}
@@ -302,7 +320,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   name="proofFile"
                   value={values.proofFile}

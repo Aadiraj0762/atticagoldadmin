@@ -70,7 +70,7 @@ function CreateUser(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="username"
               error={touched.username && errors.username && true}
@@ -80,7 +80,7 @@ function CreateUser(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="password"
               error={touched.password && errors.password && true}
@@ -90,7 +90,7 @@ function CreateUser(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.userType && errors.userType && true}>
               <InputLabel id="select-label">Select user type</InputLabel>
               <Select
@@ -112,7 +112,7 @@ function CreateUser(props) {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>
               <Select
