@@ -1,12 +1,27 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Webcam from 'react-webcam';
 import { createCustomer } from '../../../apis/branch/customer';
+import { createFile } from '../../../apis/branch/fileupload';
 
 function CreateCustomer({ setToggleContainer, setNotify }) {
+  const [img, setImg] = useState(null);
+  const webcamRef = useRef(null);
   const form = useRef();
+
+  const videoConstraints = {
+    width: 420,
+    height: 420,
+    facingMode: 'user',
+  };
+
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImg(imageSrc);
+  }, [webcamRef]);
 
   // Form validation
   const schema = Yup.object({
@@ -42,6 +57,14 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      if (!img) {
+        setNotify({
+          open: true,
+          message: 'Please capture photo',
+          severity: 'info',
+        });
+        return;
+      }
       createCustomer(values).then((data) => {
         if (data.status === false) {
           setNotify({
@@ -50,7 +73,19 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
             severity: 'error',
           });
         } else {
+          fetch(img)
+            .then((res) => res.blob())
+            .then((blob) => {
+              const file = new File([blob], `profile-${data.data.fileUpload.uploadId}.png`, { type: 'image/png' });
+              const formData = new FormData();
+              formData.append('uploadId', data.data.fileUpload.uploadId);
+              formData.append('uploadName', data.data.fileUpload.uploadName);
+              formData.append('uploadType', 'profile_image');
+              formData.append('uploadedFile', file);
+              createFile(formData);
+            });
           setToggleContainer(false);
+          setImg(null);
           form.current.reset();
           resetForm();
           setNotify({
@@ -265,16 +300,32 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="profileImage"
-              value={values.profileImage}
-              error={touched.profileImage && errors.profileImage && true}
-              label={touched.profileImage && errors.profileImage ? errors.profileImage : 'Profile image'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+          <Grid item xs={12}>
+            {img === null ? (
+              <>
+                <Webcam
+                  mirrored
+                  audio={false}
+                  height={400}
+                  width={400}
+                  ref={webcamRef}
+                  screenshotFormat="image/png"
+                  videoConstraints={videoConstraints}
+                />
+                <br />
+                <LoadingButton size="small" type="button" variant="contained" onClick={capture}>
+                  Capture photo
+                </LoadingButton>
+              </>
+            ) : (
+              <>
+                <img src={img} alt="screenshot" />
+                <br />
+                <LoadingButton size="small" type="button" variant="contained" onClick={() => setImg(null)}>
+                  Retake
+                </LoadingButton>
+              </>
+            )}
           </Grid>
           <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.status && errors.status && true}>

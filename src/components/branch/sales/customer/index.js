@@ -26,10 +26,12 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
+import Webcam from 'react-webcam';
 import Iconify from '../../../iconify';
 import Label from '../../../label';
 import { getCustomer, createCustomer, deleteCustomerById } from '../../../../apis/branch/customer';
+import { createFile } from '../../../../apis/branch/fileupload';
 import Scrollbar from '../../../scrollbar';
 
 const style = {
@@ -56,6 +58,19 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [width, setWindowWidth] = useState(0);
+  const [img, setImg] = useState(null);
+  const webcamRef = useRef(null);
+
+  const videoConstraints = {
+    width: 420,
+    height: 420,
+    facingMode: 'user',
+  };
+
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImg(imageSrc);
+  }, [webcamRef]);
 
   const updateDimensions = () => {
     const width = window.innerWidth;
@@ -69,7 +84,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   }, []);
 
   if (width < 899) {
-    style.width = "80%";
+    style.width = '80%';
   } else {
     style.width = 800;
   }
@@ -105,7 +120,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
     status: Yup.string().required('Status is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, resetForm } = useFormik({
     initialValues: {
       name: '',
       phoneNumber: '',
@@ -124,6 +139,14 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      if (!img) {
+        setNotify({
+          open: true,
+          message: 'Please capture photo',
+          severity: 'info',
+        });
+        return;
+      }
       createCustomer(values).then((data) => {
         if (data.status === false) {
           setNotify({
@@ -132,10 +155,23 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
             severity: 'error',
           });
         } else {
+          fetch(img)
+            .then((res) => res.blob())
+            .then((blob) => {
+              const file = new File([blob], `profile-${data.data.fileUpload.uploadId}.png`, { type: 'image/png' });
+              const formData = new FormData();
+              formData.append('uploadId', data.data.fileUpload.uploadId);
+              formData.append('uploadName', data.data.fileUpload.uploadName);
+              formData.append('uploadType', 'profile_image');
+              formData.append('uploadedFile', file);
+              createFile(formData);
+            });
           getCustomer().then((data) => {
             setData(data.data);
           });
           setCustomerModal(false);
+          setImg(null);
+          resetForm();
           setNotify({
             open: true,
             message: 'Customer created',
@@ -492,16 +528,32 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  name="profileImage"
-                  value={values.profileImage}
-                  error={touched.profileImage && errors.profileImage && true}
-                  label={touched.profileImage && errors.profileImage ? errors.profileImage : 'Profile image'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+              <Grid item xs={12}>
+                {img === null ? (
+                  <>
+                    <Webcam
+                      mirrored
+                      audio={false}
+                      height={400}
+                      width={400}
+                      ref={webcamRef}
+                      screenshotFormat="image/png"
+                      videoConstraints={videoConstraints}
+                    />
+                    <br />
+                    <LoadingButton size="small" type="button" variant="contained" onClick={capture}>
+                      Capture photo
+                    </LoadingButton>
+                  </>
+                ) : (
+                  <>
+                    <img src={img} alt="screenshot" />
+                    <br />
+                    <LoadingButton size="small" type="button" variant="contained" onClick={() => setImg(null)}>
+                      Retake
+                    </LoadingButton>
+                  </>
+                )}
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.status && errors.status && true}>
