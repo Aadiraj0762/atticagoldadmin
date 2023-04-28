@@ -25,6 +25,8 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
 import Scrollbar from '../../../scrollbar';
@@ -268,9 +270,19 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
                 />
               </Grid>
               <Grid item xs={12}>
-                <LoadingButton size="large" type="submit" variant="contained">
+                <LoadingButton size="large" type="submit" variant="contained" startIcon={<SaveIcon />}>
                   Save
                 </LoadingButton>
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="error"
+                  sx={{ ml: 2 }}
+                  startIcon={<CloseIcon />}
+                  onClick={() => setProofDocumentModal(false)}
+                >
+                  Close
+                </Button>
               </Grid>
             </Grid>
           </form>

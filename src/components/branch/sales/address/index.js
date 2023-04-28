@@ -26,6 +26,8 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
 import Scrollbar from '../../../scrollbar';
@@ -68,7 +70,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
   }, []);
 
   if (width < 899) {
-    style.width = "80%";
+    style.width = '80%';
   } else {
     style.width = 800;
   }
@@ -404,9 +406,19 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                 />
               </Grid>
               <Grid item xs={12}>
-                <LoadingButton size="large" type="submit" variant="contained">
+                <LoadingButton size="large" type="submit" variant="contained" startIcon={<SaveIcon />}>
                   Save
                 </LoadingButton>
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="error"
+                  sx={{ ml: 2 }}
+                  startIcon={<CloseIcon />}
+                  onClick={() => setAddressModal(false)}
+                >
+                  Close
+                </Button>
               </Grid>
             </Grid>
           </form>

@@ -26,6 +26,8 @@ import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import Iconify from '../../../iconify';
@@ -573,9 +575,19 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <LoadingButton size="large" type="submit" variant="contained">
+                <LoadingButton size="large" type="submit" variant="contained" startIcon={<SaveIcon />}>
                   Save
                 </LoadingButton>
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="error"
+                  sx={{ ml: 2 }}
+                  startIcon={<CloseIcon />}
+                  onClick={() => setCustomerModal(false)}
+                >
+                  Close
+                </Button>
               </Grid>
             </Grid>
           </form>
