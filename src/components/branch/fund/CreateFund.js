@@ -4,9 +4,24 @@ import { useEffect, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createFund } from '../../../apis/branch/fund';
+import { getBranch } from '../../../apis/branch/branch';
 
 function CreateFund(props) {
+  const [branches, setBranches] = useState([]);
+  const [headOffice, setHeadOffice] = useState(null);
+  const [isReadOnly, setReadOnly] = useState(false);
   const form = useRef();
+
+  useEffect(() => {
+    getBranch().then((data) => {
+      setBranches(data.data);
+      data.data.forEach((e) => {
+        if (e.isHeadOffice === 'yes') {
+          setHeadOffice(e);
+        }
+      });
+    });
+  }, []);
 
   // Form validation
   const schema = Yup.object({
@@ -15,7 +30,7 @@ function CreateFund(props) {
     note: Yup.string().required('Note is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue, resetForm } = useFormik({
     initialValues: {
       type: '',
       amount: '',
@@ -47,6 +62,14 @@ function CreateFund(props) {
     },
   });
 
+  useEffect(() => {
+    if (values.type === 'fund_request') {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+  }, [values.type]);
+
   return (
     <Card sx={{ p: 4, my: 4 }}>
       <form
@@ -59,15 +82,69 @@ function CreateFund(props) {
       >
         <Grid container spacing={3}>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="type"
-              value={values.type}
-              error={touched.type && errors.type && true}
-              label={touched.type && errors.type ? errors.type : 'Type'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.type && errors.type && true}>
+              <InputLabel id="select-label">Select type</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.type && errors.type ? errors.type : 'Select type'}
+                name="type"
+                value={values.type}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  if (e.target.value === 'fund_request') {
+                    setFieldValue('from', headOffice._id);
+                  } else {
+                    setFieldValue('from', '');
+                  }
+                  handleChange(e);
+                }}
+              >
+                <MenuItem value="fund_request">Fund Request</MenuItem>
+                <MenuItem value="fund_transfer">Fund Transfer</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth error={touched.from && errors.from && true}>
+              <InputLabel id="select-label">Select from</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.from && errors.from ? errors.from : 'Select from'}
+                name="from"
+                value={values.from}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                disabled={isReadOnly}
+              >
+                {branches.map((e) => (
+                  <MenuItem value={e._id}>
+                    {e.branchId} {e.branchName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth error={touched.to && errors.to && true}>
+              <InputLabel id="select-label">Select to</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.to && errors.to ? errors.to : 'Select to'}
+                name="to"
+                value={values.to}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                {branches.map((e) => (
+                  <MenuItem value={e._id}>
+                    {e.branchId} {e.branchName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -75,28 +152,6 @@ function CreateFund(props) {
               value={values.amount}
               error={touched.amount && errors.amount && true}
               label={touched.amount && errors.amount ? errors.amount : 'Amount'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="from"
-              value={values.from}
-              error={touched.from && errors.from && true}
-              label={touched.from && errors.from ? errors.from : 'From'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="to"
-              value={values.to}
-              error={touched.to && errors.to && true}
-              label={touched.to && errors.to ? errors.to : 'To'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}

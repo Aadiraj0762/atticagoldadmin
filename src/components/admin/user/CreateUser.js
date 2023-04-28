@@ -7,9 +7,6 @@ import { createUser } from '../../../apis/admin/user';
 import { getLoginNotCreatedEmployee } from '../../../apis/admin/employee';
 
 function CreateUser(props) {
-  const [status, setStatus] = useState('');
-  const [userType, setUserType] = useState('');
-  const [employee, setEmployee] = useState('');
   const [employees, setEmloyees] = useState([]);
   const form = useRef();
 
@@ -27,7 +24,7 @@ function CreateUser(props) {
     employee: Yup.string().required('Employee Id is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, resetForm } = useFormik({
     initialValues: {
       username: '',
       password: '',
@@ -47,7 +44,6 @@ function CreateUser(props) {
         } else {
           props.setToggleContainer(false);
           form.current.reset();
-          setStatus('');
           resetForm();
           props.setNotify({
             open: true,
@@ -98,12 +94,9 @@ function CreateUser(props) {
                 id="select"
                 label={touched.userType && errors.userType ? errors.userType : 'Select user type'}
                 name="userType"
-                value={userType}
+                value={values.userType}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setUserType(e.target.value);
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="hr">hr</MenuItem>
@@ -120,15 +113,14 @@ function CreateUser(props) {
                 id="select"
                 label={touched.employee && errors.employee ? errors.employee : 'Select employee'}
                 name="employee"
-                value={employee}
+                value={values.employee}
                 onBlur={handleBlur}
-                onChange={(e) => {
-                  setEmployee(e.target.value);
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.employeeId}</MenuItem>
+                  <MenuItem value={e._id}>
+                    {e.employeeId} {e.name}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>

@@ -295,8 +295,8 @@ export default function Fund() {
                         </TableCell>
                         <TableCell align="left">{type}</TableCell>
                         <TableCell align="left">{amount}</TableCell>
-                        <TableCell align="left">{from}</TableCell>
-                        <TableCell align="left">{to}</TableCell>
+                        <TableCell align="left">{from?.branchName}</TableCell>
+                        <TableCell align="left">{to?.branchName}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">
                           <Label
