@@ -15,7 +15,6 @@ function UpdateFund(props) {
   useEffect(() => {
     getBranch().then((data) => {
       setBranches(data.data);
-      console.log(data.data);
       data.data.forEach((e) => {
         if (e.isHeadOffice === 'yes') {
           setHeadOffice(e);
@@ -23,8 +22,6 @@ function UpdateFund(props) {
       });
     });
   }, []);
-
-  console.log(headOffice);
 
   // Form validation
   const schema = Yup.object({

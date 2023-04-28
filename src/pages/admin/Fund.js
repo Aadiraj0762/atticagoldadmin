@@ -46,7 +46,6 @@ const TABLE_HEAD = [
   { id: 'to', label: 'To', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  { id: 'status', label: 'Reject/Approve', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -211,17 +210,35 @@ export default function Fund() {
   const Alert = forwardRef(AlertComponent);
 
   function Status(props) {
-    const [status, setStatus] = useState(props.status === 'approved');
-
     return (
-      <Switch
-        checked={status}
-        onChange={(e) => {
-          updateFund(props._id, { status: e.target.checked ? 'approved' : 'rejected' }).then((data) => {
-            setStatus(data.data.status === 'approved');
-          });
-        }}
-      />
+      <>
+        <Button
+          variant="contained"
+          onClick={(e) => {
+            updateFund(props._id, { status: 'approved' }).then((data) => {
+              getFund().then((data) => {
+                setData(data.data);
+              });
+            });
+          }}
+        >
+          Approve
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          sx={{ ml: 2 }}
+          onClick={(e) => {
+            updateFund(props._id, { status: 'rejected' }).then((data) => {
+              getFund().then((data) => {
+                setData(data.data);
+              });
+            });
+          }}
+        >
+          Reject
+        </Button>
+      </>
     );
   }
 
@@ -299,16 +316,17 @@ export default function Fund() {
                         <TableCell align="left">{to?.branchName}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">
-                          <Label
-                            color={
-                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
-                            }
-                          >
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Status status={status} _id={_id} />
+                          {status === 'pending' ? (
+                            <Status status={status} _id={_id} />
+                          ) : (
+                            <Label
+                              color={
+                                (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
+                              }
+                            >
+                              {sentenceCase(status)}
+                            </Label>
+                          )}
                         </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
@@ -333,7 +351,7 @@ export default function Fund() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -349,7 +367,7 @@ export default function Fund() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
