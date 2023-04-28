@@ -23,6 +23,7 @@ import {
   Modal,
   Box,
   Snackbar,
+  Switch,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -34,7 +35,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { ExpenseListHead, ExpenseListToolbar } from '../../sections/@dashboard/expense';
 // mock
-import { deleteExpenseById, getExpense } from '../../apis/admin/expense';
+import { deleteExpenseById, getExpense, updateExpense } from '../../apis/admin/expense';
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +45,7 @@ const TABLE_HEAD = [
   { id: 'branchId', label: 'Branch Id', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'status', label: 'Reject/Approve', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -207,6 +209,21 @@ export default function Expense() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status(props) {
+    const [status, setStatus] = useState(props.status === 'approved');
+
+    return (
+      <Switch
+        checked={status}
+        onChange={(e) => {
+          updateExpense(props._id, { status: e.target.checked ? 'approved' : 'rejected' }).then((data) => {
+            setStatus(data.data.status === 'approved');
+          });
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -288,6 +305,9 @@ export default function Expense() {
                             {sentenceCase(status)}
                           </Label>
                         </TableCell>
+                        <TableCell align="left">
+                          <Status status={status} _id={_id} />
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -311,7 +331,7 @@ export default function Expense() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -327,7 +347,7 @@ export default function Expense() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

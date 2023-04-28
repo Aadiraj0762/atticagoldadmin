@@ -23,6 +23,7 @@ import {
   Modal,
   Box,
   Snackbar,
+  Switch,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -33,7 +34,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
 // mock
-import { deleteSalesById, getSales } from '../../apis/admin/sales';
+import { deleteSalesById, getSales, updateSales } from '../../apis/admin/sales';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,7 @@ const TABLE_HEAD = [
   { id: 'branchId', label: 'Branch Id', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'status', label: 'Reject/Approve', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -206,6 +208,21 @@ export default function Sale() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status(props) {
+    const [status, setStatus] = useState(props.status === 'approved');
+
+    return (
+      <Switch
+        checked={status}
+        onChange={(e) => {
+          updateSales(props._id, { status: e.target.checked ? 'approved' : 'rejected' }).then((data) => {
+            setStatus(data.data.status === 'approved');
+          });
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -287,6 +304,9 @@ export default function Sale() {
                             {sentenceCase(status)}
                           </Label>
                         </TableCell>
+                        <TableCell align="left">
+                          <Status status={status} _id={_id} />
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -310,7 +330,7 @@ export default function Sale() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -326,7 +346,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

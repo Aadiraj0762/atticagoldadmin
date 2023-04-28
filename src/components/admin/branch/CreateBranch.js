@@ -12,6 +12,7 @@ function CreateBranch(props) {
   const schema = Yup.object({
     branchId: Yup.string().required('Branch id is required'),
     branchName: Yup.string().required('Branch name is required'),
+    gstNumber: Yup.string().required('GST Number is required'),
     address: Yup.string().required('address is required'),
     area: Yup.string().required('Area is required'),
     city: Yup.string().required('City is required'),
@@ -20,12 +21,14 @@ function CreateBranch(props) {
     landmark: Yup.string().required('Landmark is required'),
     longitude: Yup.string().required('Longitude is required'),
     latitude: Yup.string().required('Latitude is required'),
+    isHeadOffice: Yup.string().required('Is Head Office is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue, resetForm } = useFormik({
     initialValues: {
       branchId: '',
       branchName: '',
+      gstNumber: '',
       address: '',
       area: '',
       city: '',
@@ -34,12 +37,14 @@ function CreateBranch(props) {
       landmark: '',
       longitude: '',
       latitude: '',
+      isHeadOffice: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
       const payload = {
         branchId: values.branchId,
         branchName: values.branchName,
+        gstNumber: values.gstNumber,
         address: {
           address: values.address,
           area: values.area,
@@ -50,6 +55,7 @@ function CreateBranch(props) {
           longitude: values.longitude,
           latitude: values.latitude,
         },
+        isHeadOffice: 'no',
         status: 'active',
       };
       createBranch(payload).then((data) => {
@@ -99,6 +105,16 @@ function CreateBranch(props) {
               name="branchName"
               error={touched.branchName && errors.branchName && true}
               label={touched.branchName && errors.branchName ? errors.branchName : 'Branch Name'}
+              fullWidth
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              name="gstNumber"
+              error={touched.gstNumber && errors.gstNumber && true}
+              label={touched.gstNumber && errors.gstNumber ? errors.gstNumber : 'GST Number'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
@@ -183,6 +199,25 @@ function CreateBranch(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth error={touched.isHeadOffice && errors.isHeadOffice && true}>
+              <InputLabel id="select-label">Is Head Office</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.isHeadOffice && errors.isHeadOffice ? errors.isHeadOffice : 'Select Head Office'}
+                name="isHeadOffice"
+                value={values.isHeadOffice}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setFieldValue('isHeadOffice', e.target.value, true);
+                }}
+              >
+                <MenuItem value="no">No</MenuItem>
+                <MenuItem value="yes">Yes</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

@@ -23,6 +23,7 @@ import {
   Modal,
   Box,
   Snackbar,
+  Switch,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -34,7 +35,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { LeaveListHead, LeaveListToolbar } from '../../sections/@dashboard/leave';
 // mock
-import { deleteLeaveById, getLeave } from '../../apis/admin/leave';
+import { deleteLeaveById, getLeave, updateLeave } from '../../apis/admin/leave';
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +46,7 @@ const TABLE_HEAD = [
   { id: 'dates', label: 'Dates', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'status', label: 'Reject/Approve', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -208,6 +210,21 @@ export default function Leave() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status(props) {
+    const [status, setStatus] = useState(props.status === 'approved');
+
+    return (
+      <Switch
+        checked={status}
+        onChange={(e) => {
+          updateLeave(props._id, { status: e.target.checked ? 'approved' : 'rejected' }).then((data) => {
+            setStatus(data.data.status === 'approved');
+          });
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -292,6 +309,9 @@ export default function Leave() {
                             {sentenceCase(status)}
                           </Label>
                         </TableCell>
+                        <TableCell align="left">
+                          <Status status={status} _id={_id} />
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -315,7 +335,7 @@ export default function Leave() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -331,7 +351,7 @@ export default function Leave() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

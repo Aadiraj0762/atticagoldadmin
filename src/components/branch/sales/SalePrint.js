@@ -28,7 +28,7 @@ export default function SalePrint({ id }) {
           <br />
           <b>Ph:</b> 63661 11999
           <br />
-          <b>GST:</b> 29AAJCB0171B1Z2
+          <b>GST:</b> {data?.branch?.gstNumber}
           <br />
           <div style={{ display: 'block', margin: '20px 0' }}>
             <table style={{ width: '100%', textAlign: 'left' }}>

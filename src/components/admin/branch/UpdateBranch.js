@@ -10,6 +10,7 @@ function UpdateBranch(props) {
   const schema = Yup.object({
     branchId: Yup.string().required('Branch id is required'),
     branchName: Yup.string().required('Branch name is required'),
+    gstNumber: Yup.string().required('GST Number is required'),
     address: Yup.string().required('address is required'),
     area: Yup.string().required('Area is required'),
     city: Yup.string().required('City is required'),
@@ -18,11 +19,13 @@ function UpdateBranch(props) {
     landmark: Yup.string().required('Landmark is required'),
     longitude: Yup.string().required('Longitude is required'),
     latitude: Yup.string().required('Latitude is required'),
+    isHeadOffice: Yup.string().required('Is Head Office is required'),
   });
 
   const initialValues = {
     branchId: '',
     branchName: '',
+    gstNumber: '',
     address: '',
     area: '',
     city: '',
@@ -31,15 +34,17 @@ function UpdateBranch(props) {
     landmark: '',
     longitude: '',
     latitude: '',
+    isHeadOffice: '',
   };
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue, setValues, resetForm } = useFormik({
     initialValues: { ...initialValues },
     validationSchema: schema,
     onSubmit: (values) => {
       const payload = {
         branchId: values.branchId,
         branchName: values.branchName,
+        gstNumber: values.gstNumber,
         address: {
           address: values.address,
           area: values.area,
@@ -50,6 +55,7 @@ function UpdateBranch(props) {
           longitude: values.longitude,
           latitude: values.latitude,
         },
+        isHeadOffice: values.isHeadOffice,
       };
       updateBranch(props.id, payload).then((data) => {
         if (data.status === false) {
@@ -78,6 +84,7 @@ function UpdateBranch(props) {
         setValues({
           branchId: data.data.branchId ?? '',
           branchName: data.data.branchName ?? '',
+          gstNumber: data.data.gstNumber ?? '',
           address: data.data.address.address ?? '',
           area: data.data.address.area ?? '',
           city: data.data.address.city ?? '',
@@ -86,6 +93,7 @@ function UpdateBranch(props) {
           landmark: data.data.address.landmark ?? '',
           longitude: data.data.address.longitude ?? '',
           latitude: data.data.address.latitude ?? '',
+          isHeadOffice: data.data.isHeadOffice ?? '',
         });
       });
     }
@@ -118,6 +126,17 @@ function UpdateBranch(props) {
               value={values.branchName}
               error={touched.branchName && errors.branchName && true}
               label={touched.branchName && errors.branchName ? errors.branchName : 'Branch Name'}
+              fullWidth
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              name="gstNumber"
+              value={values.gstNumber}
+              error={touched.gstNumber && errors.gstNumber && true}
+              label={touched.gstNumber && errors.gstNumber ? errors.gstNumber : 'GST Number'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
@@ -210,6 +229,25 @@ function UpdateBranch(props) {
               onBlur={handleBlur}
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth error={touched.isHeadOffice && errors.isHeadOffice && true}>
+              <InputLabel id="select-label">Is Head Office</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.isHeadOffice && errors.isHeadOffice ? errors.isHeadOffice : 'Select Head Office'}
+                name="isHeadOffice"
+                value={values.isHeadOffice}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setFieldValue('isHeadOffice', e.target.value, true);
+                }}
+              >
+                <MenuItem value="no">No</MenuItem>
+                <MenuItem value="yes">Yes</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">
