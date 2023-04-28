@@ -283,6 +283,11 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Customer Release
+            <Button
+              sx={{ color: '#222', float: 'right' }}
+              startIcon={<CloseIcon />}
+              onClick={() => setReleaseModal(false)}
+            />
           </Typography>
           <form
             onSubmit={(e) => {

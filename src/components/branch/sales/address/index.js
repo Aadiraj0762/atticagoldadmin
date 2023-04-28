@@ -269,6 +269,11 @@ function Address({ step, setStep, setNotify, selectedUser }) {
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Customer Address
+            <Button
+              sx={{ color: '#222', float: 'right' }}
+              startIcon={<CloseIcon />}
+              onClick={() => setAddressModal(false)}
+            />
           </Typography>
           <form
             onSubmit={(e) => {

@@ -243,6 +243,11 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Customer Bank
+            <Button
+              sx={{ color: '#222', float: 'right' }}
+              startIcon={<CloseIcon />}
+              onClick={() => setBankModal(false)}
+            />
           </Typography>
           <form
             onSubmit={(e) => {

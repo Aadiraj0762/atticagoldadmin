@@ -219,6 +219,11 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Ornaments
+            <Button
+              sx={{ color: '#222', float: 'right' }}
+              startIcon={<CloseIcon />}
+              onClick={() => setOrnamentModal(false)}
+            />
           </Typography>
           <form
             onSubmit={(e) => {

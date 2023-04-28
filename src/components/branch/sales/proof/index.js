@@ -221,6 +221,11 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
             Proof Document
+            <Button
+              sx={{ color: '#222', float: 'right' }}
+              startIcon={<CloseIcon />}
+              onClick={() => setProofDocumentModal(false)}
+            />
           </Typography>
           <form
             onSubmit={(e) => {
