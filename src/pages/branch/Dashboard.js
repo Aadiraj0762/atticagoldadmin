@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Link } from '@mui/material';
 // sections
 import { AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } from '../../sections/@dashboard/app';
 
@@ -23,19 +23,39 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <Link href="/branch/customer" underline="none">
+              <AppWidgetSummary title="Customers" total={false} icon={'ant-design:android-filled'} />
+            </Link>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <Link href="/branch/sale" underline="none">
+              <AppWidgetSummary title="Billing" total={false} color="info" icon={'ant-design:apple-filled'} />
+            </Link>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <Link href="/branch/expense" underline="none">
+              <AppWidgetSummary title="Expenses" total={false} color="warning" icon={'ant-design:windows-filled'} />
+            </Link>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <Link href="/branch/fund" underline="none">
+              <AppWidgetSummary title="Funds" total={false} color="error" icon={'ant-design:bug-filled'} />
+            </Link>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Link href="/branch/leave" underline="none">
+              <AppWidgetSummary title="Leave" total={false} color="info" icon={'ant-design:apple-filled'} />
+            </Link>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Link href="/branch/attendance" underline="none">
+              <AppWidgetSummary title="Attendance" total={false} color="warning" icon={'ant-design:windows-filled'} />
+            </Link>
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
