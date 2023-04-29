@@ -114,7 +114,7 @@ export default function LoginForm() {
                 username: e.target.value,
               });
 
-              if (userType?.data?.userType && userType.data.userType !== 'admin') {
+              if (userType?.data?.userType && userType.data.userType === 'branch') {
                 const employee = await getBranchUserApi({
                   username: e.target.value,
                 });

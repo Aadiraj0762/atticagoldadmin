@@ -1,6 +1,7 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LoadingButton } from '@mui/lab';
 import { useEffect, useState } from 'react';
@@ -18,6 +19,8 @@ function UpdateEmployee(props) {
     phoneNumber: Yup.string().required('Phone number is required'),
     alternatePhoneNumber: Yup.string().required('Alternate phone number is required'),
     dob: Yup.string().required('DOB is required'),
+    shiftStartTime: Yup.string().required('Login Time is required'),
+    shiftEndTime: Yup.string().required('Logout Time is required'),
     status: Yup.string().required('Status is required'),
   });
 
@@ -29,31 +32,34 @@ function UpdateEmployee(props) {
     phoneNumber: '',
     alternatePhoneNumber: '',
     dob: '',
+    shiftStartTime: '',
+    shiftEndTime: '',
     status: '',
   };
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
-    initialValues: { ...initialValues },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      updateEmployee(props.id, values).then((data) => {
-        if (data.status === false) {
-          props.setNotify({
-            open: true,
-            message: 'Employee not updated',
-            severity: 'error',
-          });
-        } else {
-          props.setToggleContainer(false);
-          props.setNotify({
-            open: true,
-            message: 'Employee updated',
-            severity: 'success',
-          });
-        }
-      });
-    },
-  });
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, setFieldValue, resetForm } =
+    useFormik({
+      initialValues: { ...initialValues },
+      validationSchema: schema,
+      onSubmit: (values) => {
+        updateEmployee(props.id, values).then((data) => {
+          if (data.status === false) {
+            props.setNotify({
+              open: true,
+              message: 'Employee not updated',
+              severity: 'error',
+            });
+          } else {
+            props.setToggleContainer(false);
+            props.setNotify({
+              open: true,
+              message: 'Employee updated',
+              severity: 'success',
+            });
+          }
+        });
+      },
+    });
 
   useEffect(() => {
     setValues(initialValues);
@@ -153,12 +159,47 @@ function UpdateEmployee(props) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
+            <LocalizationProvider dateAdapter={AdapterMoment} error={touched.dob && errors.dob && true}>
               <DesktopDatePicker
-                label={touched.dob && errors.dob ? errors.dob : 'Select dob'}
+                label={touched.dob && errors.dob ? errors.dob : 'Select DOB'}
                 inputFormat="MM/DD/YYYY"
+                name="dob"
                 value={values.dob}
-                onChange={handleChange}
+                onChange={(value) => {
+                  setFieldValue('dob', value, true);
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              error={touched.shiftStartTime && errors.shiftStartTime && true}
+            >
+              <TimePicker
+                label="Login Time"
+                name="shiftStartTime"
+                value={values.shiftStartTime}
+                onChange={(value) => {
+                  setFieldValue('shiftStartTime', value, true);
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              error={touched.shiftEndTime && errors.shiftEndTime && true}
+            >
+              <TimePicker
+                label="Logout Time"
+                name="shiftEndTime"
+                value={values.shiftEndTime}
+                onChange={(value) => {
+                  setFieldValue('shiftEndTime', value, true);
+                }}
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </LocalizationProvider>

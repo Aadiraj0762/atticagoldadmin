@@ -1,6 +1,7 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LoadingButton } from '@mui/lab';
 import { useRef } from 'react';
@@ -21,6 +22,8 @@ function CreateEmployee(props) {
     phoneNumber: Yup.string().required('Phone number is required'),
     alternatePhoneNumber: Yup.string().required('Alternate phone number is required'),
     dob: Yup.string().required('DOB is required'),
+    shiftStartTime: Yup.string().required('Login Time is required'),
+    shiftEndTime: Yup.string().required('Logout Time is required'),
     status: Yup.string().required('Status is required'),
   });
 
@@ -33,7 +36,9 @@ function CreateEmployee(props) {
       phoneNumber: '',
       alternatePhoneNumber: '',
       dob: moment(),
-      status: '',
+      shiftStartTime: moment(),
+      shiftEndTime: moment(),
+      status: 'active',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -152,6 +157,38 @@ function CreateEmployee(props) {
                 value={values.dob}
                 onChange={(value) => {
                   setFieldValue('dob', value, true);
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              error={touched.shiftStartTime && errors.shiftStartTime && true}
+            >
+              <TimePicker
+                label="Login Time"
+                name="shiftStartTime"
+                value={values.shiftStartTime}
+                onChange={(value) => {
+                  setFieldValue('shiftStartTime', value, true);
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              error={touched.shiftEndTime && errors.shiftEndTime && true}
+            >
+              <TimePicker
+                label="Logout Time"
+                name="shiftEndTime"
+                value={values.shiftEndTime}
+                onChange={(value) => {
+                  setFieldValue('shiftEndTime', value, true);
                 }}
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />

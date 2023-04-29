@@ -70,111 +70,26 @@ export default function SalePrint({ id }) {
             </tbody>
           </table>
         </div>
-        <div style={{ margin: '20px 0' }}>
-          <table
-            style={{
-              width: '100%',
-              textAlign: 'center',
-              border: '1px solid',
-              borderCollapse: 'collapse',
-            }}
-          >
-            <thead>
-              <tr>
-                <th
-                  style={{
-                    border: '1px solid',
-                    padding: '5px',
-                  }}
-                >
-                  Gram
-                </th>
-                <th
-                  style={{
-                    border: '1px solid',
-                    padding: '5px',
-                  }}
-                >
-                  Stone
-                </th>
-                <th
-                  style={{
-                    border: '1px solid',
-                    padding: '5px',
-                  }}
-                >
-                  NetW
-                </th>
-                <th
-                  style={{
-                    border: '1px solid',
-                    padding: '5px',
-                  }}
-                >
-                  Purity
-                </th>
-                <th
-                  style={{
-                    border: '1px solid',
-                    padding: '5px',
-                  }}
-                >
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.ornaments?.map((e) => (
-                <tr key={e._id}>
-                  <td
-                    style={{
-                      border: '1px solid',
-                      padding: '5px',
-                    }}
-                  >
-                    {e.grossWeight} Gram
-                  </td>
-                  <td
-                    style={{
-                      border: '1px solid',
-                      padding: '5px',
-                    }}
-                  >
-                    {e.stoneWeight} Gram
-                  </td>
-                  <td
-                    style={{
-                      border: '1px solid',
-                      padding: '5px',
-                    }}
-                  >
-                    {e.netWeight} Gram
-                  </td>
-                  <td
-                    style={{
-                      border: '1px solid',
-                      padding: '5px',
-                    }}
-                  >
-                    {e.purity} %
-                  </td>
-                  <td
-                    style={{
-                      border: '1px solid',
-                      padding: '5px',
-                    }}
-                  >
-                    &#8377; {e.netAmount}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
         <hr style={{ border: '0', borderBottom: '1px solid' }} />
         <div style={{ display: 'block', margin: '20px 0' }}>
           <table style={{ width: '100%', textAlign: 'left' }}>
             <tbody>
+              <tr>
+                <td style={{ width: '50%' }}>Total ornaments:</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>{data?.ornaments?.length}</td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>Gross weight:</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>
+                  {data?.ornaments?.reduce((prev, cur) => cur.grossWeight + prev, 0)}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>Net weight:</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>
+                  {data?.ornaments?.reduce((prev, cur) => cur.netWeight + prev, 0)}
+                </td>
+              </tr>
               <tr>
                 <td style={{ width: '50%' }}>Gross Amount</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {data?.netAmount}</td>
@@ -197,7 +112,7 @@ export default function SalePrint({ id }) {
           </table>
         </div>
         <hr style={{ border: '0', borderBottom: '1px solid' }} />
-        <div style={{ textAlign: 'center', margin: '20px 0' }}>
+        <div style={{ textAlign: 'start', margin: '20px 0' }}>
           Thanks For your billing
           <br /> www.benakagoldcompany.com
         </div>
