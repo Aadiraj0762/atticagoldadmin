@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createBranch } from '../../../apis/admin/branch';
+import { createFile } from '../../../apis/admin/fileupload';
 
 function CreateBranch(props) {
   const form = useRef();
@@ -24,60 +25,70 @@ function CreateBranch(props) {
     isHeadOffice: Yup.string().required('Is Head Office is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue, resetForm } = useFormik({
-    initialValues: {
-      branchId: '',
-      branchName: '',
-      gstNumber: '',
-      address: '',
-      area: '',
-      city: '',
-      state: '',
-      pincode: '',
-      landmark: '',
-      longitude: '',
-      latitude: '',
-      isHeadOffice: '',
-    },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      const payload = {
-        branchId: values.branchId,
-        branchName: values.branchName,
-        gstNumber: values.gstNumber,
-        address: {
-          address: values.address,
-          area: values.area,
-          city: values.city,
-          state: values.state,
-          pincode: values.pincode,
-          landmark: values.landmark,
-          longitude: values.longitude,
-          latitude: values.latitude,
-        },
-        isHeadOffice: 'no',
-        status: 'active',
-      };
-      createBranch(payload).then((data) => {
-        if (data.status === false) {
-          props.setNotify({
-            open: true,
-            message: 'Branch not created',
-            severity: 'error',
-          });
-        } else {
-          props.setToggleContainer(false);
-          form.current.reset();
-          resetForm();
-          props.setNotify({
-            open: true,
-            message: 'Branch created',
-            severity: 'success',
-          });
-        }
-      });
-    },
-  });
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, setFieldValue, resetForm } =
+    useFormik({
+      initialValues: {
+        branchId: '',
+        branchName: '',
+        gstNumber: '',
+        address: '',
+        area: '',
+        city: '',
+        state: '',
+        pincode: '',
+        landmark: '',
+        longitude: '',
+        latitude: '',
+        isHeadOffice: '',
+        image: {},
+      },
+      validationSchema: schema,
+      onSubmit: (values) => {
+        const payload = {
+          branchId: values.branchId,
+          branchName: values.branchName,
+          gstNumber: values.gstNumber,
+          address: {
+            address: values.address,
+            area: values.area,
+            city: values.city,
+            state: values.state,
+            pincode: values.pincode,
+            landmark: values.landmark,
+            longitude: values.longitude,
+            latitude: values.latitude,
+          },
+          isHeadOffice: 'no',
+          status: 'active',
+        };
+        createBranch(payload).then((data) => {
+          if (data.status === false) {
+            props.setNotify({
+              open: true,
+              message: 'Branch not created',
+              severity: 'error',
+            });
+          } else {
+            if (values.image) {
+              const formData = new FormData();
+              formData.append('uploadId', data.data.fileUpload.uploadId);
+              formData.append('uploadName', data.data.fileUpload.uploadName);
+              formData.append('uploadType', 'image');
+              formData.append('uploadedFile', values.image);
+              createFile(formData);
+            }
+            props.setToggleContainer(false);
+            form.current.reset();
+            resetForm();
+            props.setNotify({
+              open: true,
+              message: 'Branch created',
+              severity: 'success',
+            });
+          }
+        });
+      },
+    });
 
   return (
     <Card sx={{ p: 4, my: 4 }}>
@@ -108,6 +119,17 @@ function CreateBranch(props) {
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              name="image"
+              type={'file'}
+              fullWidth
+              onBlur={handleBlur}
+              onChange={(e) => {
+                setValues({ ...values, image: e.target.files[0] });
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>

@@ -36,12 +36,14 @@ import Scrollbar from '../../components/scrollbar';
 import { BranchListHead, BranchListToolbar } from '../../sections/@dashboard/branch';
 // mock
 import { deleteBranchById, getBranch, updateBranch } from '../../apis/admin/branch';
+import global from '../../utils/global';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'branchId', label: 'Branch Id', alignRight: false },
   { id: 'branchName', label: 'Branch Name', alignRight: false },
+  { id: 'image', label: 'Branch Image', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -291,7 +293,7 @@ export default function Branch() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branchId, branchName, status, createdAt } = row;
+                    const { _id, branchId, branchName, image, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -301,6 +303,18 @@ export default function Branch() {
                         </TableCell>
                         <TableCell align="left">{branchId}</TableCell>
                         <TableCell align="left">{sentenceCase(branchName)}</TableCell>
+                        <TableCell align="left">
+                          {image?.uploadedFile ? (
+                            <img
+                              key={image._id ?? _id}
+                              src={`${global.baseURL}/${image?.uploadedFile}`}
+                              alt="logo"
+                              style={{ width: '80px' }}
+                            />
+                          ) : (
+                            'No Image'
+                          )}
+                        </TableCell>
                         <TableCell align="left">
                           <Status status={status} _id={_id} />
                         </TableCell>

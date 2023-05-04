@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getBranchById, updateBranch } from '../../../apis/admin/branch';
+import { createFile, deleteFileById } from '../../../apis/admin/fileupload';
 
 function UpdateBranch(props) {
   // Form validation
@@ -35,46 +36,59 @@ function UpdateBranch(props) {
     longitude: '',
     latitude: '',
     isHeadOffice: '',
+    image: {},
+    oldImage: {},
   };
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue, setValues, resetForm } = useFormik({
-    initialValues: { ...initialValues },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      const payload = {
-        branchId: values.branchId,
-        branchName: values.branchName,
-        gstNumber: values.gstNumber,
-        address: {
-          address: values.address,
-          area: values.area,
-          city: values.city,
-          state: values.state,
-          pincode: values.pincode,
-          landmark: values.landmark,
-          longitude: values.longitude,
-          latitude: values.latitude,
-        },
-        isHeadOffice: values.isHeadOffice,
-      };
-      updateBranch(props.id, payload).then((data) => {
-        if (data.status === false) {
-          props.setNotify({
-            open: true,
-            message: 'Branch not updated',
-            severity: 'error',
-          });
-        } else {
-          props.setToggleContainer(false);
-          props.setNotify({
-            open: true,
-            message: 'Branch updated',
-            severity: 'success',
-          });
-        }
-      });
-    },
-  });
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue, setValues, resetForm } =
+    useFormik({
+      initialValues: { ...initialValues },
+      validationSchema: schema,
+      onSubmit: (values) => {
+        const payload = {
+          branchId: values.branchId,
+          branchName: values.branchName,
+          gstNumber: values.gstNumber,
+          address: {
+            address: values.address,
+            area: values.area,
+            city: values.city,
+            state: values.state,
+            pincode: values.pincode,
+            landmark: values.landmark,
+            longitude: values.longitude,
+            latitude: values.latitude,
+          },
+          isHeadOffice: values.isHeadOffice,
+        };
+        updateBranch(props.id, payload).then((data) => {
+          if (data.status === false) {
+            props.setNotify({
+              open: true,
+              message: 'Branch not updated',
+              severity: 'error',
+            });
+          } else {
+            if (values.image instanceof File) {
+              const formData = new FormData();
+              formData.append('uploadId', props.id);
+              formData.append('uploadName', 'branch_image');
+              formData.append('uploadType', 'image');
+              formData.append('uploadedFile', values.image);
+              createFile(formData).then((res) => {
+                deleteFileById(values.oldImage._id);
+              });
+            }
+            props.setToggleContainer(false);
+            props.setNotify({
+              open: true,
+              message: 'Branch updated',
+              severity: 'success',
+            });
+          }
+        });
+      },
+    });
 
   useEffect(() => {
     setValues(initialValues);
@@ -85,15 +99,16 @@ function UpdateBranch(props) {
           branchId: data.data.branchId ?? '',
           branchName: data.data.branchName ?? '',
           gstNumber: data.data.gstNumber ?? '',
-          address: data.data.address.address ?? '',
-          area: data.data.address.area ?? '',
-          city: data.data.address.city ?? '',
-          state: data.data.address.state ?? '',
-          pincode: data.data.address.pincode ?? '',
-          landmark: data.data.address.landmark ?? '',
-          longitude: data.data.address.longitude ?? '',
-          latitude: data.data.address.latitude ?? '',
+          address: data.data.address?.address ?? '',
+          area: data.data.address?.area ?? '',
+          city: data.data.address?.city ?? '',
+          state: data.data.address?.state ?? '',
+          pincode: data.data.address?.pincode ?? '',
+          landmark: data.data.address?.landmark ?? '',
+          longitude: data.data.address?.longitude ?? '',
+          latitude: data.data.address?.latitude ?? '',
           isHeadOffice: data.data.isHeadOffice ?? '',
+          oldImage: data.data.image ?? '',
         });
       });
     }
@@ -129,6 +144,17 @@ function UpdateBranch(props) {
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              name="image"
+              type={'file'}
+              fullWidth
+              onBlur={handleBlur}
+              onChange={(e) => {
+                setValues({ ...values, image: e.target.files[0] });
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>

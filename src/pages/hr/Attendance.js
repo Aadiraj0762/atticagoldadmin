@@ -33,12 +33,14 @@ import Scrollbar from '../../components/scrollbar';
 import { AttendanceListHead, AttendanceListToolbar } from '../../sections/@dashboard/attendance';
 // mock
 import { deleteAttendanceById, getAttendance } from '../../apis/hr/attendance';
+import global from '../../utils/global';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'employeeId', label: 'Employee Id', alignRight: false },
-  { id: 'employeePhoto', label: 'Employee Photo', alignRight: false },
+  { id: 'employee', label: 'Employee Id', alignRight: false },
+  { id: 'employee', label: 'Employee Name', alignRight: false },
+  { id: 'attendance', label: 'Employee Photo', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -262,7 +264,7 @@ export default function Attendance() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employeeId, employeePhoto, createdAt } = row;
+                    const { _id, employee, attendance, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -270,8 +272,20 @@ export default function Attendance() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
-                        <TableCell align="left">{employeePhoto}</TableCell>
+                        <TableCell align="left">{employee?.employeeId}</TableCell>
+                        <TableCell align="left">{employee?.name}</TableCell>
+                        <TableCell align="left">
+                          {attendance?.uploadedFile ? (
+                            <img
+                              key={attendance._id ?? _id}
+                              src={`${global.baseURL}/${attendance?.uploadedFile}`}
+                              alt="attendance"
+                              style={{ width: '80px' }}
+                            />
+                          ) : (
+                            'No Image'
+                          )}
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton

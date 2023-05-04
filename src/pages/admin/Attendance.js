@@ -275,11 +275,16 @@ export default function Attendance() {
                         <TableCell align="left">{employee?.employeeId}</TableCell>
                         <TableCell align="left">{employee?.name}</TableCell>
                         <TableCell align="left">
-                          <img
-                            src={`${global.baseURL}/${attendance?.uploadedFile}`}
-                            alt="attendance"
-                            style={{ width: '80px' }}
-                          />
+                          {attendance?.uploadedFile ? (
+                            <img
+                              key={attendance._id ?? _id}
+                              src={`${global.baseURL}/${attendance?.uploadedFile}`}
+                              alt="attendance"
+                              style={{ width: '80px' }}
+                            />
+                          ) : (
+                            'No Image'
+                          )}
                         </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
