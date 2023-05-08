@@ -27,6 +27,8 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
@@ -76,7 +78,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.customer?.phoneNumber.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -191,6 +193,16 @@ export default function Sale() {
     });
   };
 
+  const handleExport = (fileData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(fileData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -275,6 +287,28 @@ export default function Sale() {
           <Typography variant="h4" gutterBottom>
             Sale
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="carbon:document-export" />}
+            onClick={() => {
+              handleExport(
+                data.map((e) => {
+                  console.log(e);
+                  return {
+                    SaleType: e.saleType,
+                    NetAmount: e.netAmount,
+                    BranchId: e.branch?.branchId,
+                    BranchName: e.branch?.branchName,
+                    OrnamentType: e.ornamentType,
+                    status: e.status,
+                  };
+                }),
+                'Sales'
+              );
+            }}
+          >
+            Export
+          </Button>
         </Stack>
 
         <Card>

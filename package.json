@@ -52,6 +52,7 @@
     "axios": "^1.2.3",
     "change-case": "^4.1.2",
     "date-fns": "^2.29.3",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "history": "^5.3.0",
     "lodash": "^4.17.21",
@@ -70,6 +71,7 @@
     "redux-persist": "^6.0.0",
     "simplebar-react": "^2.4.3",
     "web-vitals": "^3.0.3",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.11"
   },
   "devDependencies": {

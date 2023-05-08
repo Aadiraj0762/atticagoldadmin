@@ -118,7 +118,7 @@ function CreateUser(props) {
                 onChange={handleChange}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>
+                  <MenuItem value={e._id} key={e._id}>
                     {e.employeeId} {e.name}
                   </MenuItem>
                 ))}
