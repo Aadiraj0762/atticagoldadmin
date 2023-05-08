@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 // @mui
 import {
   Card,
@@ -23,9 +23,20 @@ import {
   Modal,
   Box,
   Snackbar,
+  TextField,
 } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import MuiAlert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from 'moment';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 // components
@@ -36,7 +47,7 @@ import { SalePrint } from '../../components/admin/sales';
 // sections
 import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
 // mock
-import { deleteSalesById, getSales, updateSales } from '../../apis/admin/sales';
+import { deleteSalesById, findSales, updateSales } from '../../apis/admin/sales';
 
 // ----------------------------------------------------------------------
 
@@ -84,6 +95,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function Sale() {
   const [open, setOpen] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -98,6 +110,27 @@ export default function Sale() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const form = useRef();
+
+  // Form validation
+  const schema = Yup.object({
+    fromDate: Yup.string().required('From date is required'),
+    toDate: Yup.string().required('To date is required'),
+  });
+
+  const { handleSubmit, handleChange, handleBlur, touched, errors, values, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      fromDate: moment(),
+      toDate: moment(),
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      findSales({ createdAt: { $gte: values.fromDate, $lte: values.toDate } }).then((data) => {
+        setData(data.data);
+      });
+      setFilterOpen(false);
+    },
+  });
 
   const [notify, setNotify] = useState({
     open: false,
@@ -106,10 +139,14 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    getSales().then((data) => {
+    fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
+  }, [toggleContainer]);
+
+  const fetchSale = (query = {}) => {
+    findSales(query).then((data) => {
       setData(data.data);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -169,9 +206,7 @@ export default function Sale() {
 
   const handleDelete = () => {
     deleteSalesById(openId).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+      fetchSale();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -179,9 +214,7 @@ export default function Sale() {
 
   const handleDeleteSelected = () => {
     deleteSalesById(selected).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+      fetchSale();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -227,9 +260,7 @@ export default function Sale() {
           variant="contained"
           onClick={(e) => {
             updateSales(props._id, { status: 'approved' }).then((data) => {
-              getSales().then((data) => {
-                setData(data.data);
-              });
+              fetchSale();
             });
           }}
         >
@@ -241,9 +272,7 @@ export default function Sale() {
           sx={{ ml: 2 }}
           onClick={(e) => {
             updateSales(props._id, { status: 'rejected' }).then((data) => {
-              getSales().then((data) => {
-                setData(data.data);
-              });
+              fetchSale();
             });
           }}
         >
@@ -252,6 +281,14 @@ export default function Sale() {
       </>
     );
   }
+
+  const handleFilterOpen = () => {
+    setFilterOpen(true);
+  };
+
+  const handleFilterClose = () => {
+    setFilterOpen(false);
+  };
 
   return (
     <>
@@ -290,9 +327,7 @@ export default function Sale() {
             <Button
               variant="contained"
               startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-              onClick={() => {
-                console.log('Filter');
-              }}
+              onClick={handleFilterOpen}
             >
               Filter
             </Button>
@@ -543,6 +578,70 @@ export default function Sale() {
           </Stack>
         </Box>
       </Modal>
+
+      <Dialog open={filterOpen} onClose={handleFilterClose}>
+        <DialogTitle>Filter</DialogTitle>
+        <DialogContent>
+          <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
+            <form
+              ref={form}
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit(e);
+              }}
+              autoComplete="off"
+            >
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
+                  <DesktopDatePicker
+                    label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
+                    inputFormat="MM/DD/YYYY"
+                    name="fromDate"
+                    value={values.fromDate}
+                    onChange={(value) => {
+                      setFieldValue('fromDate', value, true);
+                    }}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
+                  <DesktopDatePicker
+                    label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
+                    inputFormat="MM/DD/YYYY"
+                    name="toDate"
+                    value={values.toDate}
+                    onChange={(value) => {
+                      setFieldValue('toDate', value, true);
+                    }}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+            </form>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
+              setFilterOpen(false);
+              resetForm();
+            }}
+          >
+            Clear
+          </Button>
+          <Button variant="contained" onClick={handleFilterClose}>
+            Close
+          </Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Filter
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
