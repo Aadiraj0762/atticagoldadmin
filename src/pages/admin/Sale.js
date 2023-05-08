@@ -34,6 +34,8 @@ import FormControl from '@mui/material/FormControl';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import moment from 'moment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -111,6 +113,7 @@ export default function Sale() {
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const form = useRef();
+  const [openBackdrop, setOpenBackdrop] = useState(false);
 
   // Form validation
   const schema = Yup.object({
@@ -125,8 +128,10 @@ export default function Sale() {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      setOpenBackdrop(true);
       findSales({ createdAt: { $gte: values.fromDate, $lte: values.toDate } }).then((data) => {
         setData(data.data);
+        setOpenBackdrop(false);
       });
       setFilterOpen(false);
     },
@@ -642,6 +647,10 @@ export default function Sale() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }
