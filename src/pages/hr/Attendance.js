@@ -26,6 +26,8 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 // components
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -186,6 +188,16 @@ export default function Attendance() {
     });
   };
 
+  const handleExport = (fileData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(fileData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -237,6 +249,20 @@ export default function Attendance() {
           <Typography variant="h4" gutterBottom>
             Attendance
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="carbon:document-export" />}
+            onClick={() => {
+              handleExport(
+                data.map((e) => {
+                  return { EmployeeId: e?.employee?.employeeId, EmployeeName: e?.employee?.name, Date: e.createdAt };
+                }),
+                'Attandance'
+              );
+            }}
+          >
+            Export
+          </Button>
         </Stack>
 
         <Card>

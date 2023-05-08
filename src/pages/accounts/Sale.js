@@ -26,6 +26,8 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 // components
 import { UpdateSale } from '../../components/accounts/sales';
 import Label from '../../components/label';
@@ -39,10 +41,11 @@ import { deleteSalesById, getSales } from '../../apis/accounts/sales';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'type', label: 'Type', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
-  { id: 'note', label: 'Note', alignRight: false },
+  { id: 'saleType', label: 'Sale Type', alignRight: false },
+  { id: 'netAmount', label: 'Net Amount', alignRight: false },
+  { id: 'branch', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Name', alignRight: false },
+  { id: 'ornamentType', label: 'Ornament Type', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -189,6 +192,16 @@ export default function Sale() {
     });
   };
 
+  const handleExport = (fileData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(fileData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -240,6 +253,28 @@ export default function Sale() {
           <Typography variant="h4" gutterBottom>
             Sale
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="carbon:document-export" />}
+            onClick={() => {
+              handleExport(
+                data.map((e) => {
+                  console.log(e);
+                  return {
+                    SaleType: e.saleType,
+                    NetAmount: e.netAmount,
+                    BranchId: e.branch?.branchId,
+                    BranchName: e.branch?.branchName,
+                    OrnamentType: e.ornamentType,
+                    status: e.status,
+                  };
+                }),
+                'Sales'
+              );
+            }}
+          >
+            Export
+          </Button>
         </Stack>
 
         <Card>
@@ -267,7 +302,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, type, amount, branchId, note, status, createdAt } = row;
+                    const { _id, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -275,10 +310,11 @@ export default function Sale() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{type}</TableCell>
-                        <TableCell align="left">{amount}</TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
-                        <TableCell align="left">{note}</TableCell>
+                        <TableCell align="left">{sentenceCase(saleType)}</TableCell>
+                        <TableCell align="left">{netAmount}</TableCell>
+                        <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchName}</TableCell>
+                        <TableCell align="left">{sentenceCase(ornamentType)}</TableCell>
                         <TableCell align="left">
                           <Label
                             color={
@@ -311,7 +347,7 @@ export default function Sale() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -327,7 +363,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -363,28 +399,6 @@ export default function Sale() {
         </Card>
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'update' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Update Sale
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <UpdateSale setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
-      </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -403,17 +417,6 @@ export default function Sale() {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainerType('update');
-            setToggleContainer(!toggleContainer);
-          }}
-        >
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {

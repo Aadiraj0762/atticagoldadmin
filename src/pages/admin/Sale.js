@@ -23,7 +23,6 @@ import {
   Modal,
   Box,
   Snackbar,
-  Switch,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -287,28 +286,39 @@ export default function Sale() {
           <Typography variant="h4" gutterBottom>
             Sale
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="carbon:document-export" />}
-            onClick={() => {
-              handleExport(
-                data.map((e) => {
-                  console.log(e);
-                  return {
-                    SaleType: e.saleType,
-                    NetAmount: e.netAmount,
-                    BranchId: e.branch?.branchId,
-                    BranchName: e.branch?.branchName,
-                    OrnamentType: e.ornamentType,
-                    status: e.status,
-                  };
-                }),
-                'Sales'
-              );
-            }}
-          >
-            Export
-          </Button>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+              onClick={() => {
+                console.log('Filter');
+              }}
+            >
+              Filter
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="carbon:document-export" />}
+              onClick={() => {
+                handleExport(
+                  data.map((e) => {
+                    console.log(e);
+                    return {
+                      SaleType: e.saleType,
+                      NetAmount: e.netAmount,
+                      BranchId: e.branch?.branchId,
+                      BranchName: e.branch?.branchName,
+                      OrnamentType: e.ornamentType,
+                      status: e.status,
+                    };
+                  }),
+                  'Sales'
+                );
+              }}
+            >
+              Export
+            </Button>
+          </Stack>
         </Stack>
 
         <Card>
