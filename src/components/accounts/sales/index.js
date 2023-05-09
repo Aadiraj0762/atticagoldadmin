@@ -1,3 +1,3 @@
-import UpdateSale from './UpdateSale';
+import SalePrint from './SalePrint';
 
-export { UpdateSale };
+export { SalePrint };

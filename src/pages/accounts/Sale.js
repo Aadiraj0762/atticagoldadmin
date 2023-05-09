@@ -29,10 +29,10 @@ import moment from 'moment';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 // components
-import { UpdateSale } from '../../components/accounts/sales';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
+import { SalePrint } from '../../components/accounts/sales';
 // sections
 import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
 // mock
@@ -41,6 +41,7 @@ import { deleteSalesById, getSales } from '../../apis/accounts/sales';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'billId', label: 'Bill Id', alignRight: false },
   { id: 'saleType', label: 'Sale Type', alignRight: false },
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'branch', label: 'Branch Id', alignRight: false },
@@ -77,7 +78,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.customer?.phoneNumber.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -261,6 +262,7 @@ export default function Sale() {
                 data.map((e) => {
                   console.log(e);
                   return {
+                    BillId: e.billId,
                     SaleType: e.saleType,
                     NetAmount: e.netAmount,
                     BranchId: e.branch?.branchId,
@@ -302,7 +304,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
+                    const { _id, billId, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -310,6 +312,7 @@ export default function Sale() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
+                        <TableCell align="left">{billId}</TableCell>
                         <TableCell align="left">{sentenceCase(saleType)}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
@@ -347,7 +350,7 @@ export default function Sale() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -363,7 +366,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -399,6 +402,28 @@ export default function Sale() {
         </Card>
       </Container>
 
+      <Container
+        maxWidth="xl"
+        sx={{ display: toggleContainer === true && toggleContainerType === 'print' ? 'block' : 'none' }}
+      >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Invoice
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <SalePrint id={openId} />
+      </Container>
+
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -417,6 +442,16 @@ export default function Sale() {
           },
         }}
       >
+        <MenuItem
+          onClick={() => {
+            setOpen(null);
+            setToggleContainer(!toggleContainer);
+            setToggleContainerType('print');
+          }}
+        >
+          <Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />
+          Print
+        </MenuItem>
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {

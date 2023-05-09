@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Iconify from '../../iconify';
-import { getSalesById } from '../../../apis/branch/sales';
+import { getSalesById } from '../../../apis/accounts/sales';
 
 export default function SalePrint({ id }) {
   const [data, setData] = useState({});

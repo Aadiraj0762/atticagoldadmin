@@ -54,6 +54,7 @@ import { deleteSalesById, findSales, updateSales } from '../../apis/admin/sales'
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'billId', label: 'Bill Id', alignRight: false },
   { id: 'saleType', label: 'Sale Type', alignRight: false },
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'branch', label: 'Branch Id', alignRight: false },
@@ -344,6 +345,7 @@ export default function Sale() {
                   data.map((e) => {
                     console.log(e);
                     return {
+                      BillId: e.billId,
                       SaleType: e.saleType,
                       NetAmount: e.netAmount,
                       BranchId: e.branch?.branchId,
@@ -386,7 +388,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
+                    const { _id, billId, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -394,6 +396,7 @@ export default function Sale() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
+                        <TableCell align="left">{billId}</TableCell>
                         <TableCell align="left">{sentenceCase(saleType)}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
@@ -435,7 +438,7 @@ export default function Sale() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -451,7 +454,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

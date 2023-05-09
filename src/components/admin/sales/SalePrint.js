@@ -35,13 +35,14 @@ export default function SalePrint({ id }) {
               <tbody>
                 <tr>
                   <td style={{ width: '50%' }}>
-                    <b>Bill ID:</b> {data?._id}
+                    <b>Bill ID:</b> {data?.billId}
                   </td>
-                  <td style={{ width: '50%', textAlign: 'right' }}>{new Date(data?.createdAt).toUTCString()}</td>
+                  <td style={{ width: '50%', textAlign: 'right' }}>{new Date(data?.createdAt).toDateString()}</td>
                 </tr>
                 <tr>
                   <td style={{ width: '50%' }}>
-                    <b>Gold Rate:</b> &#8377; {data?.goldRate}
+                    <b>{data?.ornamentType?.toLowerCase() === 'gold' ? 'Gold' : 'Silver'} Rate:</b> &#8377;{' '}
+                    {data?.ornamentType?.toLowerCase() === 'gold' ? data.goldRate : data.silverRate}
                   </td>
                   <td style={{ width: '50%', textAlign: 'right' }} />
                 </tr>
