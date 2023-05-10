@@ -122,7 +122,7 @@ export default function Sale() {
     toDate: Yup.string().required('To date is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, touched, errors, values, setFieldValue, resetForm } = useFormik({
+  const { handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
       fromDate: moment(),
       toDate: moment(),
@@ -145,7 +145,7 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
+    fetchSale({ createdAt: { $gte: values.fromDate ?? moment(), $lte: values.toDate ?? moment() } });
   }, [toggleContainer]);
 
   const fetchSale = (query = {}) => {
@@ -398,7 +398,7 @@ export default function Sale() {
                         </TableCell>
                         <TableCell align="left">{billId}</TableCell>
                         <TableCell align="left">{sentenceCase(saleType)}</TableCell>
-                        <TableCell align="left">{netAmount}</TableCell>
+                        <TableCell align="left">&#8377; {netAmount}</TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
                         <TableCell align="left">{branch?.branchName}</TableCell>
                         <TableCell align="left">{sentenceCase(ornamentType)}</TableCell>
