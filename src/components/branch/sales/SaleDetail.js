@@ -269,176 +269,46 @@ export default function SaleDetail({ id }) {
               <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
                 Customer Detail:
               </Typography>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="name"
-                value={data?.customer?.name}
-                label={'Customer Name'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="email"
-                value={data?.customer?.email}
-                label={'Customer Email'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="phoneNumber"
-                value={data?.customer?.phoneNumber}
-                label={'Customer Phone Number'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="address"
-                value={data?.customer?.address[0]?.address}
-                label={'Customer Address'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
+              <TableContainer>
+                <Table>
+                  <TableBody>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">Customer Name: {data?.customer?.name}</TableCell>
+                      <TableCell align="left">Customer Email: {data?.customer?.email}</TableCell>
+                      <TableCell align="left">Customer Phone Number: {data?.customer?.phoneNumber}</TableCell>
+                      <TableCell align="left">Address: {data?.customer?.address[0]?.address}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
                 Bill Detail:
               </Typography>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="billId"
-                value={data.billId}
-                label={'Bill Id'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="Branch"
-                value={sentenceCase(data.branch?.branchName ?? '')}
-                label={'Branch'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="saleType"
-                value={sentenceCase(data.saleType ?? '')}
-                label={'Sale Type'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="ornamentType"
-                value={sentenceCase(data.ornamentType ?? '')}
-                label={'Ornament Type'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="dop"
-                value={new Date(data.dop).toUTCString()}
-                label={'DOP'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="netWeight"
-                value={data.netWeight}
-                label={'Net Weight'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="paymentType"
-                value={data.paymentType}
-                label={'Payment Type'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="netAmount"
-                value={data.netAmount}
-                label={'Net Amount'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="margin"
-                value={data.margin}
-                label={'Margin'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="payableAmount"
-                value={data.payableAmount}
-                label={'Payable Amount'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <TextField
-                name="staus"
-                value={sentenceCase(data.status ?? '')}
-                label={'Status'}
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
+              <TableContainer>
+                <Table>
+                  <TableBody>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">Bill Id: {data?.billId}</TableCell>
+                      <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
+                      <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
+                      <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
+                    </TableRow>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>
+                      <TableCell align="left">Net Weight: {data.netWeight}</TableCell>
+                      <TableCell align="left">Payment Type: {data.paymentType}</TableCell>
+                      <TableCell align="left">Net Amount: {data.netAmount}</TableCell>
+                    </TableRow>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">Margin: {data.margin}</TableCell>
+                      <TableCell align="left">Payable Amount: {data.payableAmount}</TableCell>
+                      <TableCell align="left">Status: {data.status}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
@@ -454,50 +324,20 @@ export default function SaleDetail({ id }) {
                   <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
                     Bank Detail:
                   </Typography>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    name="accountHolderName"
-                    value={sentenceCase(data?.bank?.accountHolderName ?? '')}
-                    label={'Account Holder Name'}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    name="accountNo"
-                    value={data?.bank?.accountNo}
-                    label={'Account No'}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    name="branch"
-                    value={data?.bank?.branch}
-                    label={'Branch'}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    name="ifscCode"
-                    value={data?.bank?.ifscCode}
-                    label={'IFSC Code'}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  <TableContainer>
+                    <Table>
+                      <TableBody>
+                        <TableRow tabIndex={-1}>
+                          <TableCell align="left">
+                            Account Holder Name: {sentenceCase(data?.bank?.accountHolderName ?? '')}
+                          </TableCell>
+                          <TableCell align="left">Account No: {data?.bank?.accountNo}</TableCell>
+                          <TableCell align="left">Branch: {data?.bank?.branch}</TableCell>
+                          <TableCell align="left">IFSC Code: {data?.bank?.ifscCode}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </Grid>
               </>
             )}
