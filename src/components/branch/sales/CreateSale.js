@@ -36,6 +36,7 @@ import Release from './release';
 import Ornament from './ornament';
 import ProofDocument from './proof';
 import Scrollbar from '../../scrollbar';
+import { createFile } from '../../../apis/branch/fileupload';
 
 const style = {
   position: 'absolute',
@@ -73,9 +74,6 @@ function CreateSale(props) {
     netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
     payableAmount: 0,
     bank: selectedBank?._id,
-    proofDocument: proofDocument?.map((e) => {
-      return { ...e, documentFile: e.documentFile.name };
-    }),
     status: 'pending',
   };
   const [page, setPage] = useState(0);
@@ -122,7 +120,7 @@ function CreateSale(props) {
     margin: Yup.string().required('Margin is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, resetForm, touched, errors } = useFormik({
     initialValues: {
       ornamentType: '',
       saleType: '',
@@ -143,6 +141,18 @@ function CreateSale(props) {
             severity: 'error',
           });
         } else {
+          proofDocument.forEach((e) => {
+            const formData = new FormData();
+            formData.append('uploadId', data.data.fileUpload.uploadId);
+            formData.append('uploadName', data.data.fileUpload.uploadName);
+            formData.append('uploadType', 'proof');
+            formData.append('uploadedFile', e.documentFile);
+            formData.append('documentType', e.documentType);
+            formData.append('documentNo', e.documentNo);
+            createFile(formData);
+          });
+          resetForm();
+          setStep(1);
           props.setToggleContainer(false);
           props.setNotify({
             open: true,

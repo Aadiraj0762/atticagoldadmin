@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateSale, SalePrint } from '../../components/branch/sales';
+import { CreateSale, SalePrint, SaleDetail } from '../../components/branch/sales';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -421,6 +421,28 @@ export default function Sale() {
         <SalePrint id={openId} />
       </Container>
 
+      <Container
+        maxWidth="xl"
+        sx={{ display: toggleContainer === true && toggleContainerType === 'detail' ? 'block' : 'none' }}
+      >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Sale Details
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <SaleDetail id={openId} />
+      </Container>
+
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -439,6 +461,16 @@ export default function Sale() {
           },
         }}
       >
+        <MenuItem
+          onClick={() => {
+            setOpen(null);
+            setToggleContainer(!toggleContainer);
+            setToggleContainerType('detail');
+          }}
+        >
+          <Iconify icon={'carbon:view-filled'} sx={{ mr: 2 }} />
+          View
+        </MenuItem>
         <MenuItem
           onClick={() => {
             setOpen(null);
