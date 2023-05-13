@@ -4,11 +4,13 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Webcam from 'react-webcam';
 import { useCallback, useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { createAttendance } from '../../../apis/branch/attendance';
 import { getEmployee } from '../../../apis/branch/employee';
 import { createFile } from '../../../apis/branch/fileupload';
 
 function CreateAttendance(props) {
+  const auth = useSelector((state) => state.auth);
   const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
   const [employees, setEmloyees] = useState([]);
@@ -37,7 +39,7 @@ function CreateAttendance(props) {
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: {
-      employee: '',
+      employee: auth.user._id,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -91,7 +93,7 @@ function CreateAttendance(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
+          {/* <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>
               <Select
@@ -111,7 +113,7 @@ function CreateAttendance(props) {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             {img === null ? (
               <>
