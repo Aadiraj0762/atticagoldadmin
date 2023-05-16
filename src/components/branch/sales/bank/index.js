@@ -328,7 +328,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   name="proofType"
                   value={values.proofType}
                   error={touched.proofType && errors.proofType && true}
-                  label={touched.proofType && errors.proofType ? errors.proofType : 'Prooftype'}
+                  label={touched.proofType && errors.proofType ? errors.proofType : 'Proof Type'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
