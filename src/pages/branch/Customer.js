@@ -105,7 +105,9 @@ export default function Customer() {
     fetchCustomer();
   }, [toggleContainer]);
 
-  const fetchCustomer = (query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }) => {
+  const fetchCustomer = (
+    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
+  ) => {
     findCustomer(query).then((data) => {
       setData(data.data);
     });
@@ -371,24 +373,26 @@ export default function Customer() {
         </Card>
       </Container>
 
-      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'block' : 'none' }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Create Customer
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
+      {toggleContainer === true && (
+        <Container maxWidth="xl">
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Create Customer
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mdi:arrow-left" />}
+              onClick={() => {
+                setToggleContainer(!toggleContainer);
+              }}
+            >
+              Back
+            </Button>
+          </Stack>
 
-        <CreateCustomer setToggleContainer={setToggleContainer} setNotify={setNotify} />
-      </Container>
+          <CreateCustomer setToggleContainer={setToggleContainer} setNotify={setNotify} />
+        </Container>
+      )}
 
       <Popover
         open={Boolean(open)}

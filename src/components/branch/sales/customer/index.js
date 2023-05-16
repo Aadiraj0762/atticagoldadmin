@@ -535,33 +535,35 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                {img === null ? (
-                  <>
-                    <Webcam
-                      mirrored
-                      audio={false}
-                      height={400}
-                      width={400}
-                      ref={webcamRef}
-                      screenshotFormat="image/png"
-                      videoConstraints={videoConstraints}
-                    />
-                    <br />
-                    <LoadingButton size="small" type="button" variant="contained" onClick={capture}>
-                      Capture photo
-                    </LoadingButton>
-                  </>
-                ) : (
-                  <>
-                    <img src={img} alt="screenshot" />
-                    <br />
-                    <LoadingButton size="small" type="button" variant="contained" onClick={() => setImg(null)}>
-                      Retake
-                    </LoadingButton>
-                  </>
-                )}
-              </Grid>
+              {customerModal && (
+                <Grid item xs={12}>
+                  {img === null ? (
+                    <>
+                      <Webcam
+                        mirrored
+                        audio={false}
+                        height={400}
+                        width={400}
+                        ref={webcamRef}
+                        screenshotFormat="image/png"
+                        videoConstraints={videoConstraints}
+                      />
+                      <br />
+                      <LoadingButton size="small" type="button" variant="contained" onClick={capture}>
+                        Capture photo
+                      </LoadingButton>
+                    </>
+                  ) : (
+                    <>
+                      <img src={img} alt="screenshot" />
+                      <br />
+                      <LoadingButton size="small" type="button" variant="contained" onClick={() => setImg(null)}>
+                        Retake
+                      </LoadingButton>
+                    </>
+                  )}
+                </Grid>
+              )}
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.status && errors.status && true}>
                   <InputLabel id="select-label">Select status</InputLabel>
