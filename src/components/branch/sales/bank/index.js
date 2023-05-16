@@ -96,7 +96,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
     ifscCode: Yup.string().required('IFSC code is required'),
     bankName: Yup.string().required('Bank name is required'),
     branch: Yup.string().required('Branch is required'),
-    proofType: Yup.string().required('Prooftype is required'),
+    proofType: Yup.string().required('Proof Type is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
