@@ -38,7 +38,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
     status: Yup.string().required('Status is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
       name: '',
       phoneNumber: '',
@@ -54,6 +54,9 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
       source: '',
       signature: '',
       status: '',
+      chooseId: '',
+      idNo: '',
+      uploadId: {},
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -65,7 +68,23 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         });
         return;
       }
-      createCustomer(values).then((data) => {
+      const payload = {
+        name: values.name,
+        phoneNumber: values.phoneNumber,
+        alternatePhoneNumber: values.alternatePhoneNumber,
+        email: values.email,
+        dob: values.dob,
+        gender: values.gender,
+        otp: values.otp,
+        employmentType: values.employmentType,
+        organisation: values.organisation,
+        annualIncome: values.annualIncome,
+        maritalStatus: values.maritalStatus,
+        source: values.source,
+        signature: values.signature,
+        status: values.status,
+      };
+      createCustomer(payload).then((data) => {
         if (data.status === false) {
           setNotify({
             open: true,
@@ -84,6 +103,14 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               formData.append('uploadedFile', file);
               createFile(formData);
             });
+          const formData = new FormData();
+          formData.append('uploadId', data.data.fileUpload.uploadId);
+          formData.append('uploadName', data.data.fileUpload.uploadName);
+          formData.append('uploadType', 'upload_id');
+          formData.append('uploadedFile', values.uploadId);
+          formData.append('documentType', values.chooseId);
+          formData.append('documentNo', values.idNo);
+          createFile(formData);
           setToggleContainer(false);
           setImg(null);
           form.current.reset();
@@ -281,12 +308,13 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
           <Grid item xs={12} sm={4}>
             <TextField
               name="uploadId"
-              value={values.uploadId}
+              type={'file'}
               error={touched.uploadId && errors.uploadId && true}
-              label={touched.uploadId && errors.uploadId ? errors.uploadId : 'Upload Id'}
               fullWidth
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={(e) => {
+                setValues({ ...values, uploadId: e.target.files[0] });
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>

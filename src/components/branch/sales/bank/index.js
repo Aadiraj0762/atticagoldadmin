@@ -27,6 +27,7 @@ import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
 import Scrollbar from '../../../scrollbar';
 import { getBankById, createBank, deleteBankById } from '../../../../apis/branch/customer-bank';
+import { createFile } from '../../../../apis/branch/fileupload';
 
 const style = {
   position: 'absolute',
@@ -96,10 +97,9 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
     bankName: Yup.string().required('Bank name is required'),
     branch: Yup.string().required('Branch is required'),
     proofType: Yup.string().required('Prooftype is required'),
-    proofFile: Yup.string().required('Proof file is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
       accountNo: '',
       accountHolderName: '',
@@ -107,7 +107,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
       bankName: '',
       branch: '',
       proofType: '',
-      proofFile: '',
+      proofFile: {},
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -122,6 +122,13 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
           getBankById(selectedUser._id).then((data) => {
             setData(data.data);
           });
+          const formData = new FormData();
+          formData.append('uploadId', data.data.fileUpload.uploadId);
+          formData.append('uploadName', data.data.fileUpload.uploadName);
+          formData.append('uploadType', 'proof');
+          formData.append('uploadedFile', values.proofFile);
+          formData.append('documentType', values.proofType);
+          createFile(formData);
           setBankModal(false);
           setNotify({
             open: true,
@@ -330,12 +337,13 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
               <Grid item xs={12} md={4}>
                 <TextField
                   name="proofFile"
-                  value={values.proofFile}
+                  type={'file'}
                   error={touched.proofFile && errors.proofFile && true}
-                  label={touched.proofFile && errors.proofFile ? errors.proofFile : 'Proof file'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, proofFile: e.target.files[0] });
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
