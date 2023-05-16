@@ -547,6 +547,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={(e) => {
                     setValues({ ...values, uploadId: e.target.files[0] });
                   }}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>

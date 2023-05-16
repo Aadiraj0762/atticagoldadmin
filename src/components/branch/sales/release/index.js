@@ -36,6 +36,7 @@ import Iconify from '../../../iconify';
 import { getReleaseByCustomerId, createRelease, deleteReleaseById } from '../../../../apis/branch/release';
 import Scrollbar from '../../../scrollbar';
 import Bank from '../bank';
+import { createFile } from '../../../../apis/branch/fileupload';
 
 const style = {
   position: 'absolute',
@@ -114,7 +115,6 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     comments: Yup.string().required('comments is required'),
     documentType: Yup.string().required('Document type is required'),
     documentNo: Yup.string().required('Document no is required'),
-    documentFile: Yup.string().required('Document file is required'),
     status: Yup.string().required('status is required'),
   });
 
@@ -135,12 +135,28 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
       comments: '',
       documentType: '',
       documentNo: '',
-      documentFile: '',
+      documentFile: {},
       status: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      createRelease({ customer: selectedUser._id, ...values }).then((data) => {
+      const payload = {
+        customer: values.customer,
+        weight: values.weight,
+        pledgeAmount: values.pledgeAmount,
+        payableAmount: values.payableAmount,
+        paymentType: values.paymentType,
+        bank: values.bank,
+        pledgedDate: values.pledgedDate,
+        pledgeId: values.pledgeId,
+        pledgedIn: values.pledgedIn,
+        branch: values.branch,
+        releaseDocument: values.releaseDocument,
+        releaseDate: values.releaseDate,
+        comments: values.comments,
+        status: values.status,
+      };
+      createRelease(payload).then((data) => {
         if (data.status === false) {
           setNotify({
             open: true,
@@ -151,6 +167,14 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
           getReleaseByCustomerId(selectedUser._id).then((data) => {
             setData(data.data);
           });
+          const formData = new FormData();
+          formData.append('uploadId', data.data.fileUpload.uploadId);
+          formData.append('uploadName', data.data.fileUpload.uploadName);
+          formData.append('uploadType', 'proof');
+          formData.append('uploadedFile', values.documentFile);
+          formData.append('documentType', values.documentType);
+          formData.append('documentNo', values.documentNo);
+          createFile(formData);
           setReleaseModal(false);
           setNotify({
             open: true,
@@ -470,12 +494,14 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
               <Grid item xs={12} md={4}>
                 <TextField
                   name="documentFile"
-                  value={values.documentFile}
+                  type={'file'}
                   error={touched.documentFile && errors.documentFile && true}
-                  label={touched.documentFile && errors.documentFile ? errors.documentFile : 'Document file'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, documentFile: e.target.files[0] });
+                  }}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>

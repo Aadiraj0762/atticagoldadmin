@@ -344,6 +344,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                   onChange={(e) => {
                     setValues({ ...values, proofFile: e.target.files[0] });
                   }}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
