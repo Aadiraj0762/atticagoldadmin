@@ -358,6 +358,18 @@ function CreateSale(props) {
                       message: 'Please select bank',
                       severity: 'info',
                     });
+                  } else if (values.paymentType === 'partial' && values.bankAmount === '') {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please enter bank amount',
+                      severity: 'info',
+                    });
+                  } else if (values.paymentType === 'partial' && values.cashAmount === '') {
+                    props.setNotify({
+                      open: true,
+                      message: 'Please enter cash amount',
+                      severity: 'info',
+                    });
                   } else if (values.saleType === 'pledged' && selectedRelease.length === 0) {
                     props.setNotify({
                       open: true,

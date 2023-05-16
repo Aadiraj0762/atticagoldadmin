@@ -9,6 +9,15 @@ async function getCustomer() {
   }
 }
 
+async function findCustomer(query = {}) {
+  try {
+    const response = await apiClient.post('/api/v1.0/branch/customer/get', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getCustomerById(id) {
   try {
     const response = await apiClient.get(`/api/v1.0/branch/customer/get/${id}`);
@@ -45,4 +54,4 @@ async function deleteCustomerById(id) {
   }
 }
 
-export { getCustomer, getCustomerById, createCustomer, updateCustomer, deleteCustomerById };
+export { getCustomer, findCustomer, getCustomerById, createCustomer, updateCustomer, deleteCustomerById };

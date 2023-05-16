@@ -9,6 +9,15 @@ async function getSales() {
   }
 }
 
+async function findSales(query = {}) {
+  try {
+    const response = await apiClient.post('/api/v1.0/branch/sales/get', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getSalesById(id) {
   try {
     const response = await apiClient.get(`/api/v1.0/branch/sales/get/${id}`);
@@ -45,4 +54,4 @@ async function deleteSalesById(id) {
   }
 }
 
-export { getSales, getSalesById, createSales, updateSales, deleteSalesById };
+export { getSales, findSales, getSalesById, createSales, updateSales, deleteSalesById };

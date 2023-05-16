@@ -54,8 +54,8 @@ function CreateLeave(props) {
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: {
-      branch: '',
-      employee: '',
+      branch: branch?._id,
+      employee: auth.user.employee,
       leaveType: '',
       proof: {},
       dates: [moment(moment().format('YYYY-MM-DD'))],
@@ -135,7 +135,9 @@ function CreateLeave(props) {
                 }}
               >
                 {employees.map((e) => (
-                  <MenuItem value={e._id}>{e.employeeId} {e.name}</MenuItem>
+                  <MenuItem value={e._id}>
+                    {e.employeeId} {e.name}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>

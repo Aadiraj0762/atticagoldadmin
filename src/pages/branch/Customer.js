@@ -34,7 +34,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { CustomerListHead, CustomerListToolbar } from '../../sections/@dashboard/customer';
 // mock
-import { deleteCustomerById, getCustomer } from '../../apis/branch/customer';
+import { deleteCustomerById, findCustomer } from '../../apis/branch/customer';
 
 // ----------------------------------------------------------------------
 
@@ -102,10 +102,14 @@ export default function Customer() {
   });
 
   useEffect(() => {
-    getCustomer().then((data) => {
+    fetchCustomer();
+  }, [toggleContainer]);
+
+  const fetchCustomer = (query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }) => {
+    findCustomer(query).then((data) => {
       setData(data.data);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -165,9 +169,7 @@ export default function Customer() {
 
   const handleDelete = () => {
     deleteCustomerById(openId).then(() => {
-      getCustomer().then((data) => {
-        setData(data.data);
-      });
+      fetchCustomer();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -175,9 +177,7 @@ export default function Customer() {
 
   const handleDeleteSelected = () => {
     deleteCustomerById(selected).then(() => {
-      getCustomer().then((data) => {
-        setData(data.data);
-      });
+      fetchCustomer();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

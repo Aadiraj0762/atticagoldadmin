@@ -3,10 +3,13 @@ import { LoadingButton } from '@mui/lab';
 import { useEffect, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useSelector } from 'react-redux';
 import { createFund } from '../../../apis/branch/fund';
-import { getBranch } from '../../../apis/branch/branch';
+import { getBranch, getBranchByBranchId } from '../../../apis/branch/branch';
 
 function CreateFund(props) {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [branches, setBranches] = useState([]);
   const [headOffice, setHeadOffice] = useState(null);
   const [isReadOnly, setReadOnly] = useState(false);
@@ -21,7 +24,10 @@ function CreateFund(props) {
         }
       });
     });
-  }, []);
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+    });
+  }, [auth]);
 
   // Form validation
   const schema = Yup.object({
@@ -93,9 +99,11 @@ function CreateFund(props) {
                 onBlur={handleBlur}
                 onChange={(e) => {
                   if (e.target.value === 'fund_request') {
-                    setFieldValue('from', headOffice._id);
+                    setFieldValue('from', headOffice?._id);
+                    setFieldValue('to', branch?._id);
                   } else {
-                    setFieldValue('from', '');
+                    setFieldValue('from', branch?._id);
+                    setFieldValue('to', '');
                   }
                   handleChange(e);
                 }}
@@ -137,6 +145,7 @@ function CreateFund(props) {
                 value={values.to}
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={isReadOnly}
               >
                 {branches.map((e) => (
                   <MenuItem value={e._id}>

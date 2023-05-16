@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 // components
 import { CreateSale, SalePrint, SaleDetail } from '../../components/branch/sales';
 import Label from '../../components/label';
@@ -34,7 +35,8 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
 // mock
-import { deleteSalesById, getSales } from '../../apis/branch/sales';
+import { deleteSalesById, findSales } from '../../apis/branch/sales';
+import { getBranchByBranchId } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
 
@@ -82,6 +84,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Sale() {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
@@ -105,10 +109,31 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    getSales().then((data) => {
-      setData(data.data);
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+      fetchSale({
+        createdAt: {
+          $gte: moment().subtract('days', 1),
+          $lte: moment().add('days', 1),
+        },
+        branch: data.data?._id,
+      });
     });
   }, [toggleContainer]);
+
+  const fetchSale = (
+    query = {
+      createdAt: {
+        $gte: moment().subtract('days', 1),
+        $lte: moment().add('days', 1),
+      },
+    }
+  ) => {
+    if (!query.branch) query.branch = branch._id;
+    findSales(query).then((data) => {
+      setData(data.data);
+    });
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -168,9 +193,7 @@ export default function Sale() {
 
   const handleDelete = () => {
     deleteSalesById(openId).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+      fetchSale();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -178,9 +201,7 @@ export default function Sale() {
 
   const handleDeleteSelected = () => {
     deleteSalesById(selected).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+      fetchSale();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -505,7 +526,7 @@ export default function Sale() {
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want branchId delete?
+            Do you want to delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button

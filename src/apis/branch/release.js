@@ -21,7 +21,7 @@ async function getReleaseById(id) {
 async function getReleaseByCustomerId(id) {
   try {
     const response = await apiClient.post('/api/v1.0/branch/release/get', {
-      customerId: id,
+      customer: id,
     });
     return response.data;
   } catch (err) {

@@ -130,7 +130,7 @@ export default function Sale() {
     validationSchema: schema,
     onSubmit: (values) => {
       setOpenBackdrop(true);
-      findSales({ createdAt: { $gte: values.fromDate, $lte: values.toDate } }).then((data) => {
+      findSales().then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
       });
@@ -145,10 +145,17 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    fetchSale({ createdAt: { $gte: values.fromDate ?? moment(), $lte: values.toDate ?? moment() } });
+    fetchSale();
   }, [toggleContainer]);
 
-  const fetchSale = (query = {}) => {
+  const fetchSale = (
+    query = {
+      createdAt: {
+        $gte: values.fromDate ?? moment().subtract('days', 1),
+        $lte: values.toDate ?? moment().add('days', 1),
+      },
+    }
+  ) => {
     findSales(query).then((data) => {
       setData(data.data);
     });
