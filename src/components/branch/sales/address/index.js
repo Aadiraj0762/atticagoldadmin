@@ -32,6 +32,7 @@ import { useState, useEffect } from 'react';
 import Iconify from '../../../iconify';
 import Scrollbar from '../../../scrollbar';
 import { getAddressById, createAddress, deleteAddressById } from '../../../../apis/branch/customer-address';
+import { createFile } from '../../../../apis/branch/fileupload';
 
 const style = {
   position: 'absolute',
@@ -105,10 +106,9 @@ function Address({ step, setStep, setNotify, selectedUser }) {
     label: Yup.string().required('Label is required'),
     documentType: Yup.string().required('Document type is required'),
     documentNo: Yup.string().required('Document no is required'),
-    documentFile: Yup.string().required('Document file is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, setValues, errors, resetForm } = useFormik({
     initialValues: {
       address: '',
       area: '',
@@ -120,7 +120,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
       label: '',
       documentType: '',
       documentNo: '',
-      documentFile: '',
+      documentFile: {},
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -136,6 +136,15 @@ function Address({ step, setStep, setNotify, selectedUser }) {
             setData(data.data);
           });
           setAddressModal(false);
+          const formData = new FormData();
+          formData.append('uploadId', data.data.fileUpload.uploadId);
+          formData.append('uploadName', data.data.fileUpload.uploadName);
+          formData.append('uploadType', 'proof');
+          formData.append('uploadedFile', values.documentFile);
+          formData.append('documentType', values.documentType);
+          formData.append('documentNo', values.documentNo);
+          createFile(formData);
+          resetForm();
           setNotify({
             open: true,
             message: 'Address created',
@@ -402,12 +411,14 @@ function Address({ step, setStep, setNotify, selectedUser }) {
               <Grid item xs={12} md={4}>
                 <TextField
                   name="documentFile"
-                  value={values.documentFile}
+                  type={'file'}
                   error={touched.documentFile && errors.documentFile && true}
-                  label={touched.documentFile && errors.documentFile ? errors.documentFile : 'Document file'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, documentFile: e.target.files[0] });
+                  }}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
