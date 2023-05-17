@@ -88,7 +88,7 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
     documentType: Yup.string().required('Document type is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
       documentType: '',
       documentNo: '',
@@ -98,6 +98,7 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
     onSubmit: (values) => {
       setProofDocument([...proofDocument, values]);
       setProofDocumentModal(false);
+      resetForm();
       setNotify({
         open: true,
         message: 'Proof document uploaded',
@@ -110,6 +111,8 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
     setProofDocument(proofDocument.filter((e, index) => index !== openId));
     handleCloseDeleteModal();
   };
+
+  console.log(proofDocument);
 
   return (
     <>
@@ -133,6 +136,7 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
                 <TableRow>
                   <TableCell align="left">Document Type</TableCell>
                   <TableCell align="left">Document No</TableCell>
+                  <TableCell align="left">Document File</TableCell>
                   <TableCell align="left">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -141,6 +145,13 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
                   <TableRow hover key={index} tabIndex={-1}>
                     <TableCell align="left">{sentenceCase(e.documentType)}</TableCell>
                     <TableCell align="left">{e.documentNo}</TableCell>
+                    <TableCell align="left">
+                      {e?.documentFile?.type.match(/image\/.*/) ? (
+                        <img key={index} src={URL.createObjectURL(e.documentFile)} alt="document" style={{ width: '80px' }} />
+                      ) : (
+                        <img key={index} src="/assets/doc.svg" alt="document" style={{ width: '80px' }} />
+                      )}
+                    </TableCell>
                     <TableCell align="left">
                       <Button
                         variant="contained"

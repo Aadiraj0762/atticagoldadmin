@@ -40,7 +40,7 @@ const style = {
   border: 'none',
 };
 
-function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, ornamentType }) {
+function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, purchaseType }) {
   const [openId, setOpenId] = useState(null);
   const [ornamentModal, setOrnamentModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -79,6 +79,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
 
   // Form validation
   const schema = Yup.object({
+    ornamentType: Yup.string().required('Ornament type is required'),
     quantity: Yup.string().required('Quantity is required'),
     grossWeight: Yup.string().required('Gross weight is required'),
     stoneWeight: Yup.string().required('Stone weight is required'),
@@ -89,6 +90,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
+      ornamentType: '',
       quantity: '',
       grossWeight: '',
       stoneWeight: '',
@@ -115,7 +117,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
   };
 
   useEffect(() => {
-    const rate = ornamentType === 'gold' ? goldRate : ornamentType === 'silver' ? silverRate : 0;
+    const rate = purchaseType === 'gold' ? goldRate : purchaseType === 'silver' ? silverRate : 0;
     setValues({ ...values, netAmount: (((values.netWeight ?? 0) * (values.purity ?? 0)) / 100) * rate });
   }, [values.netWeight, values.purity]);
 
@@ -144,6 +146,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell align="left">Ornament Type</TableCell>
                   <TableCell align="left">Purity</TableCell>
                   <TableCell align="left">Quantity</TableCell>
                   <TableCell align="left">Stone weight (Grams)</TableCell>
@@ -156,6 +159,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
               <TableBody>
                 {ornaments?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                   <TableRow hover key={index} tabIndex={-1}>
+                    <TableCell align="left">{e.ornamentType}</TableCell>
                     <TableCell align="left">{e.purity}</TableCell>
                     <TableCell align="left">{e.quantity}</TableCell>
                     <TableCell align="left">{e.stoneWeight}</TableCell>
@@ -178,12 +182,12 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
                 ))}
                 {emptyRows > 0 && (
                   <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={8} />
                   </TableRow>
                 )}
                 {ornaments.length === 0 && (
                   <TableRow>
-                    <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
+                    <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
                       <Paper
                         sx={{
                           textAlign: 'center',
@@ -232,6 +236,17 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, or
             }}
           >
             <Grid container spacing={3}>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  name="ornamentType"
+                  value={values.ornamentType}
+                  error={touched.ornamentType && errors.ornamentType && true}
+                  label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Ornament Type'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
                   name="quantity"

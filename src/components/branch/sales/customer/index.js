@@ -29,10 +29,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import { useCallback, useState, useEffect, useRef } from 'react';
+import moment from 'moment';
 import Webcam from 'react-webcam';
 import Iconify from '../../../iconify';
 import Label from '../../../label';
-import { getCustomer, createCustomer, deleteCustomerById } from '../../../../apis/branch/customer';
+import { findCustomer, createCustomer, deleteCustomerById } from '../../../../apis/branch/customer';
 import { createFile } from '../../../../apis/branch/fileupload';
 import Scrollbar from '../../../scrollbar';
 
@@ -102,10 +103,16 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   };
 
   useEffect(() => {
-    getCustomer().then((data) => {
+    fetchCustomer();
+  }, []);
+
+  const fetchCustomer = (
+    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
+  ) => {
+    findCustomer(query).then((data) => {
       setData(data.data);
     });
-  }, []);
+  };
 
   // Form validation
   const schema = Yup.object({
@@ -192,9 +199,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
           formData.append('documentType', values.chooseId);
           formData.append('documentNo', values.idNo);
           createFile(formData);
-          getCustomer().then((data) => {
-            setData(data.data);
-          });
+          fetchCustomer();
           setCustomerModal(false);
           setImg(null);
           resetForm();
@@ -218,9 +223,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
 
   const handleDelete = () => {
     deleteCustomerById(openId).then(() => {
-      getCustomer().then((data) => {
-        setData(data.data);
-      });
+      fetchCustomer();
       handleCloseDeleteModal();
     });
   };

@@ -113,7 +113,7 @@ function CreateSale(props) {
 
   // Form validation
   const schema = Yup.object({
-    ornamentType: Yup.string().required('Ornament type is required'),
+    purchaseType: Yup.string().required('Purchase type is required'),
     saleType: Yup.string().required('Customer id is required'),
     dop: Yup.string().required('DOP is required'),
     paymentType: Yup.string().required('Payment type is required'),
@@ -122,7 +122,7 @@ function CreateSale(props) {
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, resetForm, touched, errors } = useFormik({
     initialValues: {
-      ornamentType: '',
+      purchaseType: '',
       saleType: '',
       dop: moment(),
       paymentType: '',
@@ -165,13 +165,11 @@ function CreateSale(props) {
   });
 
   payload.saleType = values.saleType;
-  payload.ornamentType = values.ornamentType;
+  payload.purchaseType = values.purchaseType;
   payload.dop = values.dop;
   payload.paymentType = values.paymentType;
   payload.margin = values.margin;
-  payload.ornaments = ornaments?.map((e) => {
-    return { ...e, ornamentType: values.ornamentType };
-  });
+  payload.ornaments = ornaments;
   payload.cashAmount = values.cashAmount;
   payload.bankAmount = values.bankAmount;
   payload.payableAmount = payload.netAmount - (payload.netAmount * values.margin) / 100;
@@ -202,14 +200,14 @@ function CreateSale(props) {
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={4}>
-              <FormControl fullWidth error={touched.ornamentType && errors.ornamentType && true}>
-                <InputLabel id="select-ornamentType">Select ornament type</InputLabel>
+              <FormControl fullWidth error={touched.purchaseType && errors.purchaseType && true}>
+                <InputLabel id="select-purchaseType">Select purchase type</InputLabel>
                 <Select
-                  labelId="select-ornamentType"
+                  labelId="select-purchaseType"
                   id="select"
-                  label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Select ornament type'}
-                  name="ornamentType"
-                  value={values.ornamentType}
+                  label={touched.purchaseType && errors.purchaseType ? errors.purchaseType : 'Select purchase type'}
+                  name="purchaseType"
+                  value={values.purchaseType}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 >
@@ -316,7 +314,7 @@ function CreateSale(props) {
               setOrnaments={setOrnaments}
               silverRate={payload.silverRate}
               goldRate={payload.goldRate}
-              ornamentType={payload.ornamentType}
+              purchaseType={payload.purchaseType}
               {...props}
             />
             {(values.paymentType === 'bank' || values.paymentType === 'partial') && (
@@ -382,7 +380,7 @@ function CreateSale(props) {
                       message: 'Please add ornaments',
                       severity: 'info',
                     });
-                  } else if (!values.ornamentType) {
+                  } else if (!values.purchaseType) {
                     props.setNotify({
                       open: true,
                       message: 'Please select ornament type',
@@ -558,7 +556,7 @@ function CreateSale(props) {
                 }}
               />
             </Grid>
-            {values.ornamentType === 'gold' ? (
+            {values.purchaseType === 'gold' ? (
               <Grid item xs={12} sm={4}>
                 <TextField
                   name="goldRate"

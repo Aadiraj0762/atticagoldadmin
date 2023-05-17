@@ -59,7 +59,7 @@ const TABLE_HEAD = [
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'branch', label: 'Branch Id', alignRight: false },
   { id: 'branch', label: 'Branch Name', alignRight: false },
-  { id: 'ornamentType', label: 'Ornament Type', alignRight: false },
+  { id: 'purchaseType', label: 'Ornament Type', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -357,7 +357,7 @@ export default function Sale() {
                       NetAmount: e.netAmount,
                       BranchId: e.branch?.branchId,
                       BranchName: e.branch?.branchName,
-                      OrnamentType: e.ornamentType,
+                      OrnamentType: e.purchaseType,
                       status: e.status,
                     };
                   }),
@@ -395,7 +395,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, billId, saleType, netAmount, branch, ornamentType, status, createdAt } = row;
+                    const { _id, billId, saleType, netAmount, branch, purchaseType, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -408,7 +408,7 @@ export default function Sale() {
                         <TableCell align="left">&#8377; {netAmount}</TableCell>
                         <TableCell align="left">{branch?.branchId}</TableCell>
                         <TableCell align="left">{branch?.branchName}</TableCell>
-                        <TableCell align="left">{sentenceCase(ornamentType)}</TableCell>
+                        <TableCell align="left">{sentenceCase(purchaseType)}</TableCell>
                         <TableCell align="left">
                           {status === 'pending' ? (
                             <Status status={status} _id={_id} />
