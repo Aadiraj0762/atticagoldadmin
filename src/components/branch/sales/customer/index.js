@@ -292,12 +292,12 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                 ))}
                 {emptyRows > 0 && (
                   <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={7} />
                   </TableRow>
                 )}
                 {data.length === 0 && (
                   <TableRow>
-                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                    <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
                       <Paper
                         sx={{
                           textAlign: 'center',
