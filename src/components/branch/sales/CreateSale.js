@@ -168,10 +168,11 @@ function CreateSale(props) {
   payload.purchaseType = values.purchaseType;
   payload.dop = values.dop;
   payload.paymentType = values.paymentType;
-  payload.margin = values.margin;
+  payload.netWeight = payload.netWeight?.toFixed(2);
+  payload.margin = Math.round(values.margin);
   payload.ornaments = ornaments;
-  payload.cashAmount = values.cashAmount;
-  payload.bankAmount = values.bankAmount;
+  payload.cashAmount = Math.round(values.cashAmount);
+  payload.bankAmount = Math.round(values.bankAmount);
   payload.payableAmount = Math.round(payload.netAmount - (payload.netAmount * values.margin) / 100);
 
   return (
@@ -526,7 +527,7 @@ function CreateSale(props) {
             <Grid item xs={12} sm={4}>
               <TextField
                 name="grossWeight"
-                value={ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0) ?? 0}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.grossWeight, 0)?.toFixed(2) ?? 0}
                 label={'Total Gross Weight'}
                 fullWidth
                 InputProps={{
@@ -537,7 +538,7 @@ function CreateSale(props) {
             <Grid item xs={12} sm={4}>
               <TextField
                 name="stoneWeight"
-                value={ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0) ?? 0}
+                value={ornaments?.reduce((prev, cur) => prev + +cur.stoneWeight, 0)?.toFixed(2) ?? 0}
                 label={'Total Stone Weight'}
                 fullWidth
                 InputProps={{
@@ -607,7 +608,7 @@ function CreateSale(props) {
             <Grid item xs={12} sm={4}>
               <TextField
                 name="releaseAmount"
-                value={selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0}
+                value={Math.round(selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0)) ?? 0}
                 label={'Release Amount'}
                 fullWidth
                 InputProps={{
@@ -618,7 +619,11 @@ function CreateSale(props) {
             <Grid item xs={12} sm={4}>
               <TextField
                 name="netPayable"
-                value={payload.netAmount - (selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0) - Math.round((payload.netAmount * payload.margin) / 100)}
+                value={
+                  payload.netAmount -
+                  (selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0) -
+                  Math.round((payload.netAmount * payload.margin) / 100)
+                }
                 label={'Net Payable'}
                 fullWidth
                 InputProps={{

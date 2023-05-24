@@ -12,17 +12,17 @@ const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ 
 
 const navConfig = [
   {
-    title: 'dashboard',
+    title: 'Dashboard',
     path: '/branch/dashboard',
     icon: icon('ic_analytics'),
   },
   {
-    title: 'funds',
+    title: 'Funds',
     path: '/branch/fund',
     icon: <AttachMoneyIcon sx={{ width: 1, height: 1 }} />,
   },
   {
-    title: 'expenses',
+    title: 'Expenses',
     path: '/branch/expense',
     icon: <RequestQuoteIcon sx={{ width: 1, height: 1 }} />,
   },
@@ -37,7 +37,7 @@ const navConfig = [
     icon: <AccessTimeIcon sx={{ width: 1, height: 1 }} />,
   },
   {
-    title: 'Customer',
+    title: 'Walk-ins',
     path: '/branch/customer',
     icon: icon('ic_user'),
   },

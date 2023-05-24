@@ -209,12 +209,21 @@ export default function SaleDetail({ id }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.proof?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e) => (
+              {data?.proof?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                 <TableRow hover key={e._id} tabIndex={-1}>
                   <TableCell align="left">{sentenceCase(e.documentType)}</TableCell>
                   <TableCell align="left">{e.documentNo}</TableCell>
                   <TableCell align="left">
-                    <Link href={`${global.baseURL}/${e?.uploadedFile}`}>View File</Link>
+                    {e?.uploadedFile?.match(/.*(\.jpg|\.jpeg|\.png|\.webp|\.avif)$/i) ? (
+                      <img
+                        key={index}
+                        src={`${global.baseURL}/${e?.uploadedFile}`}
+                        alt="document"
+                        style={{ width: '80px' }}
+                      />
+                    ) : (
+                      <img key={index} src="/assets/doc.svg" alt="document" style={{ width: '80px' }} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -284,34 +293,6 @@ export default function SaleDetail({ id }) {
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Bill Detail:
-              </Typography>
-              <TableContainer>
-                <Table>
-                  <TableBody>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Bill Id: {data?.billId}</TableCell>
-                      <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
-                      <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
-                      <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
-                    </TableRow>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>
-                      <TableCell align="left">Net Weight: {data.netWeight}</TableCell>
-                      <TableCell align="left">Payment Type: {data.paymentType}</TableCell>
-                      <TableCell align="left">Net Amount: {data.netAmount}</TableCell>
-                    </TableRow>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Margin: {data.margin}</TableCell>
-                      <TableCell align="left">Payable Amount: {data.payableAmount}</TableCell>
-                      <TableCell align="left">Status: {data.status}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
                 Ornament Detail:
               </Typography>
             </Grid>
@@ -356,6 +337,43 @@ export default function SaleDetail({ id }) {
             </Grid>
             <Grid item xs={12}>
               <Proof />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                Bill Detail:
+              </Typography>
+              <TableContainer>
+                <Table>
+                  <TableBody>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">Bill Id: {data?.billId}</TableCell>
+                      <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
+                      <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
+                      <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
+                    </TableRow>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>
+                      <TableCell align="left">Net Weight: {data.netWeight?.toFixed(2)}</TableCell>
+                      <TableCell align="left">Payment Type: {data.paymentType}</TableCell>
+                      <TableCell align="left">Margin: {data.margin}%</TableCell>
+                    </TableRow>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">Net Amount: {Math.round(data.netAmount)}</TableCell>
+                      <TableCell align="left">
+                        Margin Amount: {Math.round((data.netAmount * data.margin) / 100)}
+                      </TableCell>
+                      <TableCell align="left">
+                        Release Amount:{' '}
+                        {Math.round(data.release?.reduce((prev, cur) => prev + +cur.payableAmount, 0)) ?? 0}
+                      </TableCell>
+                      <TableCell align="left">Payable Amount: {Math.round(data.payableAmount)}</TableCell>
+                    </TableRow>
+                    <TableRow tabIndex={-1}>
+                      <TableCell align="left">Status: {data.status}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
           </Grid>
         </Card>
