@@ -71,7 +71,7 @@ function CreateSale(props) {
     release: selectedRelease?.map((e) => e._id),
     silverRate: silverRate?.rate ?? 0,
     netWeight: ornaments?.reduce((prev, cur) => prev + +cur.netWeight, 0) ?? 0,
-    netAmount: ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0,
+    netAmount: Math.round(ornaments?.reduce((prev, cur) => prev + +cur.netAmount, 0) ?? 0),
     payableAmount: 0,
     bank: selectedBank?._id,
     status: 'pending',
@@ -172,7 +172,7 @@ function CreateSale(props) {
   payload.ornaments = ornaments;
   payload.cashAmount = values.cashAmount;
   payload.bankAmount = values.bankAmount;
-  payload.payableAmount = payload.netAmount - (payload.netAmount * values.margin) / 100;
+  payload.payableAmount = Math.round(payload.netAmount - (payload.netAmount * values.margin) / 100);
 
   return (
     <>
@@ -585,7 +585,7 @@ function CreateSale(props) {
               <TextField
                 name="margin"
                 type={'number'}
-                value={payload.margin}
+                value={Math.round((payload.netAmount * payload.margin) / 100)}
                 label={'Margin'}
                 fullWidth
                 InputProps={{
@@ -618,7 +618,7 @@ function CreateSale(props) {
             <Grid item xs={12} sm={4}>
               <TextField
                 name="netPayable"
-                value={payload.netAmount - payload.payableAmount}
+                value={payload.netAmount - (selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0) ?? 0) - Math.round((payload.netAmount * payload.margin) / 100)}
                 label={'Net Payable'}
                 fullWidth
                 InputProps={{
