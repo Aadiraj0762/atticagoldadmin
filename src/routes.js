@@ -13,6 +13,8 @@ import AdminFund from './pages/admin/Fund';
 import AdminExpense from './pages/admin/Expense';
 import AdminSale from './pages/admin/Sale';
 import AdminLeave from './pages/admin/Leave';
+import AdminCustomer from './pages/admin/Customer';
+import AdminRelease from './pages/admin/Release';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminEmployee from './pages/admin/Employee';
 import HrDashboardLayout from './layouts/dashboard/hr';
@@ -72,6 +74,8 @@ export default function Router() {
         { path: 'sale', element: <AdminSale /> },
         { path: 'leave', element: <AdminLeave /> },
         { path: 'attendance', element: <AdminAttendance /> },
+        { path: 'customer', element: <AdminCustomer /> },
+        { path: 'release', element: <AdminRelease /> },
         { path: 'employee', element: <AdminEmployee /> },
       ],
     },

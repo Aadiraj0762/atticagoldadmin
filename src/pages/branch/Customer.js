@@ -27,7 +27,7 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateCustomer } from '../../components/branch/customer';
+import { CreateCustomer, CustomerDetail } from '../../components/branch/customer';
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -83,6 +83,7 @@ export default function Customer() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [toggleContainer, setToggleContainer] = useState(false);
+  const [toggleContainerType, setToggleContainerType] = useState('');
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -246,6 +247,7 @@ export default function Customer() {
             startIcon={<Iconify icon="eva:plus-fill" />}
             onClick={() => {
               setToggleContainer(!toggleContainer);
+              setToggleContainerType('create');
             }}
           >
             New Customer
@@ -373,7 +375,7 @@ export default function Customer() {
         </Card>
       </Container>
 
-      {toggleContainer === true && (
+      {toggleContainer === true && (toggleContainerType === 'create') === true && (
         <Container maxWidth="xl">
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4" gutterBottom>
@@ -391,6 +393,30 @@ export default function Customer() {
           </Stack>
 
           <CreateCustomer setToggleContainer={setToggleContainer} setNotify={setNotify} />
+        </Container>
+      )}
+
+      {toggleContainer === true && (toggleContainerType === 'detail') === true && (
+        <Container
+          maxWidth="xl"
+          sx={{ display: toggleContainer === true && toggleContainerType === 'detail' ? 'block' : 'none' }}
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Customer Details
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mdi:arrow-left" />}
+              onClick={() => {
+                setToggleContainer(!toggleContainer);
+              }}
+            >
+              Back
+            </Button>
+          </Stack>
+
+          <CustomerDetail id={openId} />
         </Container>
       )}
 
@@ -412,6 +438,16 @@ export default function Customer() {
           },
         }}
       >
+        <MenuItem
+          onClick={() => {
+            setOpen(null);
+            setToggleContainer(!toggleContainer);
+            setToggleContainerType('detail');
+          }}
+        >
+          <Iconify icon={'carbon:view-filled'} sx={{ mr: 2 }} />
+          View
+        </MenuItem>
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {

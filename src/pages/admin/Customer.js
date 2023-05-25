@@ -26,27 +26,23 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
-import { SalePrint, SaleDetail } from '../../components/accounts/sales';
+import { CustomerDetail } from '../../components/admin/customer';
 // sections
-import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
+import { CustomerListHead, CustomerListToolbar } from '../../sections/@dashboard/customer';
 // mock
-import { deleteSalesById, getSales } from '../../apis/accounts/sales';
+import { deleteCustomerById, findCustomer } from '../../apis/admin/customer';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'billId', label: 'Bill Id', alignRight: false },
-  { id: 'saleType', label: 'Sale Type', alignRight: false },
-  { id: 'netAmount', label: 'Net Amount', alignRight: false },
-  { id: 'branch', label: 'Branch Id', alignRight: false },
-  { id: 'branch', label: 'Branch Name', alignRight: false },
-  { id: 'purchaseType', label: 'Ornament Type', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phoneNumber', label: 'Phone', alignRight: false },
+  { id: 'gender', label: 'Gender', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -78,22 +74,22 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.customer?.phoneNumber.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Sale() {
+export default function Customer() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
+  const [toggleContainer, setToggleContainer] = useState(false);
+  const [toggleContainerType, setToggleContainerType] = useState('');
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [toggleContainer, setToggleContainer] = useState(false);
-  const [toggleContainerType, setToggleContainerType] = useState('');
   const [data, setData] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState('single');
@@ -107,10 +103,16 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    getSales().then((data) => {
+    fetchCustomer();
+  }, [toggleContainer]);
+
+  const fetchCustomer = (
+    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
+  ) => {
+    findCustomer(query).then((data) => {
       setData(data.data);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -169,38 +171,24 @@ export default function Sale() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteSalesById(openId).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+    deleteCustomerById(openId).then(() => {
+      fetchCustomer();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
   };
 
   const handleDeleteSelected = () => {
-    deleteSalesById(selected).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+    deleteCustomerById(selected).then(() => {
+      fetchCustomer();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Sale deleted',
+        message: 'Customer deleted',
         severity: 'success',
       });
     });
-  };
-
-  const handleExport = (fileData, fileName) => {
-    const ws = XLSX.utils.json_to_sheet(fileData);
-    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
-    });
-    FileSaver.saveAs(data, `${fileName}.xlsx`);
   };
 
   const style = {
@@ -224,7 +212,7 @@ export default function Sale() {
   return (
     <>
       <Helmet>
-        <title> Sale | Benaka Gold </title>
+        <title> Customer | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -252,35 +240,12 @@ export default function Sale() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Sale
+            Customer
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="carbon:document-export" />}
-            onClick={() => {
-              handleExport(
-                data.map((e) => {
-                  console.log(e);
-                  return {
-                    BillId: e.billId,
-                    SaleType: e.saleType,
-                    NetAmount: e.netAmount,
-                    BranchId: e.branch?.branchId,
-                    BranchName: e.branch?.branchName,
-                    OrnamentType: e.purchaseType,
-                    status: e.status,
-                  };
-                }),
-                'Sales'
-              );
-            }}
-          >
-            Export
-          </Button>
         </Stack>
 
         <Card>
-          <SaleListToolbar
+          <CustomerListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -293,7 +258,7 @@ export default function Sale() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <SaleListHead
+                <CustomerListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -304,7 +269,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, billId, saleType, netAmount, branch, purchaseType, status, createdAt } = row;
+                    const { _id, name, email, phoneNumber, gender, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -312,16 +277,14 @@ export default function Sale() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{billId}</TableCell>
-                        <TableCell align="left">{sentenceCase(saleType)}</TableCell>
-                        <TableCell align="left">&#8377; {netAmount}</TableCell>
-                        <TableCell align="left">{branch?.branchId}</TableCell>
-                        <TableCell align="left">{branch?.branchName}</TableCell>
-                        <TableCell align="left">{sentenceCase(purchaseType)}</TableCell>
+                        <TableCell align="left">{sentenceCase(name ?? '')}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
+                        <TableCell align="left">{phoneNumber}</TableCell>
+                        <TableCell align="left">{sentenceCase(gender ?? '')}</TableCell>
                         <TableCell align="left">
                           <Label
                             color={
-                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
+                              (status === 'active' && 'success') || (status === 'deactive' && 'error') || 'warning'
                             }
                           >
                             {sentenceCase(status)}
@@ -350,7 +313,7 @@ export default function Sale() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -366,7 +329,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -402,49 +365,29 @@ export default function Sale() {
         </Card>
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'print' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Invoice
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
+      {toggleContainer === true && (toggleContainerType === 'detail') === true && (
+        <Container
+          maxWidth="xl"
+          sx={{ display: toggleContainer === true && toggleContainerType === 'detail' ? 'block' : 'none' }}
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Customer Details
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mdi:arrow-left" />}
+              onClick={() => {
+                setToggleContainer(!toggleContainer);
+              }}
+            >
+              Back
+            </Button>
+          </Stack>
 
-        <SalePrint id={openId} />
-      </Container>
-
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'detail' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Sale Details
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <SaleDetail id={openId} setNotify={setNotify} />
-      </Container>
+          <CustomerDetail id={openId} />
+        </Container>
+      )}
 
       <Popover
         open={Boolean(open)}
@@ -475,16 +418,6 @@ export default function Sale() {
           View
         </MenuItem>
         <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainer(!toggleContainer);
-            setToggleContainerType('print');
-          }}
-        >
-          <Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />
-          Print
-        </MenuItem>
-        <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {
             setOpen(null);
@@ -508,7 +441,7 @@ export default function Sale() {
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want branchId delete?
+            Do you want to delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button

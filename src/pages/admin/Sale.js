@@ -538,7 +538,7 @@ export default function Sale() {
           </Button>
         </Stack>
 
-        <SaleDetail id={openId} />
+        <SaleDetail id={openId} setNotify={setNotify} />
       </Container>
 
       <Popover

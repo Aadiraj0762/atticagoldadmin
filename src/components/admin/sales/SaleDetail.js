@@ -14,21 +14,53 @@ import {
 } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Link from '@mui/material/Link';
 import { useEffect, useState } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { sentenceCase } from 'change-case';
 import moment from 'moment';
 import Scrollbar from '../../scrollbar';
-import { getSalesById } from '../../../apis/admin/sales';
+import { getSalesById, updateSales } from '../../../apis/admin/sales';
 import global from '../../../utils/global';
 
-export default function SaleDetail({ id }) {
+export default function SaleDetail({ id, setNotify }) {
   const [data, setData] = useState({});
   const [openBackdrop, setOpenBackdrop] = useState(true);
+
+  // Form validation
+  const schema = Yup.object({
+    payableAmount: Yup.string().required('Payable amount is required'),
+  });
+
+  const { handleSubmit, handleChange, handleBlur, values, setFieldValue, touched, errors } = useFormik({
+    initialValues: {
+      payableAmount: 0,
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      updateSales(id, values).then((data) => {
+        if (data.status === false) {
+          setNotify({
+            open: true,
+            message: 'Data not update',
+            severity: 'error',
+          });
+        } else {
+          setNotify({
+            open: true,
+            message: 'Data update',
+            severity: 'success',
+          });
+        }
+      });
+    },
+  });
 
   useEffect(() => {
     getSalesById(id).then((data) => {
       setData(data.data);
+      setFieldValue('payableAmount', Math.round(data.data.payableAmount ?? 0));
       setOpenBackdrop(false);
     });
   }, [id]);
@@ -270,112 +302,138 @@ export default function SaleDetail({ id }) {
         </Backdrop>
       ) : (
         <Card sx={{ p: 4, my: 4 }}>
-          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Billing Summary
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Customer Detail:
-              </Typography>
-              <TableContainer>
-                <Table>
-                  <TableBody>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Customer Name: {data?.customer?.name}</TableCell>
-                      <TableCell align="left">Customer Email: {data?.customer?.email}</TableCell>
-                      <TableCell align="left">Customer Phone Number: {data?.customer?.phoneNumber}</TableCell>
-                      <TableCell align="left">Address: {data?.customer?.address[0]?.address}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+            autoComplete="off"
+          >
+            <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+              Billing Summary
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                  Customer Detail:
+                </Typography>
+                <TableContainer>
+                  <Table>
+                    <TableBody>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">Customer Name: {data?.customer?.name}</TableCell>
+                        <TableCell align="left">Customer Email: {data?.customer?.email}</TableCell>
+                        <TableCell align="left">Customer Phone Number: {data?.customer?.phoneNumber}</TableCell>
+                        <TableCell align="left">Address: {data?.customer?.address[0]?.address}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                  Ornament Detail:
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Ornament />
+              </Grid>
+              {data?.paymentType === 'bank' && (
+                <>
+                  <Grid item xs={12}>
+                    <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                      Bank Detail:
+                    </Typography>
+                    <TableContainer>
+                      <Table>
+                        <TableBody>
+                          <TableRow tabIndex={-1}>
+                            <TableCell align="left">
+                              Account Holder Name: {sentenceCase(data?.bank?.accountHolderName ?? '')}
+                            </TableCell>
+                            <TableCell align="left">Account No: {data?.bank?.accountNo}</TableCell>
+                            <TableCell align="left">Branch: {data?.bank?.branch}</TableCell>
+                            <TableCell align="left">IFSC Code: {data?.bank?.ifscCode}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                </>
+              )}
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                  Release Detail:
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Release />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                  Proof Documents
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Proof />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                  Bill Detail:
+                </Typography>
+                <TableContainer>
+                  <Table>
+                    <TableBody>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">Bill Id: {data?.billId}</TableCell>
+                        <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
+                        <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
+                        <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
+                      </TableRow>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>
+                        <TableCell align="left">Net Weight: {data.netWeight?.toFixed(2)}</TableCell>
+                        <TableCell align="left">Payment Type: {data.paymentType}</TableCell>
+                        <TableCell align="left">Margin: {data.margin}%</TableCell>
+                      </TableRow>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">Net Amount: {Math.round(data.netAmount)}</TableCell>
+                        <TableCell align="left">
+                          Margin Amount: {Math.round((data.netAmount * data.margin) / 100)}
+                        </TableCell>
+                        <TableCell align="left">
+                          Release Amount:{' '}
+                          {Math.round(data.release?.reduce((prev, cur) => prev + +cur.payableAmount, 0)) ?? 0}
+                        </TableCell>
+                        <TableCell align="left">
+                          <TextField
+                            name="payableAmount"
+                            type={'number'}
+                            value={values?.payableAmount}
+                            error={touched.payableAmount && errors.payableAmount && true}
+                            label={
+                              touched.payableAmount && errors.payableAmount ? errors.payableAmount : 'Payable Amount'
+                            }
+                            fullWidth
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                          />
+                        </TableCell>
+                      </TableRow>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">Status: {data.status}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              <Grid item xs={12}>
+                <LoadingButton size="large" type="submit" variant="contained">
+                  Update
+                </LoadingButton>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Ornament Detail:
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Ornament />
-            </Grid>
-            {data?.paymentType === 'bank' && (
-              <>
-                <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                    Bank Detail:
-                  </Typography>
-                  <TableContainer>
-                    <Table>
-                      <TableBody>
-                        <TableRow tabIndex={-1}>
-                          <TableCell align="left">
-                            Account Holder Name: {sentenceCase(data?.bank?.accountHolderName ?? '')}
-                          </TableCell>
-                          <TableCell align="left">Account No: {data?.bank?.accountNo}</TableCell>
-                          <TableCell align="left">Branch: {data?.bank?.branch}</TableCell>
-                          <TableCell align="left">IFSC Code: {data?.bank?.ifscCode}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
-              </>
-            )}
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Release Detail:
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Release />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Proof Documents
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Proof />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Bill Detail:
-              </Typography>
-              <TableContainer>
-                <Table>
-                  <TableBody>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Bill Id: {data?.billId}</TableCell>
-                      <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
-                      <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
-                      <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
-                    </TableRow>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>
-                      <TableCell align="left">Net Weight: {data.netWeight?.toFixed(2)}</TableCell>
-                      <TableCell align="left">Payment Type: {data.paymentType}</TableCell>
-                      <TableCell align="left">Margin: {data.margin}%</TableCell>
-                    </TableRow>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Net Amount: {Math.round(data.netAmount)}</TableCell>
-                      <TableCell align="left">
-                        Margin Amount: {Math.round((data.netAmount * data.margin) / 100)}
-                      </TableCell>
-                      <TableCell align="left">
-                        Release Amount:{' '}
-                        {Math.round(data.release?.reduce((prev, cur) => prev + +cur.payableAmount, 0)) ?? 0}
-                      </TableCell>
-                      <TableCell align="left">Payable Amount: {Math.round(data.payableAmount)}</TableCell>
-                    </TableRow>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Status: {data.status}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-          </Grid>
+          </form>
         </Card>
       )}
     </>
