@@ -52,7 +52,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
       annualIncome: '',
       maritalStatus: '',
       source: '',
-      signature: '',
+      signature: {},
       status: '',
       chooseId: '',
       idNo: '',
@@ -81,7 +81,6 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         annualIncome: values.annualIncome,
         maritalStatus: values.maritalStatus,
         source: values.source,
-        signature: values.signature,
         status: values.status,
       };
       createCustomer(payload).then((data) => {
@@ -111,6 +110,12 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
           formData.append('documentType', values.chooseId);
           formData.append('documentNo', values.idNo);
           createFile(formData);
+          const formData1 = new FormData();
+          formData1.append('uploadId', data.data.fileUpload.uploadId);
+          formData1.append('uploadName', data.data.fileUpload.uploadName);
+          formData1.append('uploadType', 'signature');
+          formData1.append('uploadedFile', values.signature);
+          createFile(formData1);
           setToggleContainer(false);
           setImg(null);
           form.current.reset();
@@ -306,11 +311,10 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
+            <span>UploadId: </span>
             <TextField
               name="uploadId"
               type={'file'}
-              error={touched.uploadId && errors.uploadId && true}
-              fullWidth
               onBlur={handleBlur}
               onChange={(e) => {
                 setValues({ ...values, uploadId: e.target.files[0] });
@@ -318,14 +322,14 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
+            <span>Signature: </span>
             <TextField
               name="signature"
-              value={values.signature}
-              error={touched.signature && errors.signature && true}
-              label={touched.signature && errors.signature ? errors.signature : 'Signature'}
-              fullWidth
+              type={'file'}
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={(e) => {
+                setValues({ ...values, signature: e.target.files[0] });
+              }}
             />
           </Grid>
           <Grid item xs={12}>
