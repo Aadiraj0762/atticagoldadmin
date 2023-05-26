@@ -130,7 +130,12 @@ export default function Sale() {
     validationSchema: schema,
     onSubmit: (values) => {
       setOpenBackdrop(true);
-      findSales().then((data) => {
+      findSales({
+        createdAt: {
+          $gte: values.fromDate,
+          $lte: values.toDate,
+        },
+      }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
       });
@@ -627,17 +632,17 @@ export default function Sale() {
       </Modal>
 
       <Dialog open={filterOpen} onClose={handleFilterClose}>
-        <DialogTitle>Filter</DialogTitle>
-        <DialogContent>
-          <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-            <form
-              ref={form}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit(e);
-              }}
-              autoComplete="off"
-            >
+        <form
+          ref={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          autoComplete="off"
+        >
+          <DialogTitle>Filter</DialogTitle>
+          <DialogContent>
+            <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
               <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
                   <DesktopDatePicker
@@ -666,28 +671,28 @@ export default function Sale() {
                   />
                 </LocalizationProvider>
               </FormControl>
-            </form>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
-              setFilterOpen(false);
-              resetForm();
-            }}
-          >
-            Clear
-          </Button>
-          <Button variant="contained" onClick={handleFilterClose}>
-            Close
-          </Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            Filter
-          </Button>
-        </DialogActions>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
+                setFilterOpen(false);
+                resetForm();
+              }}
+            >
+              Clear
+            </Button>
+            <Button variant="contained" onClick={handleFilterClose}>
+              Close
+            </Button>
+            <Button variant="contained" type="submit">
+              Filter
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>

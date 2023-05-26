@@ -24,6 +24,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Iconify from '../../../iconify';
 import Scrollbar from '../../../scrollbar';
 import { getBankById, createBank, deleteBankById } from '../../../../apis/branch/customer-bank';
@@ -53,6 +54,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [width, setWindowWidth] = useState(0);
+  const modalRoot = document.getElementById('root-modal');
 
   const updateDimensions = () => {
     const width = window.innerWidth;
@@ -89,57 +91,6 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
     }
   }, [selectedUser]);
 
-  // Form validation
-  const schema = Yup.object({
-    accountNo: Yup.string().required('Account no is required'),
-    accountHolderName: Yup.string().required('Account holder name is required'),
-    ifscCode: Yup.string().required('IFSC code is required'),
-    bankName: Yup.string().required('Bank name is required'),
-    branch: Yup.string().required('Branch is required'),
-    proofType: Yup.string().required('Proof Type is required'),
-  });
-
-  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
-    initialValues: {
-      accountNo: '',
-      accountHolderName: '',
-      ifscCode: '',
-      bankName: '',
-      branch: '',
-      proofType: '',
-      proofFile: {},
-    },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      createBank({ customerId: selectedUser._id, ...values }).then((data) => {
-        if (data.status === false) {
-          setNotify({
-            open: true,
-            message: 'Bank not created',
-            severity: 'error',
-          });
-        } else {
-          getBankById(selectedUser._id).then((data) => {
-            setData(data.data);
-          });
-          const formData = new FormData();
-          formData.append('uploadId', data.data.fileUpload.uploadId);
-          formData.append('uploadName', data.data.fileUpload.uploadName);
-          formData.append('uploadType', 'proof');
-          formData.append('uploadedFile', values.proofFile);
-          formData.append('documentType', values.proofType);
-          createFile(formData);
-          setBankModal(false);
-          setNotify({
-            open: true,
-            message: 'Bank created',
-            severity: 'success',
-          });
-        }
-      });
-    },
-  });
-
   const handleSelect = (bank) => {
     if (selectedBank && selectedBank._id === bank._id) {
       setSelectedBank(null);
@@ -157,90 +108,61 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
     });
   };
 
-  return (
-    <>
-      <Grid item xs={12}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
-          <Typography variant="h4" gutterBottom>
-            Customer Bank
-          </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setBankModal(true)}>
-            New Bank
-          </Button>
-        </Stack>
-        <Scrollbar>
-          <TableContainer sx={{ minWidth: 800 }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left" />
-                  <TableCell align="left">Bank</TableCell>
-                  <TableCell align="left">Account No</TableCell>
-                  <TableCell align="left">Account Holder Name</TableCell>
-                  <TableCell align="left">Branch</TableCell>
-                  <TableCell align="left">IFSC Code</TableCell>
-                  <TableCell align="left">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e) => (
-                  <TableRow hover key={e._id} tabIndex={-1}>
-                    <TableCell padding="checkbox">
-                      <Checkbox checked={selectedBank?._id === e._id} onChange={() => handleSelect(e)} />
-                    </TableCell>
-                    <TableCell align="left">{sentenceCase(e.bankName)}</TableCell>
-                    <TableCell align="left">{e.accountNo}</TableCell>
-                    <TableCell align="left">{sentenceCase(e.accountHolderName)}</TableCell>
-                    <TableCell align="left">{sentenceCase(e.branch)}</TableCell>
-                    <TableCell align="left">{e.ifscCode}</TableCell>
-                    <TableCell align="left">
-                      <Button
-                        variant="contained"
-                        startIcon={<DeleteIcon />}
-                        onClick={() => {
-                          setOpenId(e._id);
-                          handleOpenDeleteModal();
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-                {data.length === 0 && (
-                  <TableRow>
-                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                      <Paper
-                        sx={{
-                          textAlign: 'center',
-                        }}
-                      >
-                        <Typography paragraph>No data in table</Typography>
-                      </Paper>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+  const CreateBankModal = () => {
+    // Form validation
+    const schema = Yup.object({
+      accountNo: Yup.string().required('Account no is required'),
+      accountHolderName: Yup.string().required('Account holder name is required'),
+      ifscCode: Yup.string().required('IFSC code is required'),
+      bankName: Yup.string().required('Bank name is required'),
+      branch: Yup.string().required('Branch is required'),
+      proofType: Yup.string().required('Proof Type is required'),
+    });
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Scrollbar>
-      </Grid>
+    const { handleSubmit, handleChange, handleBlur, values, setValues, setFieldValue, resetForm, touched, errors } = useFormik({
+      initialValues: {
+        accountNo: '',
+        accountHolderName: '',
+        ifscCode: '',
+        bankName: '',
+        branch: '',
+        proofType: '',
+        proofFile: {},
+      },
+      validationSchema: schema,
+      onSubmit: (values) => {
+        createBank({ customerId: selectedUser._id, ...values }).then((data) => {
+          if (data.status === false) {
+            setNotify({
+              open: true,
+              message: 'Bank not created',
+              severity: 'error',
+            });
+          } else {
+            getBankById(selectedUser._id).then((data) => {
+              setData(data.data);
+            });
+            const formData = new FormData();
+            formData.append('uploadId', data.data.fileUpload.uploadId);
+            formData.append('uploadName', data.data.fileUpload.uploadName);
+            formData.append('uploadType', 'proof');
+            formData.append('uploadedFile', values.proofFile);
+            formData.append('documentType', values.proofType);
+            createFile(formData);
+            resetForm();
+            setFieldValue('proofFile', {});
+            setBankModal(false);
+            setNotify({
+              open: true,
+              message: 'Bank created',
+              severity: 'success',
+            });
+          }
+        });
+      },
+    });
 
+    return createPortal(
       <Modal
         open={bankModal}
         onClose={() => setBankModal(false)}
@@ -365,7 +287,96 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
             </Grid>
           </form>
         </Box>
-      </Modal>
+      </Modal>,
+      modalRoot
+    );
+  };
+
+  return (
+    <>
+      <Grid item xs={12}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
+          <Typography variant="h4" gutterBottom>
+            Customer Bank
+          </Typography>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setBankModal(true)}>
+            New Bank
+          </Button>
+        </Stack>
+        <Scrollbar>
+          <TableContainer sx={{ minWidth: 800 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left" />
+                  <TableCell align="left">Bank</TableCell>
+                  <TableCell align="left">Account No</TableCell>
+                  <TableCell align="left">Account Holder Name</TableCell>
+                  <TableCell align="left">Branch</TableCell>
+                  <TableCell align="left">IFSC Code</TableCell>
+                  <TableCell align="left">Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e) => (
+                  <TableRow hover key={e._id} tabIndex={-1}>
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={selectedBank?._id === e._id} onChange={() => handleSelect(e)} />
+                    </TableCell>
+                    <TableCell align="left">{sentenceCase(e.bankName)}</TableCell>
+                    <TableCell align="left">{e.accountNo}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.accountHolderName)}</TableCell>
+                    <TableCell align="left">{sentenceCase(e.branch)}</TableCell>
+                    <TableCell align="left">{e.ifscCode}</TableCell>
+                    <TableCell align="left">
+                      <Button
+                        variant="contained"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => {
+                          setOpenId(e._id);
+                          handleOpenDeleteModal();
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+                {data.length === 0 && (
+                  <TableRow>
+                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <Paper
+                        sx={{
+                          textAlign: 'center',
+                        }}
+                      >
+                        <Typography paragraph>No data in table</Typography>
+                      </Paper>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Scrollbar>
+      </Grid>
+
+      <CreateBankModal />
 
       <Modal
         open={openDeleteModal}

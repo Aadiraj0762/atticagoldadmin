@@ -9,6 +9,15 @@ async function getFund() {
   }
 }
 
+async function findFund(query) {
+  try {
+    const response = await apiClient.post('/api/v1.0/branch/fund/find', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getFundById(id) {
   try {
     const response = await apiClient.get(`/api/v1.0/branch/fund/get/${id}`);
@@ -45,4 +54,4 @@ async function deleteFundById(id) {
   }
 }
 
-export { getFund, getFundById, createFund, updateFund, deleteFundById };
+export { getFund, findFund, getFundById, createFund, updateFund, deleteFundById };

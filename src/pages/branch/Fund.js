@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 // components
 import { CreateFund, UpdateFund } from '../../components/branch/fund';
 import Label from '../../components/label';
@@ -34,7 +35,8 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { FundListHead, FundListToolbar } from '../../sections/@dashboard/fund';
 // mock
-import { deleteFundById, getFund } from '../../apis/branch/fund';
+import { deleteFundById, findFund } from '../../apis/branch/fund';
+import { getBranchByBranchId } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
 
@@ -81,6 +83,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Fund() {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
@@ -104,10 +108,20 @@ export default function Fund() {
   });
 
   useEffect(() => {
-    getFund().then((data) => {
-      setData(data.data);
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+      fetchFund({
+        branch: data.data?._id,
+      });
     });
   }, [toggleContainer]);
+
+  const fetchFund = (query = {}) => {
+    if (!query.branch) query.branch = branch._id;
+    findFund(query).then((data) => {
+      setData(data.data);
+    });
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -167,7 +181,7 @@ export default function Fund() {
 
   const handleDelete = () => {
     deleteFundById(openId).then(() => {
-      getFund().then((data) => {
+      fetchFund().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -177,7 +191,7 @@ export default function Fund() {
 
   const handleDeleteSelected = () => {
     deleteFundById(selected).then(() => {
-      getFund().then((data) => {
+      fetchFund().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();

@@ -21,6 +21,9 @@ import {
   Checkbox,
   Paper,
 } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { sentenceCase } from 'change-case';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
@@ -135,7 +138,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
       phoneNumber: '',
       alternatePhoneNumber: '',
       email: '',
-      dob: '',
+      dob: moment(),
       gender: '',
       otp: '',
       employmentType: '',
@@ -143,8 +146,11 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
       annualIncome: '',
       maritalStatus: '',
       source: '',
-      signature: '',
+      signature: {},
       status: '',
+      chooseId: '',
+      idNo: '',
+      uploadId: {},
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -199,6 +205,12 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
           formData.append('documentType', values.chooseId);
           formData.append('documentNo', values.idNo);
           createFile(formData);
+          const formData1 = new FormData();
+          formData1.append('uploadId', data.data.fileUpload.uploadId);
+          formData1.append('uploadName', data.data.fileUpload.uploadName);
+          formData1.append('uploadType', 'signature');
+          formData1.append('uploadedFile', values.signature);
+          createFile(formData1);
           fetchCustomer();
           setCustomerModal(false);
           setImg(null);
@@ -415,16 +427,20 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  name="dob"
-                  value={values.dob}
-                  error={touched.dob && errors.dob && true}
-                  label={touched.dob && errors.dob ? errors.dob : 'DOB'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+              <Grid item xs={12} sm={4}>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DesktopDatePicker
+                    name="dob"
+                    value={values.dob}
+                    error={touched.dob && errors.dob && true}
+                    label={touched.dob && errors.dob ? errors.dob : 'DOB'}
+                    inputFormat="MM/DD/YYYY"
+                    onChange={(e) => {
+                      setValues({ ...values, dob: e });
+                    }}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.gender && errors.gender && true}>
@@ -540,28 +556,26 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} sm={4}>
+                <span>UploadId: </span>
                 <TextField
                   name="uploadId"
                   type={'file'}
-                  error={touched.uploadId && errors.uploadId && true}
-                  fullWidth
                   onBlur={handleBlur}
                   onChange={(e) => {
                     setValues({ ...values, uploadId: e.target.files[0] });
                   }}
-                  required
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} sm={4}>
+                <span>Signature: </span>
                 <TextField
                   name="signature"
-                  value={values.signature}
-                  error={touched.signature && errors.signature && true}
-                  label={touched.signature && errors.signature ? errors.signature : 'Signature'}
-                  fullWidth
+                  type={'file'}
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, signature: e.target.files[0] });
+                  }}
                 />
               </Grid>
               {customerModal && (

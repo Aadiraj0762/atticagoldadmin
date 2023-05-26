@@ -253,6 +253,80 @@ export default function SaleDetail({ id }) {
     );
   }
 
+  function Address() {
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data?.address.length) : 0;
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+      setPage(0);
+      setRowsPerPage(parseInt(event.target.value, 10));
+    };
+
+    return (
+      <Scrollbar>
+        <TableContainer sx={{ minWidth: 800, mb: 1 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Address</TableCell>
+                <TableCell align="left">Area</TableCell>
+                <TableCell align="left">City</TableCell>
+                <TableCell align="left">Pincode</TableCell>
+                <TableCell align="left">Landmark</TableCell>
+                <TableCell align="left">Label</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data?.customer?.address?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
+                <TableRow hover key={e._id} tabIndex={-1}>
+                  <TableCell align="left">{sentenceCase(e.address)}</TableCell>
+                  <TableCell align="left">{e.area}</TableCell>
+                  <TableCell align="left">{e.city}</TableCell>
+                  <TableCell align="left">{e.pincode}</TableCell>
+                  <TableCell align="left">{e.landmark}</TableCell>
+                  <TableCell align="left">{e.label}</TableCell>
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={3} />
+                </TableRow>
+              )}
+              {data?.customer?.address?.length === 0 && (
+                <TableRow>
+                  <TableCell align="center" colSpan={3} sx={{ py: 3 }}>
+                    <Paper
+                      sx={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography paragraph>No data in table</Typography>
+                    </Paper>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={data?.customer?.address?.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Scrollbar>
+    );
+  }
+
   return (
     <>
       {openBackdrop ? (
@@ -273,14 +347,27 @@ export default function SaleDetail({ id }) {
                 <Table>
                   <TableBody>
                     <TableRow tabIndex={-1}>
+                      <TableCell align="left">
+                        Photo:
+                        <img
+                          src={`${global.baseURL}/${data?.customer?.profileImage?.uploadedFile}`}
+                          alt="document"
+                          style={{ width: '80px' }}
+                        />
+                      </TableCell>
                       <TableCell align="left">Customer Name: {data?.customer?.name}</TableCell>
                       <TableCell align="left">Customer Email: {data?.customer?.email}</TableCell>
                       <TableCell align="left">Customer Phone Number: {data?.customer?.phoneNumber}</TableCell>
-                      <TableCell align="left">Address: {data?.customer?.address[0]?.address}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+                Address Detail:
+              </Typography>
+              <Address />
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>

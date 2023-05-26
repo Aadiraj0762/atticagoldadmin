@@ -1,9 +1,13 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LoadingButton } from '@mui/lab';
 import { useCallback, useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Webcam from 'react-webcam';
+import moment from 'moment';
 import { createCustomer } from '../../../apis/branch/customer';
 import { createFile } from '../../../apis/branch/fileupload';
 
@@ -44,7 +48,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
       phoneNumber: '',
       alternatePhoneNumber: '',
       email: '',
-      dob: '',
+      dob: moment(),
       gender: '',
       otp: '',
       employmentType: '',
@@ -188,15 +192,19 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="dob"
-              value={values.dob}
-              error={touched.dob && errors.dob && true}
-              label={touched.dob && errors.dob ? errors.dob : 'DOB'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DesktopDatePicker
+                name="dob"
+                value={values.dob}
+                error={touched.dob && errors.dob && true}
+                label={touched.dob && errors.dob ? errors.dob : 'DOB'}
+                inputFormat="MM/DD/YYYY"
+                onChange={(e) => {
+                  setValues({ ...values, dob: e });
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.gender && errors.gender && true}>
