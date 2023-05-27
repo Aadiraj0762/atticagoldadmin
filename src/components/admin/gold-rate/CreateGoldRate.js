@@ -70,6 +70,7 @@ function CreateGoldRate(props) {
           <Grid item xs={12} sm={4}>
             <TextField
               name="rate"
+              type="number"
               error={touched.rate && errors.rate && true}
               label={touched.rate && errors.rate ? errors.rate : 'Rate'}
               fullWidth

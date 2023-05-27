@@ -75,6 +75,7 @@ function UpdateGoldRate(props) {
           <Grid item xs={12} sm={4}>
             <TextField
               name="rate"
+              type="number"
               value={values.rate}
               error={touched.rate && errors.rate && true}
               label={touched.rate && errors.rate ? errors.rate : 'Rate'}
