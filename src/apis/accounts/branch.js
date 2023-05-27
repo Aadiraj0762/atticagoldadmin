@@ -1,5 +1,14 @@
 import apiClient from '../http';
 
+async function getState() {
+  try {
+    const response = await apiClient.get('/api/v1.0/accounts/branch/state');
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getBranch() {
   try {
     const response = await apiClient.get('/api/v1.0/accounts/branch/get');
@@ -45,4 +54,4 @@ async function deleteBranchById(id) {
   }
 }
 
-export { getBranch, getBranchById, createBranch, updateBranch, deleteBranchById };
+export { getState, getBranch, getBranchById, createBranch, updateBranch, deleteBranchById };

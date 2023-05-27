@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getGoldRateById, updateGoldRate } from '../../../apis/accounts/gold-rate';
+import { getState } from '../../../apis/accounts/branch';
 
 function UpdateGoldRate(props) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    getState().then((data) => {
+      setData(data.data);
+    });
+  }, []);
+
   // Form validation
   const schema = Yup.object({
     rate: Yup.string().required('Rate is required'),
@@ -91,15 +100,22 @@ function UpdateGoldRate(props) {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="state"
-              error={touched.state && errors.state && true}
-              label={touched.state && errors.state ? errors.state : 'State'}
-              value={values.state}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              fullWidth
-            />
+            <FormControl fullWidth error={touched.state && errors.state && true}>
+              <InputLabel id="select-label">Select state</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                name="state"
+                value={values.state}
+                label={touched.state && errors.state ? errors.state : 'Select state'}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                {data.map((e) => (
+                  <MenuItem value={e}>{e}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">

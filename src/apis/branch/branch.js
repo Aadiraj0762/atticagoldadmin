@@ -1,5 +1,14 @@
 import apiClient from '../http';
 
+async function getState() {
+  try {
+    const response = await apiClient.get('/api/v1.0/admin/branch/state');
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getBranch() {
   try {
     const response = await apiClient.get('/api/v1.0/branch/branch/get');

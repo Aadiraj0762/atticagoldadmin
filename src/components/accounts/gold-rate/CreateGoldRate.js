@@ -1,13 +1,21 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createGoldRate } from '../../../apis/accounts/gold-rate';
+import { getState } from '../../../apis/accounts/branch';
 
 function CreateGoldRate(props) {
+  const [data, setData] = useState([]);
   const [type, setType] = useState('');
   const form = useRef();
+
+  useEffect(() => {
+    getState().then((data) => {
+      setData(data.data);
+    });
+  }, []);
 
   // Form validation
   const schema = Yup.object({
@@ -16,7 +24,7 @@ function CreateGoldRate(props) {
     state: Yup.string().required('State is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = useFormik({
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, resetForm } = useFormik({
     initialValues: {
       rate: '',
       type: '',
@@ -88,14 +96,22 @@ function CreateGoldRate(props) {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="state"
-              error={touched.state && errors.state && true}
-              label={touched.state && errors.state ? errors.state : 'State'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.state && errors.state && true}>
+              <InputLabel id="select-label">Select state</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                name="state"
+                value={values.state}
+                label={touched.state && errors.state ? errors.state : 'Select state'}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                {data.map((e) => (
+                  <MenuItem value={e}>{e}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">
