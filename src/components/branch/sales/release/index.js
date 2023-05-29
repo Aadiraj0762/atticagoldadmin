@@ -32,11 +32,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Iconify from '../../../iconify';
 import { getReleaseByCustomerId, createRelease, deleteReleaseById } from '../../../../apis/branch/release';
 import Scrollbar from '../../../scrollbar';
 import Bank from '../bank';
 import { createFile } from '../../../../apis/branch/fileupload';
+import { getBranchByBranchId } from '../../../../apis/branch/branch';
 
 const style = {
   position: 'absolute',
@@ -53,7 +55,9 @@ const style = {
   border: 'none',
 };
 
-function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease, branch }) {
+function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease }) {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [releaseModal, setReleaseModal] = useState(false);
@@ -64,6 +68,12 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease,
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [width, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+    });
+  }, [auth]);
 
   const updateDimensions = () => {
     const width = window.innerWidth;

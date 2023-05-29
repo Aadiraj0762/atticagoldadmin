@@ -32,12 +32,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import { useCallback, useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import Webcam from 'react-webcam';
 import Iconify from '../../../iconify';
 import Label from '../../../label';
 import { findCustomer, createCustomer, deleteCustomerById } from '../../../../apis/branch/customer';
 import { createFile } from '../../../../apis/branch/fileupload';
+import { getBranchByBranchId } from '../../../../apis/branch/branch';
 import Scrollbar from '../../../scrollbar';
 
 const style = {
@@ -54,7 +56,9 @@ const style = {
   overflow: 'auto',
 };
 
-function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser, branch }) {
+function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [customerModal, setCustomerModal] = useState(false);
@@ -66,6 +70,12 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser, bra
   const [width, setWindowWidth] = useState(0);
   const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
+
+  useEffect(() => {
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+    });
+  }, [auth]);
 
   const videoConstraints = {
     width: 420,

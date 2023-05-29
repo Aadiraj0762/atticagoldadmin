@@ -182,7 +182,6 @@ function CreateSale(props) {
         setStep={setStep}
         selectedUser={selectedUser}
         setSelectedUser={setSelectedUser}
-        branch={branch}
         {...props}
       />
 
@@ -332,7 +331,6 @@ function CreateSale(props) {
                 selectedUser={selectedUser}
                 selectedRelease={selectedRelease}
                 setSelectedRelease={setSelectedRelease}
-                branch={branch}
                 {...props}
               />
             )}
