@@ -125,7 +125,6 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     comments: Yup.string().required('comments is required'),
     documentType: Yup.string().required('Document type is required'),
     documentNo: Yup.string().required('Document no is required'),
-    status: Yup.string().required('status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
@@ -146,7 +145,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
       documentType: '',
       documentNo: '',
       documentFile: {},
-      status: '',
+      status: 'active',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -514,23 +513,6 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   }}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <FormControl fullWidth error={touched.status && errors.status && true}>
-                  <InputLabel id="select-label">Select status</InputLabel>
-                  <Select
-                    labelId="select-label"
-                    id="select"
-                    label={touched.status && errors.status ? errors.status : 'Select status'}
-                    name="status"
-                    value={values.status}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="active">Active</MenuItem>
-                    <MenuItem value="deactive">Deactive</MenuItem>
-                  </Select>
-                </FormControl>
               </Grid>
               {values.paymentType === 'bank' && (
                 <Bank
