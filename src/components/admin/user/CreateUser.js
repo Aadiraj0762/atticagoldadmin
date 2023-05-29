@@ -5,12 +5,17 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createUser } from '../../../apis/admin/user';
 import { getLoginNotCreatedEmployee } from '../../../apis/admin/employee';
+import { getBranch } from '../../../apis/admin/branch';
 
 function CreateUser(props) {
   const [employees, setEmloyees] = useState([]);
+  const [branches, setBranches] = useState([]);
   const form = useRef();
 
   useEffect(() => {
+    getBranch().then((data) => {
+      setBranches(data.data);
+    });
     getLoginNotCreatedEmployee().then((data) => {
       setEmloyees(data.data);
     });
@@ -19,7 +24,10 @@ function CreateUser(props) {
   // Form validation
   const schema = Yup.object({
     username: Yup.string().required('Username is required'),
-    password: Yup.string().required('Password is required'),
+    password: Yup.string().when('userType', {
+      is: (v) => v !== 'branch',
+      then: Yup.string().required('Password is required'),
+    }),
     userType: Yup.string().required('User type is required'),
     employee: Yup.string().required('Employee Id is required'),
   });
@@ -38,7 +46,7 @@ function CreateUser(props) {
         if (data.status === false) {
           props.setNotify({
             open: true,
-            message: data.message,
+            message: 'User not created',
             severity: 'error',
           });
         } else {
@@ -66,26 +74,51 @@ function CreateUser(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="username"
-              error={touched.username && errors.username && true}
-              label={touched.username && errors.username ? errors.username : 'Username'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="password"
-              error={touched.password && errors.password && true}
-              label={touched.password && errors.password ? errors.password : 'Password'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
+          {values.userType === 'branch' ? (
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth error={touched.username && errors.username && true}>
+                <InputLabel id="select-label">Select branch</InputLabel>
+                <Select
+                  labelId="select-label"
+                  id="select"
+                  label={touched.username && errors.username ? errors.username : 'Select branch'}
+                  name="username"
+                  value={values.username}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  {branches.map((e) => (
+                    <MenuItem value={e.branchId} key={e._id}>
+                      {e.branchId} {e.branchName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          ) : (
+            <>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  name="username"
+                  error={touched.username && errors.username && true}
+                  label={touched.username && errors.username ? errors.username : 'Username'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  name="password"
+                  error={touched.password && errors.password && true}
+                  label={touched.password && errors.password ? errors.password : 'Password'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </>
+          )}
           <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.userType && errors.userType && true}>
               <InputLabel id="select-label">Select user type</InputLabel>
