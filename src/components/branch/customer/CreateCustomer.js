@@ -49,7 +49,6 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
     organisation: Yup.string().required('Organisation is required'),
     annualIncome: Yup.string().required('Annual income is required'),
     maritalStatus: Yup.string().required('Marital is required'),
-    status: Yup.string().required('Status is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
@@ -67,7 +66,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
       maritalStatus: '',
       source: '',
       signature: {},
-      status: '',
+      status: 'active',
       chooseId: '',
       idNo: '',
       uploadId: {},
@@ -377,23 +376,6 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
                 </LoadingButton>
               </>
             )}
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth error={touched.status && errors.status && true}>
-              <InputLabel id="select-label">Select status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.status && errors.status ? errors.status : 'Select status'}
-                name="status"
-                value={values.status}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="deactive">Deactive</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <LoadingButton size="large" type="submit" variant="contained">
