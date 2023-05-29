@@ -144,7 +144,6 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
-      branch: branch?._id,
       name: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
@@ -174,7 +173,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
         return;
       }
       const payload = {
-        branch: values.branch,
+        branch: branch?._id,
         name: values.name,
         phoneNumber: values.phoneNumber,
         alternatePhoneNumber: values.alternatePhoneNumber,

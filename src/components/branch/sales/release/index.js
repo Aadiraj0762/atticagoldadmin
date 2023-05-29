@@ -131,7 +131,6 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
       customer: selectedUser?._id,
-      branch: branch?._id,
       weight: '',
       pledgeAmount: '',
       payableAmount: '',
@@ -153,7 +152,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     onSubmit: (values) => {
       const payload = {
         customer: values.customer,
-        branch: values.branch,
+        branch: branch?._id,
         weight: values.weight,
         pledgeAmount: values.pledgeAmount,
         payableAmount: values.payableAmount,

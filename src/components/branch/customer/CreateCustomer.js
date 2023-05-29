@@ -54,7 +54,6 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
-      branch: branch?._id,
       name: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
@@ -84,7 +83,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         return;
       }
       const payload = {
-        branch: values.branch,
+        branch: branch?._id,
         name: values.name,
         phoneNumber: values.phoneNumber,
         alternatePhoneNumber: values.alternatePhoneNumber,
