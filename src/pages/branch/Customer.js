@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 // components
 import { CreateCustomer, CustomerDetail } from '../../components/branch/customer';
 import Label from '../../components/label';
@@ -35,6 +36,7 @@ import Scrollbar from '../../components/scrollbar';
 import { CustomerListHead, CustomerListToolbar } from '../../sections/@dashboard/customer';
 // mock
 import { deleteCustomerById, findCustomer } from '../../apis/branch/customer';
+import { getBranchByBranchId } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
 
@@ -80,6 +82,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Customer() {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [toggleContainer, setToggleContainer] = useState(false);
@@ -103,12 +107,22 @@ export default function Customer() {
   });
 
   useEffect(() => {
-    fetchCustomer();
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+      fetchCustomer({
+        createdAt: {
+          $gte: moment().subtract('days', 1),
+          $lte: moment().add('days', 1),
+        },
+        branch: data.data?._id,
+      });
+    });
   }, [toggleContainer]);
 
   const fetchCustomer = (
     query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
   ) => {
+    if (!query.branch) query.branch = branch._id;
     findCustomer(query).then((data) => {
       setData(data.data);
     });

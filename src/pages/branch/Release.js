@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
@@ -33,12 +34,12 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { ReleaseListHead, ReleaseListToolbar } from '../../sections/@dashboard/release';
 // mock
-import { deleteReleaseById, findRelease } from '../../apis/admin/release';
+import { deleteReleaseById, findRelease } from '../../apis/branch/release';
+import { getBranchByBranchId } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'branch', label: 'Branch', alignRight: false },
   { id: 'pledgeId', label: 'Pledge Id', alignRight: false },
   { id: 'pledgedIn', label: 'Pledged In', alignRight: false },
   { id: 'weight', label: 'Weight', alignRight: false },
@@ -81,6 +82,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Release() {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
@@ -102,7 +105,16 @@ export default function Release() {
   });
 
   useEffect(() => {
-    fetchRelease();
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+      fetchRelease({
+        createdAt: {
+          $gte: moment().subtract('days', 1),
+          $lte: moment().add('days', 1),
+        },
+        branch: data.data?._id,
+      });
+    });
   }, []);
 
   const fetchRelease = (query = {}) => {
@@ -266,8 +278,17 @@ export default function Release() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branch, pledgeId, pledgedIn, weight, pledgeAmount, pledgedDate, payableAmount, paymentType } =
-                      row;
+                    const {
+                      _id,
+                      branch,
+                      pledgeId,
+                      pledgedIn,
+                      weight,
+                      pledgeAmount,
+                      pledgedDate,
+                      payableAmount,
+                      paymentType,
+                    } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -275,7 +296,6 @@ export default function Release() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{sentenceCase(branch?.branchName ?? '')}</TableCell>
                         <TableCell align="left">{pledgeId}</TableCell>
                         <TableCell align="left">{sentenceCase(pledgedIn)}</TableCell>
                         <TableCell align="left">{weight}</TableCell>
@@ -300,12 +320,12 @@ export default function Release() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={10} />
+                      <TableCell colSpan={9} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -321,7 +341,7 @@ export default function Release() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

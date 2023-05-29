@@ -1,5 +1,14 @@
 import apiClient from '../http';
 
+async function findRelease(query) {
+  try {
+    const response = await apiClient.post('/api/v1.0/branch/release/get', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function getRelease() {
   try {
     const response = await apiClient.get('/api/v1.0/branch/release/get');
@@ -56,4 +65,4 @@ async function deleteReleaseById(id) {
   }
 }
 
-export { getRelease, getReleaseById, getReleaseByCustomerId, createRelease, updateRelease, deleteReleaseById };
+export { findRelease, getRelease, getReleaseById, getReleaseByCustomerId, createRelease, updateRelease, deleteReleaseById };

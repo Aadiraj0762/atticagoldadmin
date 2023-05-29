@@ -39,6 +39,7 @@ import { deleteCustomerById, findCustomer } from '../../apis/admin/customer';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'branch', label: 'Branch', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'phoneNumber', label: 'Phone', alignRight: false },
@@ -269,7 +270,7 @@ export default function Customer() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, name, email, phoneNumber, gender, status, createdAt } = row;
+                    const { _id, branch, name, email, phoneNumber, gender, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -277,6 +278,7 @@ export default function Customer() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
+                        <TableCell align="left">{sentenceCase(branch?.branchName ?? '')}</TableCell>
                         <TableCell align="left">{sentenceCase(name ?? '')}</TableCell>
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{phoneNumber}</TableCell>
@@ -308,12 +310,12 @@ export default function Customer() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={9} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -329,7 +331,7 @@ export default function Customer() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

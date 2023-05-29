@@ -53,7 +53,7 @@ const style = {
   border: 'none',
 };
 
-function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease }) {
+function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease, branch }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [releaseModal, setReleaseModal] = useState(false);
@@ -109,7 +109,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     pledgedDate: Yup.string().required('Pledged date is required'),
     pledgeId: Yup.string().required('Pledge id is required'),
     pledgedIn: Yup.string().required('Pledged in is required'),
-    branch: Yup.string().required('branch is required'),
+    pledgedBranch: Yup.string().required('Pledged branch is required'),
     releaseDocument: Yup.string().required('Release document is required'),
     releaseDate: Yup.string().required('Release date is required'),
     comments: Yup.string().required('comments is required'),
@@ -121,6 +121,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
     initialValues: {
       customer: selectedUser?._id,
+      branch: branch?._id,
       weight: '',
       pledgeAmount: '',
       payableAmount: '',
@@ -129,7 +130,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
       pledgedDate: moment(),
       pledgeId: '',
       pledgedIn: '',
-      branch: '',
+      pledgedBranch: '',
       releaseDocument: '',
       releaseDate: moment(),
       comments: '',
@@ -142,6 +143,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     onSubmit: (values) => {
       const payload = {
         customer: values.customer,
+        branch: values.branch,
         weight: values.weight,
         pledgeAmount: values.pledgeAmount,
         payableAmount: values.payableAmount,
@@ -150,7 +152,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
         pledgedDate: values.pledgedDate,
         pledgeId: values.pledgeId,
         pledgedIn: values.pledgedIn,
-        branch: values.branch,
+        pledgedBranch: values.pledgedBranch,
         releaseDocument: values.releaseDocument,
         releaseDate: values.releaseDate,
         comments: values.comments,
@@ -421,10 +423,10 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
-                  name="branch"
-                  value={values.branch}
-                  error={touched.branch && errors.branch && true}
-                  label={touched.branch && errors.branch ? errors.branch : 'Branch'}
+                  name="pledgedBranch"
+                  value={values.pledgedBranch}
+                  error={touched.pledgedBranch && errors.pledgedBranch && true}
+                  label={touched.pledgedBranch && errors.pledgedBranch ? errors.pledgedBranch : 'Pledged branch'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}

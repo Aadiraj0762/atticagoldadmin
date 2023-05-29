@@ -3,18 +3,28 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LoadingButton } from '@mui/lab';
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Webcam from 'react-webcam';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import { createCustomer } from '../../../apis/branch/customer';
+import { getBranchByBranchId } from '../../../apis/branch/branch';
 import { createFile } from '../../../apis/branch/fileupload';
 
 function CreateCustomer({ setToggleContainer, setNotify }) {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
   const form = useRef();
+
+  useEffect(() => {
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+    });
+  }, [auth]);
 
   const videoConstraints = {
     width: 420,
@@ -44,6 +54,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
+      branch: branch?._id,
       name: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
@@ -73,6 +84,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         return;
       }
       const payload = {
+        branch: values.branch,
         name: values.name,
         phoneNumber: values.phoneNumber,
         alternatePhoneNumber: values.alternatePhoneNumber,

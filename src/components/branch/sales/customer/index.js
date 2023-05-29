@@ -54,7 +54,7 @@ const style = {
   overflow: 'auto',
 };
 
-function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
+function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser, branch }) {
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [customerModal, setCustomerModal] = useState(false);
@@ -134,6 +134,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
     initialValues: {
+      branch: branch?._id,
       name: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
@@ -163,6 +164,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
         return;
       }
       const payload = {
+        branch: values.branch,
         name: values.name,
         phoneNumber: values.phoneNumber,
         alternatePhoneNumber: values.alternatePhoneNumber,
