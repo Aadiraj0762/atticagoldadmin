@@ -112,8 +112,6 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
     handleCloseDeleteModal();
   };
 
-  console.log(proofDocument);
-
   return (
     <>
       <Card sx={{ display: step === 4 ? 'block' : 'none', p: 4, my: 4 }}>
