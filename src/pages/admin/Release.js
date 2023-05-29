@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 // @mui
 import {
   Card,
@@ -23,9 +23,25 @@ import {
   Modal,
   Box,
   Snackbar,
+  TextField,
+  Select,
+  InputLabel,
+  Grid,
 } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import FormControl from '@mui/material/FormControl';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
@@ -34,6 +50,7 @@ import Scrollbar from '../../components/scrollbar';
 import { ReleaseListHead, ReleaseListToolbar } from '../../sections/@dashboard/release';
 // mock
 import { deleteReleaseById, findRelease } from '../../apis/admin/release';
+import { getBranch } from '../../apis/admin/branch';
 
 // ----------------------------------------------------------------------
 
@@ -81,8 +98,11 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Release() {
+  const [branches, setBranches] = useState([]);
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -94,6 +114,38 @@ export default function Release() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const form = useRef();
+
+  // Form validation
+  const schema = Yup.object({
+    fromDate: Yup.string().required('From date is required'),
+    toDate: Yup.string().required('To date is required'),
+  });
+
+  const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      fromDate: moment().subtract('days', 1),
+      toDate: moment().add('days', 1),
+      branch: '',
+      phoneNumber: '',
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      setOpenBackdrop(true);
+      findRelease({
+        createdAt: {
+          $gte: values.fromDate,
+          $lte: values.toDate,
+        },
+        branch: values.branch,
+        phoneNumber: values.phoneNumber,
+      }).then((data) => {
+        setData(data.data);
+        setOpenBackdrop(false);
+      });
+      setFilterOpen(false);
+    },
+  });
 
   const [notify, setNotify] = useState({
     open: false,
@@ -102,6 +154,9 @@ export default function Release() {
   });
 
   useEffect(() => {
+    getBranch().then((data) => {
+      setBranches(data.data);
+    });
     fetchRelease();
   }, []);
 
@@ -188,6 +243,14 @@ export default function Release() {
     });
   };
 
+  const handleFilterOpen = () => {
+    setFilterOpen(true);
+  };
+
+  const handleFilterClose = () => {
+    setFilterOpen(false);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -239,6 +302,13 @@ export default function Release() {
           <Typography variant="h4" gutterBottom>
             Release
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+            onClick={handleFilterOpen}
+          >
+            Filter
+          </Button>
         </Stack>
 
         <Card>
@@ -266,8 +336,17 @@ export default function Release() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branch, pledgeId, pledgedIn, weight, pledgeAmount, pledgedDate, payableAmount, paymentType } =
-                      row;
+                    const {
+                      _id,
+                      branch,
+                      pledgeId,
+                      pledgedIn,
+                      weight,
+                      pledgeAmount,
+                      pledgedDate,
+                      payableAmount,
+                      paymentType,
+                    } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -421,6 +500,110 @@ export default function Release() {
           </Stack>
         </Box>
       </Modal>
+
+      <Dialog open={filterOpen} onClose={handleFilterClose}>
+        <form
+          ref={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          autoComplete="off"
+        >
+          <DialogTitle>Filter</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={3} sx={{ p: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={touched.branch && errors.branch && true}>
+                  <InputLabel id="select-label">Select branch</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.branch && errors.branch ? errors.branch : 'Select branch'}
+                    name="branch"
+                    value={values.branch}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    {branches.map((e) => (
+                      <MenuItem value={e._id}>
+                        {e.branchId} {e.branchName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="phoneNumber"
+                  type="number"
+                  value={values.phoneNumber}
+                  error={touched.phoneNumber && errors.phoneNumber && true}
+                  label={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : 'Phone Number'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
+                    <DesktopDatePicker
+                      label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="fromDate"
+                      value={values.fromDate}
+                      onChange={(value) => {
+                        setFieldValue('fromDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
+                    <DesktopDatePicker
+                      label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="toDate"
+                      value={values.toDate}
+                      onChange={(value) => {
+                        setFieldValue('toDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                fetchRelease();
+                setFilterOpen(false);
+                resetForm();
+              }}
+            >
+              Clear
+            </Button>
+            <Button variant="contained" onClick={handleFilterClose}>
+              Close
+            </Button>
+            <Button variant="contained" type="submit">
+              Filter
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }
