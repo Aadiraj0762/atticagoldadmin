@@ -1,6 +1,7 @@
 import { TextField, FormControl, InputLabel, Select, MenuItem, Card, Grid } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LoadingButton } from '@mui/lab';
 import { useRef } from 'react';
@@ -17,11 +18,12 @@ function CreateEmployee(props) {
     name: Yup.string().required('Name is required'),
     gender: Yup.string().required('Gender is required'),
     designation: Yup.string().required('Designation is required'),
-    profileImage: Yup.string().required('Profile image is required'),
     employeeId: Yup.string().required('Employee Id is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     alternatePhoneNumber: Yup.string().required('Alternate phone number is required'),
     dob: Yup.string().required('DOB is required'),
+    shiftStartTime: Yup.string().required('Login Time is required'),
+    shiftEndTime: Yup.string().required('Logout Time is required'),
     status: Yup.string().required('Status is required'),
   });
 
@@ -30,12 +32,13 @@ function CreateEmployee(props) {
       name: '',
       gender: '',
       designation: '',
-      profileImage: '',
       employeeId: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
       dob: moment(),
-      status: '',
+      shiftStartTime: moment(),
+      shiftEndTime: moment(),
+      status: 'active',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -43,7 +46,7 @@ function CreateEmployee(props) {
         if (data.status === false) {
           props.setNotify({
             open: true,
-            message: 'User not created',
+            message: 'Employee not created',
             severity: 'error',
           });
         } else {
@@ -52,7 +55,7 @@ function CreateEmployee(props) {
           resetForm();
           props.setNotify({
             open: true,
-            message: 'User created',
+            message: 'Employee created',
             severity: 'success',
           });
         }
@@ -102,7 +105,7 @@ function CreateEmployee(props) {
                 value={values.gender}
                 onBlur={handleBlur}
                 onChange={(e) => {
-                  setFieldValue("gender", e.target.value, true);
+                  setFieldValue('gender', e.target.value, true);
                 }}
               >
                 <MenuItem value="male">Male</MenuItem>
@@ -116,16 +119,6 @@ function CreateEmployee(props) {
               name="designation"
               error={touched.designation && errors.designation && true}
               label={touched.designation && errors.designation ? errors.designation : 'Designation'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="profileImage"
-              error={touched.profileImage && errors.profileImage && true}
-              label={touched.profileImage && errors.profileImage ? errors.profileImage : 'Profile Image'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
@@ -163,10 +156,41 @@ function CreateEmployee(props) {
                 name="dob"
                 value={values.dob}
                 onChange={(value) => {
-                  setFieldValue("dob", value, true);
+                  setFieldValue('dob', value, true);
                 }}
-                renderInput={(params) => <TextField {...params} />}
-                fullWidth
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              error={touched.shiftStartTime && errors.shiftStartTime && true}
+            >
+              <TimePicker
+                label="Login Time"
+                name="shiftStartTime"
+                value={values.shiftStartTime}
+                onChange={(value) => {
+                  setFieldValue('shiftStartTime', value, true);
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              error={touched.shiftEndTime && errors.shiftEndTime && true}
+            >
+              <TimePicker
+                label="Logout Time"
+                name="shiftEndTime"
+                value={values.shiftEndTime}
+                onChange={(value) => {
+                  setFieldValue('shiftEndTime', value, true);
+                }}
+                renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </LocalizationProvider>
           </Grid>
@@ -181,7 +205,7 @@ function CreateEmployee(props) {
                 value={values.status}
                 onBlur={handleBlur}
                 onChange={(e) => {
-                  setFieldValue("status", e.target.value, true);
+                  setFieldValue('status', e.target.value, true);
                 }}
               >
                 <MenuItem value="active">Active</MenuItem>
