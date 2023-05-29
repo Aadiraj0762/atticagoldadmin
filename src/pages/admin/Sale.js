@@ -24,6 +24,9 @@ import {
   Box,
   Snackbar,
   TextField,
+  Select,
+  InputLabel,
+  Grid,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -50,6 +53,7 @@ import { SaleDetail, SalePrint } from '../../components/admin/sales';
 import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
 // mock
 import { deleteSalesById, findSales, updateSales } from '../../apis/admin/sales';
+import { getBranch } from '../../apis/admin/branch';
 
 // ----------------------------------------------------------------------
 
@@ -97,6 +101,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Sale() {
+  const [branches, setBranches] = useState([]);
   const [open, setOpen] = useState(null);
   const [filterOpen, setFilterOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -122,10 +127,12 @@ export default function Sale() {
     toDate: Yup.string().required('To date is required'),
   });
 
-  const { handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
+  const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
       fromDate: moment().subtract('days', 1),
       toDate: moment().add('days', 1),
+      branch: '',
+      phoneNumber: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -135,6 +142,8 @@ export default function Sale() {
           $gte: values.fromDate,
           $lte: values.toDate,
         },
+        branch: values.branch,
+        phoneNumber: values.phoneNumber,
       }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
@@ -150,6 +159,9 @@ export default function Sale() {
   });
 
   useEffect(() => {
+    getBranch().then((data) => {
+      setBranches(data.data);
+    });
     fetchSale();
   }, [toggleContainer]);
 
@@ -445,12 +457,12 @@ export default function Sale() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={9} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -466,7 +478,7 @@ export default function Sale() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -642,36 +654,72 @@ export default function Sale() {
         >
           <DialogTitle>Filter</DialogTitle>
           <DialogContent>
-            <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
-                  <DesktopDatePicker
-                    label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
-                    inputFormat="MM/DD/YYYY"
-                    name="fromDate"
-                    value={values.fromDate}
-                    onChange={(value) => {
-                      setFieldValue('fromDate', value, true);
-                    }}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
-                  />
-                </LocalizationProvider>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
-                  <DesktopDatePicker
-                    label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
-                    inputFormat="MM/DD/YYYY"
-                    name="toDate"
-                    value={values.toDate}
-                    onChange={(value) => {
-                      setFieldValue('toDate', value, true);
-                    }}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
-                  />
-                </LocalizationProvider>
-              </FormControl>
-            </Box>
+            <Grid container spacing={3} sx={{ p: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={touched.branch && errors.branch && true}>
+                  <InputLabel id="select-label">Select branch</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.branch && errors.branch ? errors.branch : 'Select branch'}
+                    name="branch"
+                    value={values.branch}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    {branches.map((e) => (
+                      <MenuItem value={e._id}>
+                        {e.branchId} {e.branchName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="phoneNumber"
+                  type="number"
+                  value={values.phoneNumber}
+                  error={touched.phoneNumber && errors.phoneNumber && true}
+                  label={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : 'Phone Number'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
+                    <DesktopDatePicker
+                      label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="fromDate"
+                      value={values.fromDate}
+                      onChange={(value) => {
+                        setFieldValue('fromDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
+                    <DesktopDatePicker
+                      label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="toDate"
+                      value={values.toDate}
+                      onChange={(value) => {
+                        setFieldValue('toDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button
