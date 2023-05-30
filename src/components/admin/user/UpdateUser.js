@@ -79,6 +79,25 @@ function UpdateUser(props) {
         autoComplete="off"
       >
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth error={touched.userType && errors.userType && true}>
+              <InputLabel id="select-label">Select user type</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.userType && errors.userType ? errors.userType : 'Select user type'}
+                name="userType"
+                value={values.userType}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="hr">hr</MenuItem>
+                <MenuItem value="accounts">accounts</MenuItem>
+                <MenuItem value="branch">branch</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
           {values.userType === 'branch' ? (
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth error={touched.username && errors.username && true}>
@@ -126,25 +145,6 @@ function UpdateUser(props) {
               </Grid>
             </>
           )}
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth error={touched.userType && errors.userType && true}>
-              <InputLabel id="select-label">Select user type</InputLabel>
-              <Select
-                labelId="select-label"
-                id="select"
-                label={touched.userType && errors.userType ? errors.userType : 'Select user type'}
-                name="userType"
-                value={values.userType}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="hr">hr</MenuItem>
-                <MenuItem value="accounts">accounts</MenuItem>
-                <MenuItem value="branch">branch</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
           <Grid item xs={12} sm={4}>
             <FormControl fullWidth error={touched.employee && errors.employee && true}>
               <InputLabel id="select-label">Select employee</InputLabel>

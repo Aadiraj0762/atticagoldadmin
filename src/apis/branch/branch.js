@@ -2,7 +2,7 @@ import apiClient from '../http';
 
 async function getState() {
   try {
-    const response = await apiClient.get('/api/v1.0/admin/branch/state');
+    const response = await apiClient().get('/api/v1.0/admin/branch/state');
     return response.data;
   } catch (err) {
     return err;
@@ -11,7 +11,7 @@ async function getState() {
 
 async function getBranch() {
   try {
-    const response = await apiClient.get('/api/v1.0/branch/branch/get');
+    const response = await apiClient().get('/api/v1.0/branch/branch/get');
     return response.data;
   } catch (err) {
     return err;
@@ -20,7 +20,7 @@ async function getBranch() {
 
 async function getBranchById(id) {
   try {
-    const response = await apiClient.get(`/api/v1.0/branch/branch/get/${id}`);
+    const response = await apiClient().get(`/api/v1.0/branch/branch/get/${id}`);
     return response.data;
   } catch (err) {
     return err;
@@ -29,7 +29,7 @@ async function getBranchById(id) {
 
 async function getBranchByBranchId(query) {
   try {
-    const response = await apiClient.post(`/api/v1.0/branch/branch/find`, query);
+    const response = await apiClient().post(`/api/v1.0/branch/branch/find`, query);
     return response.data;
   } catch (err) {
     return err;

@@ -2,7 +2,7 @@ import apiClient from '../http';
 
 async function getUser() {
   try {
-    const response = await apiClient.get('/api/v1.0/admin/user/get');
+    const response = await apiClient().get('/api/v1.0/admin/user/get');
     return response.data;
   } catch (err) {
     return err;
@@ -11,7 +11,7 @@ async function getUser() {
 
 async function getUserById(id) {
   try {
-    const response = await apiClient.get(`/api/v1.0/admin/user/get/${id}`);
+    const response = await apiClient().get(`/api/v1.0/admin/user/get/${id}`);
     return response.data;
   } catch (err) {
     return err;
@@ -20,7 +20,7 @@ async function getUserById(id) {
 
 async function createUser(payload) {
   try {
-    const response = await apiClient.post('/api/v1.0/admin/user/create', payload);
+    const response = await apiClient().post('/api/v1.0/admin/user/create', payload);
     return response.data;
   } catch (err) {
     return err;
@@ -29,7 +29,7 @@ async function createUser(payload) {
 
 async function updateUser(id, payload) {
   try {
-    const response = await apiClient.post(`/api/v1.0/admin/user/update/${id}`, payload);
+    const response = await apiClient().post(`/api/v1.0/admin/user/update/${id}`, payload);
     return response.data;
   } catch (err) {
     return err;
@@ -38,7 +38,7 @@ async function updateUser(id, payload) {
 
 async function deleteUserById(id) {
   try {
-    const response = await apiClient.post(`/api/v1.0/admin/user/delete/${id}`);
+    const response = await apiClient().post(`/api/v1.0/admin/user/delete/${id}`);
     return response.data;
   } catch (err) {
     return err;

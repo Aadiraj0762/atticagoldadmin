@@ -1,70 +1,36 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 // @mui
-import {
-  Link,
-  Stack,
-  IconButton,
-  InputAdornment,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Typography,
-} from '@mui/material';
+import { Stack, IconButton, InputAdornment, TextField, Typography, Button, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
 import { login } from '../../../features/authSlice';
-import { loginApi, getUserTypeApi, getBranchUserApi } from '../../../apis/auth';
+import { loginApi, getUserTypeApi, verifyLoginOtp } from '../../../apis/auth';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
-  const navigate = useNavigate();
-
-  const [employeeId, setEmployeeId] = useState('');
+  const [username, setUsername] = useState('');
+  const [userType, setUserType] = useState('');
+  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [token, setToken] = useState('');
+  const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
-  const [isEmployee, setIsEmployee] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
-  const [employees, setEmployees] = useState([]);
   const [error, setError] = useState(null);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  // Form validation
-  const schema = Yup.object({
-    username: Yup.string().required('Username is required'),
-    employeeId: isEmployee && Yup.string().required('Employee is required'),
-    password: Yup.string().required('Password is required'),
-  });
-
-  const { handleSubmit, handleChange, handleBlur, touched, errors } = useFormik({
-    initialValues: {
-      username: '',
-      employeeId: '',
-      password: '',
-    },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      setError(null);
-      loginApi(values)
-        .then((data) => {
-          if (data.status === true) {
-            dispatch(login(data.data));
-            window.location.reload();
-          } else {
-            setError(data.response.data.message || data.message);
-          }
-        })
-        .catch((err) => {
-          setError(err.message);
-        });
-    },
+  const [notify, setNotify] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
   });
 
   if (auth.isAuthenticated === true) {
@@ -83,13 +49,35 @@ export default function LoginForm() {
     return <Navigate to="/404" />;
   }
 
+  function AlertComponent(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  }
+
+  const Alert = forwardRef(AlertComponent);
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-    >
+    <>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={notify.open}
+        onClose={() => {
+          setNotify({ ...notify, open: false });
+        }}
+        autoHideDuration={3000}
+      >
+        <Alert
+          onClose={() => {
+            setNotify({ ...notify, open: false });
+          }}
+          severity={notify.severity}
+          sx={{ width: '100%', color: 'white' }}
+        >
+          {notify.message}
+        </Alert>
+      </Snackbar>
       <Stack spacing={3}>
         {error && (
           <Typography
@@ -104,82 +92,40 @@ export default function LoginForm() {
 
         <TextField
           name="username"
-          error={touched.username && errors.username && true}
-          label={touched.username && errors.username ? errors.username : 'Username'}
-          onChange={handleChange}
-          onBlur={async (e) => {
-            setIsDisable(true);
-            try {
-              const userType = await getUserTypeApi({
-                username: e.target.value,
-              });
-
-              if (userType?.data?.userType && userType.data.userType === 'branch') {
-                const employee = await getBranchUserApi({
-                  username: e.target.value,
-                });
-                if (employee?.data?.length > 0) {
-                  setEmployees(employee.data ?? []);
-                  setIsEmployee(true);
-                } else {
-                  setIsEmployee(false);
-                }
-              } else {
-                setIsEmployee(false);
-              }
-            } catch (err) {
-              setIsEmployee(false);
-            }
-            handleBlur(e);
-            setIsDisable(false);
-          }}
+          label={'Username'}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
         />
-
-        <FormControl
-          sx={{
-            width: '100%',
-            display: isEmployee === true ? 'flex' : 'none',
-          }}
-          error={touched.employeeId && errors.employeeId && true}
-        >
-          <InputLabel id="select-label">
-            {touched.employeeId && errors.employeeId ? errors.employeeId : 'Select employee'}
-          </InputLabel>
-          <Select
-            labelId="select-label"
-            id="select"
-            label={touched.employeeId && errors.employeeId ? errors.employeeId : 'Select employee'}
-            name="employeeId"
-            value={employeeId}
-            onChange={(event) => {
-              setEmployeeId(event.target.value);
-              handleChange(event);
+        {step === 2 && userType !== 'branch' && (
+          <TextField
+            name="password"
+            label={'Password'}
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
             }}
-          >
-            {employees?.map((data) => (
-              <MenuItem value={data.employee._id} key={data.employee._id ?? 0}>
-                {data.employee.employeeId}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <TextField
-          name="password"
-          error={touched.password && errors.password && true}
-          label={touched.password && errors.password ? errors.password : 'Password'}
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          onChange={handleChange}
-        />
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        )}
+        {step === 2 && userType === 'branch' && (
+          <TextField
+            name="otp"
+            label={'OTP'}
+            type={'text'}
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            required
+          />
+        )}
       </Stack>
 
       {/* <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
@@ -188,9 +134,106 @@ export default function LoginForm() {
         </Link>
       </Stack> */}
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" disabled={isDisable} sx={{ my: 2 }}>
-        Login
-      </LoadingButton>
-    </form>
+      {step === 1 ? (
+        <Button
+          fullWidth
+          size="large"
+          type="button"
+          variant="contained"
+          disabled={isDisable}
+          sx={{ my: 2 }}
+          onClick={() => {
+            if (!username) {
+              setNotify({
+                open: true,
+                message: 'Please enter username',
+                severity: 'error',
+              });
+            } else {
+              setIsDisable(true);
+              setError('');
+              getUserTypeApi({ username })
+                .then((data) => {
+                  if (data.status === true) {
+                    setUserType(data.data.userType);
+                    if (data.data.userType === 'branch') {
+                      loginApi({ username, password: "no-password" })
+                        .then((data) => {
+                          if (data.status === true) {
+                            setToken(data.data.token);
+                            setOtp(data.data.otp);
+                            setIsDisable(false);
+                            setStep(2);
+                          } else {
+                            setIsDisable(false);
+                            setStep(1);
+                            setError(data.message);
+                          }
+                        })
+                        .catch((err) => {
+                          setIsDisable(false);
+                          setStep(1);
+                          setError(err.message);
+                        });
+                    } else {
+                      setIsDisable(false);
+                      setStep(2);
+                    }
+                  } else {
+                    setIsDisable(false);
+                    setError(data.message);
+                  }
+                })
+                .catch((err) => {
+                  setIsDisable(false);
+                  setError(err.message);
+                });
+            }
+          }}
+        >
+          Next
+        </Button>
+      ) : (
+        <LoadingButton
+          fullWidth
+          size="large"
+          variant="contained"
+          disabled={isDisable}
+          sx={{ my: 2 }}
+          onClick={() => {
+            setError(null);
+            if (userType === 'branch') {
+              // Verify otp
+              verifyLoginOtp({ token, otp })
+                .then((data) => {
+                  console.log(data);
+                  if (data.status === true) {
+                    dispatch(login(data.data));
+                  } else {
+                    setError(data.response.data.message || data.message);
+                  }
+                })
+                .catch((err) => {
+                  setError(err.message);
+                });
+            } else {
+              loginApi({ username, password })
+                .then((data) => {
+                  if (data.status === true) {
+                    dispatch(login(data.data));
+                  } else {
+                    setError(data.response.data.message || data.message);
+                  }
+                })
+                .catch((err) => {
+                  setError(err.message);
+                });
+            }
+          }}
+        >
+          Login
+        </LoadingButton>
+      )}
+    </>
   );
 }

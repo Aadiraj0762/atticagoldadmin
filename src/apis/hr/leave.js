@@ -2,7 +2,7 @@ import apiClient from '../http';
 
 async function getLeave() {
   try {
-    const response = await apiClient.get('/api/v1.0/hr/leave/get');
+    const response = await apiClient().get('/api/v1.0/hr/leave/get');
     return response.data;
   } catch (err) {
     return err;
@@ -11,7 +11,7 @@ async function getLeave() {
 
 async function getLeaveById(id) {
   try {
-    const response = await apiClient.get(`/api/v1.0/hr/leave/get/${id}`);
+    const response = await apiClient().get(`/api/v1.0/hr/leave/get/${id}`);
     return response.data;
   } catch (err) {
     return err;
@@ -20,7 +20,7 @@ async function getLeaveById(id) {
 
 async function createLeave(payload) {
   try {
-    const response = await apiClient.post('/api/v1.0/hr/leave/create', payload);
+    const response = await apiClient().post('/api/v1.0/hr/leave/create', payload);
     return response.data;
   } catch (err) {
     return err;
@@ -29,7 +29,7 @@ async function createLeave(payload) {
 
 async function updateLeave(id, payload) {
   try {
-    const response = await apiClient.post(`/api/v1.0/hr/leave/update/${id}`, payload);
+    const response = await apiClient().post(`/api/v1.0/hr/leave/update/${id}`, payload);
     return response.data;
   } catch (err) {
     return err;
@@ -38,7 +38,7 @@ async function updateLeave(id, payload) {
 
 async function deleteLeaveById(id) {
   try {
-    const response = await apiClient.post(`/api/v1.0/hr/leave/delete/${id}`);
+    const response = await apiClient().post(`/api/v1.0/hr/leave/delete/${id}`);
     return response.data;
   } catch (err) {
     return err;
