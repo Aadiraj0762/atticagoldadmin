@@ -5,7 +5,7 @@ async function loginApi(payload) {
     const response = await apiClient().post('/api/v1.0/auth/login', payload);
     return response.data;
   } catch (err) {
-    return err;
+    return err.response.data ?? err;
   }
 }
 

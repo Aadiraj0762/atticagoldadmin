@@ -157,7 +157,7 @@ export default function LoginForm() {
                   if (data.status === true) {
                     setUserType(data.data.userType);
                     if (data.data.userType === 'branch') {
-                      loginApi({ username, password: "no-password" })
+                      loginApi({ username, password: 'no-password' })
                         .then((data) => {
                           if (data.status === true) {
                             setToken(data.data.token);
@@ -167,10 +167,11 @@ export default function LoginForm() {
                           } else {
                             setIsDisable(false);
                             setStep(1);
-                            setError(data.message);
+                            setError('Invalid username');
                           }
                         })
                         .catch((err) => {
+                          console.log(err);
                           setIsDisable(false);
                           setStep(1);
                           setError(err.message);
@@ -185,6 +186,7 @@ export default function LoginForm() {
                   }
                 })
                 .catch((err) => {
+                  console.log(err);
                   setIsDisable(false);
                   setError(err.message);
                 });
