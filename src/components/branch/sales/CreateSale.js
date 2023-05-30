@@ -173,7 +173,9 @@ function CreateSale(props) {
   payload.ornaments = ornaments;
   payload.cashAmount = Math.round(values.cashAmount);
   payload.bankAmount = Math.round(values.bankAmount);
-  payload.payableAmount = Math.round(payload.netAmount - (payload.netAmount * values.margin) / 100);
+  payload.payableAmount =
+    Math.round(payload.netAmount - (payload.netAmount * values.margin) / 100) -
+    (Math.round(selectedRelease?.reduce((prev, cur) => prev + +cur.payableAmount, 0)) ?? 0);
 
   return (
     <>
