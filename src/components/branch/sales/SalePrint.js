@@ -82,28 +82,35 @@ export default function SalePrint({ id }) {
               <tr>
                 <td style={{ width: '50%' }}>Gross weight:</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>
-                  {data?.ornaments?.reduce((prev, cur) => cur.grossWeight + prev, 0)}
+                  {Math.round(data?.ornaments?.reduce((prev, cur) => cur.grossWeight + prev, 0))}
                 </td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Net weight:</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>
-                  {data?.ornaments?.reduce((prev, cur) => cur.netWeight + prev, 0)}
+                  {Math.round(data?.ornaments?.reduce((prev, cur) => cur.netWeight + prev, 0))}
                 </td>
               </tr>
               <tr>
-                <td style={{ width: '50%' }}>Gross Amount</td>
+                <td style={{ width: '50%' }}>Net Amount</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {data?.netAmount}</td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Release</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>
-                  &#8377; {data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0)}
+                  &#8377; {Math.round(data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0))}
                 </td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Service Charges</td>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {(data?.netAmount * data?.margin) / 100}</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>
+                  &#8377;{' '}
+                  {Math.round(
+                    data?.netAmount -
+                      data?.payableAmount -
+                      data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0)
+                  )}
+                </td>
               </tr>
               <tr>
                 <th style={{ width: '50%' }}>Payable</th>

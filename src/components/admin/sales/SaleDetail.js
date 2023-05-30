@@ -507,7 +507,7 @@ export default function SaleDetail({ id, setNotify }) {
                               onChange={handleChange}
                             />
                           ) : (
-                            <>payableAmount: {data.status}</>
+                            <>Payable Amount: {data.payableAmount}</>
                           )}
                         </TableCell>
                       </TableRow>
