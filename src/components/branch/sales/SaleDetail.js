@@ -66,10 +66,10 @@ export default function SaleDetail({ id }) {
                 <TableRow hover key={index} tabIndex={-1}>
                   <TableCell align="left">{e.purity}</TableCell>
                   <TableCell align="left">{e.quantity}</TableCell>
-                  <TableCell align="left">{e.stoneWeight}</TableCell>
-                  <TableCell align="left">{e.netWeight}</TableCell>
-                  <TableCell align="left">{e.grossWeight}</TableCell>
-                  <TableCell align="left">{e.netAmount}</TableCell>
+                  <TableCell align="left">{e.stoneWeight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{e.netWeight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{e.grossWeight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{Math.round(e.netAmount)}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
@@ -141,10 +141,10 @@ export default function SaleDetail({ id }) {
                 <TableRow hover key={e._id} tabIndex={-1}>
                   <TableCell align="left">{e.pledgeId}</TableCell>
                   <TableCell align="left">{sentenceCase(e.pledgedIn)}</TableCell>
-                  <TableCell align="left">{e.weight}</TableCell>
-                  <TableCell align="left">{e.pledgeAmount}</TableCell>
+                  <TableCell align="left">{e.weight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{Math.round(e.pledgeAmount)}</TableCell>
                   <TableCell align="left">{moment(e.pledgedDate).format('YYYY-MM-DD')}</TableCell>
-                  <TableCell align="left">{e.payableAmount}</TableCell>
+                  <TableCell align="left">{Math.round(e.payableAmount)}</TableCell>
                   <TableCell align="left">{sentenceCase(e.paymentType)}</TableCell>
                 </TableRow>
               ))}
@@ -444,7 +444,7 @@ export default function SaleDetail({ id }) {
                         Release Amount:{' '}
                         {Math.round(data.release?.reduce((prev, cur) => prev + +cur.payableAmount, 0)) ?? 0}
                       </TableCell>
-                      <TableCell align="left">Payable Amount: {data.payableAmount}</TableCell>
+                      <TableCell align="left">Payable Amount: {Math.round(data.payableAmount)}</TableCell>
                     </TableRow>
                     <TableRow tabIndex={-1}>
                       <TableCell align="left">Status: {data.status}</TableCell>
