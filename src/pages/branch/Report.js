@@ -31,11 +31,14 @@ import { getBranchByBranchId } from '../../apis/branch/branch';
 const TABLE_HEAD = [
   { id: 'date', label: 'Date', alignRight: false },
   { id: 'type', label: 'Type', alignRight: false },
+  { id: 'saleType', label: 'Sale Type', alignRight: false },
+  { id: 'branch', label: 'Branch', alignRight: false },
   { id: 'rate', label: 'Rate', alignRight: false },
   { id: 'bills', label: 'Bills', alignRight: false },
   { id: 'grossWeight', label: 'Gross Weight', alignRight: false },
   { id: 'netWeight', label: 'Net Weight', alignRight: false },
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
+  { id: 'releaseAmount', label: 'Release Amount', alignRight: false },
   { id: 'ornaments', label: 'Ornaments', alignRight: false },
 ];
 
@@ -153,29 +156,44 @@ export default function Report() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { date, type, rate, bills, grossWeight, netWeight, netAmount, ornaments } = row;
+                    const {
+                      date,
+                      type,
+                      saleType,
+                      branch,
+                      rate,
+                      bills,
+                      grossWeight,
+                      netWeight,
+                      netAmount,
+                      releaseAmount,
+                      ornaments,
+                    } = row;
 
                     return (
                       <TableRow hover key={index} tabIndex={-1}>
                         <TableCell align="left">{moment(date).format('MMM Do YY')}</TableCell>
                         <TableCell align="left">{sentenceCase(type ?? '')}</TableCell>
+                        <TableCell align="left">{sentenceCase(saleType ?? '')}</TableCell>
+                        <TableCell align="left">{branch}</TableCell>
                         <TableCell align="left">{rate}</TableCell>
                         <TableCell align="left">{bills}</TableCell>
                         <TableCell align="left">{grossWeight}</TableCell>
                         <TableCell align="left">{netWeight}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
+                        <TableCell align="left">{releaseAmount}</TableCell>
                         <TableCell align="left">{ornaments}</TableCell>
                       </TableRow>
                     );
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={8} />
+                      <TableCell colSpan={9} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
