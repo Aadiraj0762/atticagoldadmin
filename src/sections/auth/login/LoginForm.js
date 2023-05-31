@@ -212,7 +212,7 @@ export default function LoginForm() {
                   if (data.status === true) {
                     dispatch(login(data.data));
                   } else {
-                    setError(data.response.data.message || data.message);
+                    setError(data.message);
                   }
                 })
                 .catch((err) => {
@@ -224,7 +224,7 @@ export default function LoginForm() {
                   if (data.status === true) {
                     dispatch(login(data.data));
                   } else {
-                    setError(data.response.data.message || data.message);
+                    setError(data.message);
                   }
                 })
                 .catch((err) => {
