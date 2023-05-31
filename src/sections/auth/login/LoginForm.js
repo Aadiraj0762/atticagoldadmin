@@ -186,7 +186,6 @@ export default function LoginForm() {
                   }
                 })
                 .catch((err) => {
-                  console.log(err);
                   setIsDisable(false);
                   setError(err.message);
                 });
