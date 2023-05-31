@@ -9,6 +9,15 @@ async function getSales() {
   }
 }
 
+async function consolidatedSaleReport(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/branch/report/get-consolidated-sale-report', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function findSales(query = {}) {
   try {
     const response = await apiClient().post('/api/v1.0/branch/sales/get', query);
@@ -54,4 +63,4 @@ async function deleteSalesById(id) {
   }
 }
 
-export { getSales, findSales, getSalesById, createSales, updateSales, deleteSalesById };
+export { getSales, consolidatedSaleReport, findSales, getSalesById, createSales, updateSales, deleteSalesById };

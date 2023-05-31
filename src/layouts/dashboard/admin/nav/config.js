@@ -4,6 +4,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import SellIcon from '@mui/icons-material/Sell';
 // component
 import SvgColor from '../../../../components/svg-color';
@@ -72,6 +73,11 @@ const navConfig = [
     title: 'Employee',
     path: '/admin/employee',
     icon: icon('ic_user'),
+  },
+  {
+    title: 'Report',
+    path: '/admin/report',
+    icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 

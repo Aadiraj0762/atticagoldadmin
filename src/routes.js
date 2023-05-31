@@ -17,6 +17,7 @@ import AdminCustomer from './pages/admin/Customer';
 import AdminRelease from './pages/admin/Release';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminEmployee from './pages/admin/Employee';
+import AdminReport from './pages/admin/Report';
 import HrDashboardLayout from './layouts/dashboard/hr';
 import HrDashboard from './pages/hr/Dashboard';
 import HrBranch from './pages/hr/Branch';
@@ -40,6 +41,7 @@ import BranchAttendance from './pages/branch/Attendance';
 import BranchSale from './pages/branch/Sale';
 import BranchCustomer from './pages/branch/Customer';
 import BranchRelease from './pages/branch/Release';
+import BranchReport from './pages/branch/Report';
 
 // ----------------------------------------------------------------------
 
@@ -78,6 +80,7 @@ export default function Router() {
         { path: 'customer', element: <AdminCustomer /> },
         { path: 'release', element: <AdminRelease /> },
         { path: 'employee', element: <AdminEmployee /> },
+        { path: 'report', element: <AdminReport /> },
       ],
     },
     {
@@ -131,6 +134,7 @@ export default function Router() {
         { path: 'customer', element: <BranchCustomer /> },
         { path: 'release', element: <BranchRelease /> },
         { path: 'sale', element: <BranchSale /> },
+        { path: 'report', element: <BranchReport /> },
       ],
     },
     {
