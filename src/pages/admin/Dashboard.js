@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Backdrop, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 // sections
 import { AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } from '../../sections/@dashboard/app';
@@ -10,12 +10,14 @@ import { getCount } from '../../apis/admin/dashboard';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [count, setCount] = useState(null);
   const theme = useTheme();
 
   useEffect(() => {
     getCount().then((data) => {
       setCount(data.data);
+      setOpenBackdrop(false);
     });
   }, []);
 
@@ -156,6 +158,10 @@ export default function DashboardAppPage() {
           </Grid>
         </Grid>
       </Container>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

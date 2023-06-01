@@ -25,6 +25,8 @@ import {
   Snackbar,
   TextField,
   Grid,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -34,8 +36,6 @@ import FormControl from '@mui/material/FormControl';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 import { useFormik } from 'formik';
@@ -96,8 +96,8 @@ function applySortFilter(array, comparator, query) {
 
 export default function Customer() {
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
-  const [openBackdrop, setOpenBackdrop] = useState(false);
   const [filterOpen, setFilterOpen] = useState(null);
   const [toggleContainer, setToggleContainer] = useState(false);
   const [toggleContainerType, setToggleContainerType] = useState('');
@@ -158,6 +158,7 @@ export default function Customer() {
   ) => {
     findCustomer(query).then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   };
 
