@@ -4,7 +4,16 @@ import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 // @mui
-import { Stack, IconButton, InputAdornment, TextField, Typography, Button, Snackbar } from '@mui/material';
+import {
+  Stack,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  Button,
+  Snackbar,
+  CircularProgress,
+} from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import { LoadingButton } from '@mui/lab';
 // components
@@ -135,12 +144,13 @@ export default function LoginForm() {
       </Stack> */}
 
       {step === 1 ? (
-        <Button
+        <LoadingButton
           fullWidth
           size="large"
           type="button"
           variant="contained"
-          disabled={isDisable}
+          loading={isDisable}
+          loadingIndicator={<CircularProgress color="inherit" size={16} />}
           sx={{ my: 2 }}
           onClick={() => {
             if (!username) {
@@ -162,16 +172,14 @@ export default function LoginForm() {
                           if (data.status === true) {
                             setToken(data.data.token);
                             setOtp(data.data.otp);
-                            setIsDisable(false);
                             setStep(2);
                           } else {
-                            setIsDisable(false);
                             setStep(1);
                             setError('Invalid username');
                           }
+                          setIsDisable(false);
                         })
                         .catch((err) => {
-                          console.log(err);
                           setIsDisable(false);
                           setStep(1);
                           setError(err.message);
@@ -192,29 +200,32 @@ export default function LoginForm() {
             }
           }}
         >
-          Next
-        </Button>
+          <span>Next</span>
+        </LoadingButton>
       ) : (
         <LoadingButton
           fullWidth
           size="large"
           variant="contained"
-          disabled={isDisable}
+          loading={isDisable}
+          loadingIndicator={<CircularProgress color="inherit" size={16} />}
           sx={{ my: 2 }}
           onClick={() => {
+            setIsDisable(true);
             setError(null);
             if (userType === 'branch') {
               // Verify otp
               verifyLoginOtp({ token, otp })
                 .then((data) => {
-                  console.log(data);
                   if (data.status === true) {
                     dispatch(login(data.data));
                   } else {
                     setError(data.message);
                   }
+                  setIsDisable(false);
                 })
                 .catch((err) => {
+                  setIsDisable(false);
                   setError(err.message);
                 });
             } else {
@@ -225,9 +236,11 @@ export default function LoginForm() {
                   } else {
                     setError(data.message);
                   }
+                  setIsDisable(false);
                 })
                 .catch((err) => {
                   setError(err.message);
+                  setIsDisable(false);
                 });
             }
           }}
