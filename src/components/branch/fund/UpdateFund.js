@@ -140,7 +140,7 @@ function UpdateFund(props) {
                 value={values.from}
                 onBlur={handleBlur}
                 onChange={handleChange}
-                disabled={isReadOnly}
+                disabled
               >
                 {branches.map((e) => (
                   <MenuItem value={e._id}>
