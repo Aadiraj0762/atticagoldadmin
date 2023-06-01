@@ -427,7 +427,7 @@ export default function SaleDetail({ id }) {
                       <TableCell align="left">Bill Id: {data?.billId}</TableCell>
                       <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
                       <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
-                      <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
+                      <TableCell align="left">Ornament Type: {sentenceCase(data.purchaseType ?? '')}</TableCell>
                     </TableRow>
                     <TableRow tabIndex={-1}>
                       <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>

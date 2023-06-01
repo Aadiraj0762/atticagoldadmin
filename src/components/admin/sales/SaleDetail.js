@@ -98,10 +98,10 @@ export default function SaleDetail({ id, setNotify }) {
                 <TableRow hover key={index} tabIndex={-1}>
                   <TableCell align="left">{e.purity}</TableCell>
                   <TableCell align="left">{e.quantity}</TableCell>
-                  <TableCell align="left">{e.stoneWeight}</TableCell>
-                  <TableCell align="left">{e.netWeight}</TableCell>
-                  <TableCell align="left">{e.grossWeight}</TableCell>
-                  <TableCell align="left">{e.netAmount}</TableCell>
+                  <TableCell align="left">{e.stoneWeight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{e.netWeight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{e.grossWeight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{Math.round(e.netAmount)}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
@@ -173,10 +173,10 @@ export default function SaleDetail({ id, setNotify }) {
                 <TableRow hover key={e._id} tabIndex={-1}>
                   <TableCell align="left">{e.pledgeId}</TableCell>
                   <TableCell align="left">{sentenceCase(e.pledgedIn)}</TableCell>
-                  <TableCell align="left">{e.weight}</TableCell>
-                  <TableCell align="left">{e.pledgeAmount}</TableCell>
+                  <TableCell align="left">{e.weight?.toFixed(2)}</TableCell>
+                  <TableCell align="left">{Math.round(e.pledgeAmount)}</TableCell>
                   <TableCell align="left">{moment(e.pledgedDate).format('YYYY-MM-DD')}</TableCell>
-                  <TableCell align="left">{e.payableAmount}</TableCell>
+                  <TableCell align="left">{Math.round(e.payableAmount)}</TableCell>
                   <TableCell align="left">{sentenceCase(e.paymentType)}</TableCell>
                 </TableRow>
               ))}
@@ -475,7 +475,7 @@ export default function SaleDetail({ id, setNotify }) {
                         <TableCell align="left">Bill Id: {data?.billId}</TableCell>
                         <TableCell align="left">Branch: {sentenceCase(data.branch?.branchName ?? '')}</TableCell>
                         <TableCell align="left">Sale Type: {sentenceCase(data.saleType ?? '')}</TableCell>
-                        <TableCell align="left">Ornament Type: {sentenceCase(data.ornamentType ?? '')}</TableCell>
+                        <TableCell align="left">Ornament Type: {sentenceCase(data.purchaseType ?? '')}</TableCell>
                       </TableRow>
                       <TableRow tabIndex={-1}>
                         <TableCell align="left">DOP: {new Date(data.dop).toUTCString()}</TableCell>
@@ -497,7 +497,7 @@ export default function SaleDetail({ id, setNotify }) {
                             <TextField
                               name="payableAmount"
                               type={'number'}
-                              value={values?.payableAmount}
+                              value={Math.round(values?.payableAmount)}
                               error={touched.payableAmount && errors.payableAmount && true}
                               label={
                                 touched.payableAmount && errors.payableAmount ? errors.payableAmount : 'Payable Amount'
@@ -507,7 +507,7 @@ export default function SaleDetail({ id, setNotify }) {
                               onChange={handleChange}
                             />
                           ) : (
-                            <>Payable Amount: {data.payableAmount}</>
+                            <>Payable Amount: {Math.round(data.payableAmount)}</>
                           )}
                         </TableCell>
                       </TableRow>
