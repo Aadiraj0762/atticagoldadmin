@@ -23,6 +23,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -85,6 +87,7 @@ export default function Customer() {
   const auth = useSelector((state) => state.auth);
   const [branch, setBranch] = useState({});
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
   const [toggleContainer, setToggleContainer] = useState(false);
   const [toggleContainerType, setToggleContainerType] = useState('');
@@ -125,6 +128,7 @@ export default function Customer() {
     if (!query.branch) query.branch = branch._id;
     findCustomer(query).then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   };
 
@@ -508,6 +512,10 @@ export default function Customer() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

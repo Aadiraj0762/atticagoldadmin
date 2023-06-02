@@ -24,8 +24,6 @@ import {
   Box,
   Snackbar,
   TextField,
-  Select,
-  InputLabel,
   Grid,
   Backdrop,
   CircularProgress,
@@ -34,36 +32,29 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import MuiAlert from '@mui/material/Alert';
 import FormControl from '@mui/material/FormControl';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
-import { SaleDetail, SalePrint } from '../../components/admin/sales';
+import { CustomerDetail } from '../../components/admin/customer';
 // sections
-import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
+import { CustomerListHead, CustomerListToolbar } from '../../sections/@dashboard/customer';
 // mock
-import { deleteSalesById, findSales, updateSales } from '../../apis/admin/sales';
-import { getBranch } from '../../apis/admin/branch';
+import { deleteCustomerById, findCustomer } from '../../apis/admin/customer';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'billId', label: 'Bill Id', alignRight: false },
-  { id: 'saleType', label: 'Sale Type', alignRight: false },
-  { id: 'netAmount', label: 'Net Amount', alignRight: false },
-  { id: 'branch', label: 'Branch Id', alignRight: false },
-  { id: 'branch', label: 'Branch Name', alignRight: false },
-  { id: 'purchaseType', label: 'Ornament Type', alignRight: false },
+  { id: 'customer', label: 'Customer', alignRight: false },
+  { id: 'issue', label: 'Issue', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -95,31 +86,30 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.customer?.phoneNumber.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Sale() {
-  const [branches, setBranches] = useState([]);
+export default function Customer() {
   const [open, setOpen] = useState(null);
-  const [filterOpen, setFilterOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(null);
+  const [toggleContainer, setToggleContainer] = useState(false);
+  const [toggleContainerType, setToggleContainerType] = useState('');
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [toggleContainer, setToggleContainer] = useState(false);
-  const [toggleContainerType, setToggleContainerType] = useState('');
   const [data, setData] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const form = useRef();
-  const [openBackdrop, setOpenBackdrop] = useState(true);
 
   // Form validation
   const schema = Yup.object({
@@ -131,18 +121,16 @@ export default function Sale() {
     initialValues: {
       fromDate: moment().subtract('days', 1),
       toDate: moment().add('days', 1),
-      branch: '',
       phoneNumber: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
       setOpenBackdrop(true);
-      findSales({
+      findCustomer({
         createdAt: {
           $gte: values.fromDate,
           $lte: values.toDate,
         },
-        branch: values.branch,
         phoneNumber: values.phoneNumber,
       }).then((data) => {
         setData(data.data);
@@ -159,21 +147,13 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    getBranch().then((data) => {
-      setBranches(data.data);
-    });
-    fetchSale();
+    fetchCustomer();
   }, [toggleContainer]);
 
-  const fetchSale = (
-    query = {
-      createdAt: {
-        $gte: values.fromDate ?? moment().subtract('days', 1),
-        $lte: values.toDate ?? moment().add('days', 1),
-      },
-    }
+  const fetchCustomer = (
+    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
   ) => {
-    findSales(query).then((data) => {
+    findCustomer(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
@@ -236,34 +216,32 @@ export default function Sale() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteSalesById(openId).then(() => {
-      fetchSale();
+    deleteCustomerById(openId).then(() => {
+      fetchCustomer();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
   };
 
   const handleDeleteSelected = () => {
-    deleteSalesById(selected).then(() => {
-      fetchSale();
+    deleteCustomerById(selected).then(() => {
+      fetchCustomer();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Sale deleted',
+        message: 'Customer deleted',
         severity: 'success',
       });
     });
   };
 
-  const handleExport = (fileData, fileName) => {
-    const ws = XLSX.utils.json_to_sheet(fileData);
-    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
-    });
-    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  const handleFilterOpen = () => {
+    setFilterOpen(true);
+  };
+
+  const handleFilterClose = () => {
+    setFilterOpen(false);
   };
 
   const style = {
@@ -284,47 +262,10 @@ export default function Sale() {
 
   const Alert = forwardRef(AlertComponent);
 
-  function Status(props) {
-    return (
-      <>
-        <Button
-          variant="contained"
-          onClick={(e) => {
-            updateSales(props._id, { status: 'approved' }).then((data) => {
-              fetchSale();
-            });
-          }}
-        >
-          Approve
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          sx={{ ml: 2 }}
-          onClick={(e) => {
-            updateSales(props._id, { status: 'rejected' }).then((data) => {
-              fetchSale();
-            });
-          }}
-        >
-          Reject
-        </Button>
-      </>
-    );
-  }
-
-  const handleFilterOpen = () => {
-    setFilterOpen(true);
-  };
-
-  const handleFilterClose = () => {
-    setFilterOpen(false);
-  };
-
   return (
     <>
       <Helmet>
-        <title> Sale | Benaka Gold </title>
+        <title> Customer Support | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -352,44 +293,19 @@ export default function Sale() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Sale
+            Customer Support
           </Typography>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-              onClick={handleFilterOpen}
-            >
-              Filter
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="carbon:document-export" />}
-              onClick={() => {
-                handleExport(
-                  data.map((e) => {
-                    console.log(e);
-                    return {
-                      BillId: e.billId,
-                      SaleType: e.saleType,
-                      NetAmount: e.netAmount,
-                      BranchId: e.branch?.branchId,
-                      BranchName: e.branch?.branchName,
-                      OrnamentType: e.purchaseType,
-                      status: e.status,
-                    };
-                  }),
-                  'Sales'
-                );
-              }}
-            >
-              Export
-            </Button>
-          </Stack>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+            onClick={handleFilterOpen}
+          >
+            Filter
+          </Button>
         </Stack>
 
         <Card>
-          <SaleListToolbar
+          <CustomerListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -402,7 +318,7 @@ export default function Sale() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <SaleListHead
+                <CustomerListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -413,7 +329,7 @@ export default function Sale() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, billId, saleType, netAmount, branch, purchaseType, status, createdAt } = row;
+                    const { _id, branch, name, email, phoneNumber, gender, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -421,25 +337,9 @@ export default function Sale() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{billId}</TableCell>
-                        <TableCell align="left">{sentenceCase(saleType)}</TableCell>
-                        <TableCell align="left">&#8377; {netAmount}</TableCell>
-                        <TableCell align="left">{branch?.branchId}</TableCell>
-                        <TableCell align="left">{branch?.branchName}</TableCell>
-                        <TableCell align="left">{sentenceCase(purchaseType)}</TableCell>
-                        <TableCell align="left">
-                          {status === 'pending' ? (
-                            <Status status={status} _id={_id} />
-                          ) : (
-                            <Label
-                              color={
-                                (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
-                              }
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          )}
-                        </TableCell>
+                        <TableCell align="left">{sentenceCase(customer?.name ?? '')}</TableCell>
+                        <TableCell align="left">{issue}</TableCell>
+                        <TableCell align="left">{status}</TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -515,50 +415,6 @@ export default function Sale() {
         </Card>
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'print' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Invoice
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <SalePrint id={openId} />
-      </Container>
-
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'detail' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Sale Details
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <SaleDetail id={openId} setNotify={setNotify} />
-      </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -577,26 +433,6 @@ export default function Sale() {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainer(!toggleContainer);
-            setToggleContainerType('detail');
-          }}
-        >
-          <Iconify icon={'carbon:view-filled'} sx={{ mr: 2 }} />
-          View
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainer(!toggleContainer);
-            setToggleContainerType('print');
-          }}
-        >
-          <Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />
-          Print
-        </MenuItem>
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {
@@ -621,7 +457,7 @@ export default function Sale() {
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want branchId delete?
+            Do you want to delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button
@@ -656,26 +492,6 @@ export default function Sale() {
           <DialogTitle>Filter</DialogTitle>
           <DialogContent>
             <Grid container spacing={3} sx={{ p: 1 }}>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={touched.branch && errors.branch && true}>
-                  <InputLabel id="select-label">Select branch</InputLabel>
-                  <Select
-                    labelId="select-label"
-                    id="select"
-                    label={touched.branch && errors.branch ? errors.branch : 'Select branch'}
-                    name="branch"
-                    value={values.branch}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  >
-                    {branches.map((e) => (
-                      <MenuItem value={e._id}>
-                        {e.branchId} {e.branchName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   name="phoneNumber"
@@ -727,7 +543,7 @@ export default function Sale() {
               variant="contained"
               color="error"
               onClick={() => {
-                fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
+                fetchCustomer();
                 setFilterOpen(false);
                 resetForm();
               }}

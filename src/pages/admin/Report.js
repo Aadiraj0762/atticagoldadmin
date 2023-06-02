@@ -15,6 +15,8 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import moment from 'moment';
 // components
@@ -74,6 +76,7 @@ function applySortFilter(array, comparator, query) {
 export default function Report() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [orderBy, setOrderBy] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -82,6 +85,7 @@ export default function Report() {
   useEffect(() => {
     consolidatedSaleReport().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   }, []);
 
@@ -235,6 +239,10 @@ export default function Report() {
           />
         </Card>
       </Container>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

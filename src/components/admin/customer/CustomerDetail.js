@@ -58,7 +58,7 @@ export default function CustomerDetail({ id }) {
             <TableBody>
               {data?.bank?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                 <TableRow hover key={e._id} tabIndex={-1}>
-                  <TableCell align="left">{sentenceCase(e.accountHolderName)}</TableCell>
+                  <TableCell align="left">{sentenceCase(e.accountHolderName ?? '')}</TableCell>
                   <TableCell align="left">{e.accountNo}</TableCell>
                   <TableCell align="left">{e.branch}</TableCell>
                   <TableCell align="left">{e.ifscCode}</TableCell>
@@ -130,7 +130,7 @@ export default function CustomerDetail({ id }) {
             <TableBody>
               {data?.address?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                 <TableRow hover key={e._id} tabIndex={-1}>
-                  <TableCell align="left">{sentenceCase(e.address)}</TableCell>
+                  <TableCell align="left">{sentenceCase(e.address ?? '')}</TableCell>
                   <TableCell align="left">{e.area}</TableCell>
                   <TableCell align="left">{e.city}</TableCell>
                   <TableCell align="left">{e.pincode}</TableCell>
@@ -193,15 +193,15 @@ export default function CustomerDetail({ id }) {
                 <Table>
                   <TableBody>
                     <TableRow tabIndex={-1}>
-                      <TableCell align="left">Name: {sentenceCase(data?.name)}</TableCell>
+                      <TableCell align="left">Name: {sentenceCase(data?.name ?? '')}</TableCell>
                       <TableCell align="left">Email: {data?.email}</TableCell>
-                      <TableCell align="left">Gender: {sentenceCase(data?.gender)}</TableCell>
+                      <TableCell align="left">Gender: {sentenceCase(data?.gender ?? '')}</TableCell>
                       <TableCell align="left">Phone Number: {data?.phoneNumber}</TableCell>
                     </TableRow>
                     <TableRow tabIndex={-1}>
                       <TableCell align="left">DOB: {data?.dob}</TableCell>
-                      <TableCell align="left">Marital Status: {sentenceCase(data?.maritalStatus)}</TableCell>
-                      <TableCell align="left">Status: {sentenceCase(data?.status)}</TableCell>
+                      <TableCell align="left">Marital Status: {sentenceCase(data?.maritalStatus ?? '')}</TableCell>
+                      <TableCell align="left">Status: {sentenceCase(data?.status ?? '')}</TableCell>
                       <TableCell align="left">Alternate Phone Number: {data?.alternatePhoneNumber}</TableCell>
                     </TableRow>
                   </TableBody>

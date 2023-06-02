@@ -27,6 +27,8 @@ import {
   Select,
   InputLabel,
   Grid,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -36,8 +38,6 @@ import FormControl from '@mui/material/FormControl';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 import { useFormik } from 'formik';
@@ -101,7 +101,7 @@ export default function Release() {
   const [branches, setBranches] = useState([]);
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
-  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [filterOpen, setFilterOpen] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -163,6 +163,7 @@ export default function Release() {
   const fetchRelease = (query = {}) => {
     findRelease(query).then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   };
 

@@ -23,6 +23,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -85,6 +87,7 @@ function applySortFilter(array, comparator, query) {
 export default function Leave() {
   const [open, setOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -108,6 +111,7 @@ export default function Leave() {
   useEffect(() => {
     getLeave().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   }, [toggleContainer]);
 
@@ -500,6 +504,10 @@ export default function Leave() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

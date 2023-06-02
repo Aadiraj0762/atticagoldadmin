@@ -15,6 +15,8 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -76,6 +78,7 @@ function applySortFilter(array, comparator, query) {
 export default function Report() {
   const auth = useSelector((state) => state.auth);
   const [branch, setBranch] = useState({});
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState(null);
@@ -96,6 +99,7 @@ export default function Report() {
     if (!query.branch) query.branch = branch._id;
     consolidatedSaleReport(query).then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   };
 
@@ -244,6 +248,10 @@ export default function Report() {
           />
         </Card>
       </Container>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }
