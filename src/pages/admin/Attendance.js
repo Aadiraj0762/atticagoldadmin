@@ -258,9 +258,7 @@ export default function Attendance() {
             startIcon={<Iconify icon="carbon:document-export" />}
             onClick={() => {
               handleExport(
-                data.map((e) => {
-                  return { EmployeeId: e?.employee?.employeeId, EmployeeName: e?.employee?.name, Date: e.createdAt };
-                }),
+                data.map((e) => ({ EmployeeId: e?.employee?.employeeId, EmployeeName: e?.employee?.name, Date: e.createdAt })),
                 'Attandance'
               );
             }}

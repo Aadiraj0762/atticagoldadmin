@@ -267,15 +267,13 @@ export default function User() {
               startIcon={<Iconify icon="carbon:document-export" />}
               onClick={() => {
                 handleExport(
-                  data.map((e) => {
-                    return {
+                  data.map((e) => ({
                       Username: e.username,
                       Password: e.password,
                       UserType: e.userType,
                       Status: e.status,
                       Date: e.createdAt,
-                    };
-                  }),
+                    })),
                   'Users'
                 );
               }}

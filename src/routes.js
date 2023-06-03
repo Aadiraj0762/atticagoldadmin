@@ -18,6 +18,7 @@ import AdminRelease from './pages/admin/Release';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminEmployee from './pages/admin/Employee';
 import AdminReport from './pages/admin/Report';
+import AdminSupport from './pages/admin/Support';
 import HrDashboardLayout from './layouts/dashboard/hr';
 import HrDashboard from './pages/hr/Dashboard';
 import HrBranch from './pages/hr/Branch';
@@ -81,6 +82,7 @@ export default function Router() {
         { path: 'release', element: <AdminRelease /> },
         { path: 'employee', element: <AdminEmployee /> },
         { path: 'report', element: <AdminReport /> },
+        { path: 'support', element: <AdminSupport /> },
       ],
     },
     {

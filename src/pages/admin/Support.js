@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState, forwardRef, useRef } from 'react';
+import { useEffect, useState, forwardRef } from 'react';
 // @mui
 import {
   Card,
@@ -23,32 +23,19 @@ import {
   Modal,
   Box,
   Snackbar,
-  TextField,
-  Grid,
   Backdrop,
   CircularProgress,
 } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 // components
-import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
-import { CustomerDetail } from '../../components/admin/customer';
+import { SupportReply } from '../../components/admin/support';
 // sections
-import { CustomerListHead, CustomerListToolbar } from '../../sections/@dashboard/customer';
+import { SupportListHead, SupportListToolbar } from '../../sections/@dashboard/support';
 // mock
-import { deleteCustomerById, findCustomer } from '../../apis/admin/customer';
+import { deleteSupportById, getSupport } from '../../apis/admin/support';
 
 // ----------------------------------------------------------------------
 
@@ -91,11 +78,10 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Customer() {
+export default function Support() {
   const [open, setOpen] = useState(null);
   const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
-  const [filterOpen, setFilterOpen] = useState(null);
   const [toggleContainer, setToggleContainer] = useState(false);
   const [toggleContainerType, setToggleContainerType] = useState('');
   const [page, setPage] = useState(0);
@@ -109,36 +95,6 @@ export default function Customer() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
-  const form = useRef();
-
-  // Form validation
-  const schema = Yup.object({
-    fromDate: Yup.string().required('From date is required'),
-    toDate: Yup.string().required('To date is required'),
-  });
-
-  const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
-    initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
-      phoneNumber: '',
-    },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      setOpenBackdrop(true);
-      findCustomer({
-        createdAt: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
-        },
-        phoneNumber: values.phoneNumber,
-      }).then((data) => {
-        setData(data.data);
-        setOpenBackdrop(false);
-      });
-      setFilterOpen(false);
-    },
-  });
 
   const [notify, setNotify] = useState({
     open: false,
@@ -147,13 +103,11 @@ export default function Customer() {
   });
 
   useEffect(() => {
-    fetchCustomer();
+    fetchSupport();
   }, [toggleContainer]);
 
-  const fetchCustomer = (
-    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
-  ) => {
-    findCustomer(query).then((data) => {
+  const fetchSupport = () => {
+    getSupport().then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
@@ -216,32 +170,24 @@ export default function Customer() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteCustomerById(openId).then(() => {
-      fetchCustomer();
+    deleteSupportById(openId).then(() => {
+      fetchSupport();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
   };
 
   const handleDeleteSelected = () => {
-    deleteCustomerById(selected).then(() => {
-      fetchCustomer();
+    deleteSupportById(selected).then(() => {
+      fetchSupport();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Customer deleted',
+        message: 'Support deleted',
         severity: 'success',
       });
     });
-  };
-
-  const handleFilterOpen = () => {
-    setFilterOpen(true);
-  };
-
-  const handleFilterClose = () => {
-    setFilterOpen(false);
   };
 
   const style = {
@@ -265,7 +211,7 @@ export default function Customer() {
   return (
     <>
       <Helmet>
-        <title> Customer Support | Benaka Gold </title>
+        <title> Support | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -293,19 +239,12 @@ export default function Customer() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Customer Support
+            Support
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-            onClick={handleFilterOpen}
-          >
-            Filter
-          </Button>
         </Stack>
 
         <Card>
-          <CustomerListToolbar
+          <SupportListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -318,7 +257,7 @@ export default function Customer() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <CustomerListHead
+                <SupportListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -329,7 +268,7 @@ export default function Customer() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, branch, name, email, phoneNumber, gender, status, createdAt } = row;
+                    const { _id, customer, issue, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -415,6 +354,30 @@ export default function Customer() {
         </Card>
       </Container>
 
+      {toggleContainer === true && (toggleContainerType === 'reply') === true && (
+        <Container
+          maxWidth="xl"
+          sx={{ display: toggleContainer === true && toggleContainerType === 'reply' ? 'block' : 'none' }}
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Support Reply
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="mdi:arrow-left" />}
+              onClick={() => {
+                setToggleContainer(!toggleContainer);
+              }}
+            >
+              Back
+            </Button>
+          </Stack>
+
+          <SupportReply id={openId} setNotify={setNotify}/>
+        </Container>
+      )}
+
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -433,6 +396,16 @@ export default function Customer() {
           },
         }}
       >
+        <MenuItem
+          onClick={() => {
+            setOpen(null);
+            setToggleContainer(!toggleContainer);
+            setToggleContainerType('reply');
+          }}
+        >
+          <Iconify icon={'carbon:view-filled'} sx={{ mr: 2 }} />
+          View
+        </MenuItem>
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {
@@ -479,86 +452,6 @@ export default function Customer() {
           </Stack>
         </Box>
       </Modal>
-
-      <Dialog open={filterOpen} onClose={handleFilterClose}>
-        <form
-          ref={form}
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(e);
-          }}
-          autoComplete="off"
-        >
-          <DialogTitle>Filter</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={3} sx={{ p: 1 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  name="phoneNumber"
-                  type="number"
-                  value={values.phoneNumber}
-                  error={touched.phoneNumber && errors.phoneNumber && true}
-                  label={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : 'Phone Number'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl sx={{ minWidth: 120 }}>
-                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
-                    <DesktopDatePicker
-                      label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
-                      inputFormat="MM/DD/YYYY"
-                      name="fromDate"
-                      value={values.fromDate}
-                      onChange={(value) => {
-                        setFieldValue('fromDate', value, true);
-                      }}
-                      renderInput={(params) => <TextField {...params} fullWidth />}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl sx={{ minWidth: 120 }}>
-                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
-                    <DesktopDatePicker
-                      label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
-                      inputFormat="MM/DD/YYYY"
-                      name="toDate"
-                      value={values.toDate}
-                      onChange={(value) => {
-                        setFieldValue('toDate', value, true);
-                      }}
-                      renderInput={(params) => <TextField {...params} fullWidth />}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => {
-                fetchCustomer();
-                setFilterOpen(false);
-                resetForm();
-              }}
-            >
-              Clear
-            </Button>
-            <Button variant="contained" onClick={handleFilterClose}>
-              Close
-            </Button>
-            <Button variant="contained" type="submit">
-              Filter
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />
