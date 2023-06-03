@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Backdrop, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 // sections
 import { AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } from '../../sections/@dashboard/app';
@@ -11,11 +11,13 @@ import { getCount } from '../../apis/hr/dashboard';
 
 export default function DashboardAppPage() {
   const [count, setCount] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const theme = useTheme();
 
   useEffect(() => {
     getCount().then((data) => {
       setCount(data.data);
+      setOpenBackdrop(false);
     });
   }, []);
 
@@ -36,15 +38,30 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Present today" total={count?.totalPresent} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary
+              title="Present today"
+              total={count?.totalPresent}
+              color="info"
+              icon={'ant-design:apple-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Absent today" total={count?.totalAbsent} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary
+              title="Absent today"
+              total={count?.totalAbsent}
+              color="warning"
+              icon={'ant-design:windows-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Late today" total={count?.totalLate} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary
+              title="Late today"
+              total={count?.totalLate}
+              color="error"
+              icon={'ant-design:bug-filled'}
+            />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
@@ -106,6 +123,10 @@ export default function DashboardAppPage() {
           </Grid>
         </Grid>
       </Container>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

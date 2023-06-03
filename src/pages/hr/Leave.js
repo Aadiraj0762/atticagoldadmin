@@ -23,6 +23,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -75,13 +77,14 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.employeeId.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function Leave() {
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -106,6 +109,7 @@ export default function Leave() {
   useEffect(() => {
     getLeave().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   }, [toggleContainer]);
 
@@ -310,12 +314,12 @@ export default function Leave() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={9} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -331,7 +335,7 @@ export default function Leave() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -464,6 +468,10 @@ export default function Leave() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

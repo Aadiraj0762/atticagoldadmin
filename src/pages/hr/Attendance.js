@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useEffect, useState, forwardRef } from 'react';
 // @mui
 import {
@@ -23,6 +22,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -73,13 +74,14 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row?.employee?.name?.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function Attendance() {
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -87,8 +89,6 @@ export default function Attendance() {
   const [orderBy, setOrderBy] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [toggleContainer, setToggleContainer] = useState(false);
-  const [toggleContainerType, setToggleContainerType] = useState('');
   const [data, setData] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState('single');
@@ -104,8 +104,9 @@ export default function Attendance() {
   useEffect(() => {
     getAttendance().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  }, []);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -244,7 +245,7 @@ export default function Attendance() {
         </Alert>
       </Snackbar>
 
-      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
+      <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Attendance
@@ -254,7 +255,11 @@ export default function Attendance() {
             startIcon={<Iconify icon="carbon:document-export" />}
             onClick={() => {
               handleExport(
-                data.map((e) => ({ EmployeeId: e?.employee?.employeeId, EmployeeName: e?.employee?.name, Date: e.createdAt })),
+                data.map((e) => ({
+                  EmployeeId: e?.employee?.employeeId,
+                  EmployeeName: e?.employee?.name,
+                  Date: e.createdAt,
+                })),
                 'Attandance'
               );
             }}
@@ -449,6 +454,10 @@ export default function Attendance() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

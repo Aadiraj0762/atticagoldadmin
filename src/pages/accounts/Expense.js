@@ -23,6 +23,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -41,7 +43,8 @@ import { deleteExpenseById, getExpense } from '../../apis/accounts/expense';
 const TABLE_HEAD = [
   { id: 'type', label: 'Type', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'branchId', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Id', alignRight: false },
+  { id: 'branch', label: 'Branch Name', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
@@ -74,13 +77,14 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row?.branch?.branchName?.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function Expense() {
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -105,6 +109,7 @@ export default function Expense() {
   useEffect(() => {
     getExpense().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   }, [toggleContainer]);
 
@@ -277,7 +282,7 @@ export default function Expense() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, type, amount, branchId, note, status, createdAt } = row;
+                    const { _id, type, amount, branch, note, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -287,7 +292,8 @@ export default function Expense() {
                         </TableCell>
                         <TableCell align="left">{type}</TableCell>
                         <TableCell align="left">{amount}</TableCell>
-                        <TableCell align="left">{branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchId}</TableCell>
+                        <TableCell align="left">{branch?.branchName}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">
                           <Label
@@ -321,7 +327,7 @@ export default function Expense() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -337,7 +343,7 @@ export default function Expense() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -492,6 +498,10 @@ export default function Expense() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

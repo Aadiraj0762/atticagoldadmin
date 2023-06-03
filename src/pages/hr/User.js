@@ -23,6 +23,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -75,13 +77,14 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.state.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.username.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function User() {
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -106,6 +109,7 @@ export default function User() {
   useEffect(() => {
     getUser().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   }, [toggleContainer]);
 
@@ -268,12 +272,12 @@ export default function User() {
               onClick={() => {
                 handleExport(
                   data.map((e) => ({
-                      Username: e.username,
-                      Password: e.password,
-                      UserType: e.userType,
-                      Status: e.status,
-                      Date: e.createdAt,
-                    })),
+                    Username: e.username,
+                    Password: e.password,
+                    UserType: e.userType,
+                    Status: e.status,
+                    Date: e.createdAt,
+                  })),
                   'Users'
                 );
               }}
@@ -340,12 +344,12 @@ export default function User() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={7} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -361,7 +365,7 @@ export default function User() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -516,6 +520,10 @@ export default function User() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

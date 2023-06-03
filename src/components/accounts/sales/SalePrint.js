@@ -41,8 +41,8 @@ export default function SalePrint({ id }) {
                 </tr>
                 <tr>
                   <td style={{ width: '50%' }}>
-                    <b>{data?.ornamentType?.toLowerCase() === 'gold' ? 'Gold' : 'Silver'} Rate:</b> &#8377;{' '}
-                    {data?.ornamentType?.toLowerCase() === 'gold' ? data.goldRate : data.silverRate}
+                    <b>{data?.purchaseType?.toLowerCase() === 'gold' ? 'Gold' : 'Silver'} Rate:</b> &#8377;{' '}
+                    {data?.purchaseType?.toLowerCase() === 'gold' ? data.goldRate : data.silverRate}
                   </td>
                   <td style={{ width: '50%', textAlign: 'right' }} />
                 </tr>
@@ -82,32 +82,39 @@ export default function SalePrint({ id }) {
               <tr>
                 <td style={{ width: '50%' }}>Gross weight:</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>
-                  {data?.ornaments?.reduce((prev, cur) => cur.grossWeight + prev, 0)}
+                  {Math.round(data?.ornaments?.reduce((prev, cur) => cur.grossWeight + prev, 0))}
                 </td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Net weight:</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>
-                  {data?.ornaments?.reduce((prev, cur) => cur.netWeight + prev, 0)}
+                  {Math.round(data?.ornaments?.reduce((prev, cur) => cur.netWeight + prev, 0))}
                 </td>
               </tr>
               <tr>
-                <td style={{ width: '50%' }}>Gross Amount</td>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {data?.netAmount}</td>
+                <td style={{ width: '50%' }}>Net Amount</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {Math.round(data?.netAmount)}</td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Release</td>
                 <td style={{ width: '50%', textAlign: 'right' }}>
-                  &#8377; {data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0)}
+                  &#8377; {Math.round(data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0))}
                 </td>
               </tr>
               <tr>
                 <td style={{ width: '50%' }}>Service Charges</td>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {(data?.netAmount * data?.margin) / 100}</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>
+                  &#8377;{' '}
+                  {Math.round(
+                    data?.netAmount -
+                      data?.payableAmount -
+                      data?.release?.reduce((prev, cur) => prev + cur.payableAmount, 0)
+                  )}
+                </td>
               </tr>
               <tr>
                 <th style={{ width: '50%' }}>Payable</th>
-                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {data?.payableAmount}</td>
+                <td style={{ width: '50%', textAlign: 'right' }}>&#8377; {Math.round(data?.payableAmount)}</td>
               </tr>
             </tbody>
           </table>
@@ -118,23 +125,25 @@ export default function SalePrint({ id }) {
           <br /> www.benakagoldcompany.com
         </div>
       </div>
-      <Button
-        variant="contained"
-        startIcon={<Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />}
-        onClick={() => {
-          const content = document.getElementById('pdf');
-          const pri = document.getElementById('iframe').contentWindow;
-          pri.document.open();
-          pri.document.write(content.innerHTML);
-          pri.document.close();
-          pri.onload = function () {
-            pri.focus();
-            pri.print();
-          };
-        }}
-      >
-        Print
-      </Button>
+      {data?.status?.toLowerCase() === 'approved' && (
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />}
+          onClick={() => {
+            const content = document.getElementById('pdf');
+            const pri = document.getElementById('iframe').contentWindow;
+            pri.document.open();
+            pri.document.write(content.innerHTML);
+            pri.document.close();
+            pri.onload = function () {
+              pri.focus();
+              pri.print();
+            };
+          }}
+        >
+          Print
+        </Button>
+      )}
     </>
   );
 }

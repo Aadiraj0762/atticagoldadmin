@@ -8,7 +8,6 @@ import {
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
   Popover,
   Checkbox,
@@ -24,6 +23,8 @@ import {
   Modal,
   Box,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
@@ -79,6 +80,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function GoldRate() {
   const [open, setOpen] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -103,6 +105,7 @@ export default function GoldRate() {
   useEffect(() => {
     getGoldRate().then((data) => {
       setData(data.data);
+      setOpenBackdrop(false);
     });
   }, [toggleContainer]);
 
@@ -283,15 +286,10 @@ export default function GoldRate() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-
                         <TableCell align="left">{rate}</TableCell>
-
                         <TableCell align="left">{sentenceCase(type)}</TableCell>
-
                         <TableCell align="left">{sentenceCase(state)}</TableCell>
-
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
-
                         <TableCell align="right">
                           <IconButton
                             size="large"
@@ -485,6 +483,10 @@ export default function GoldRate() {
           </Stack>
         </Box>
       </Modal>
+
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

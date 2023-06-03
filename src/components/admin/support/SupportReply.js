@@ -11,10 +11,10 @@ import {
   TableHead,
   Paper,
   TextField,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
-import Backdrop from '@mui/material/Backdrop';
 import { LoadingButton } from '@mui/lab';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState, useRef } from 'react';
 import { sentenceCase } from 'change-case';
 import moment from 'moment';
@@ -28,7 +28,7 @@ import global from '../../../utils/global';
 
 export default function SupportReply({ id, setNotify }) {
   const form = useRef();
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   const [support, setSupport] = useState({});
   const [openBackdrop, setOpenBackdrop] = useState(true);
 
@@ -81,10 +81,10 @@ export default function SupportReply({ id, setNotify }) {
   useEffect(() => {
     getSupportById(id).then((data) => {
       setSupport(data.data);
+      setOpenBackdrop(false);
     });
     getSupportReplyBySupportId(id).then((data) => {
       setData(data.data);
-      setOpenBackdrop(false);
     });
   }, [id]);
 
@@ -173,84 +173,82 @@ export default function SupportReply({ id, setNotify }) {
 
   return (
     <>
-      {openBackdrop ? (
-        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      ) : (
-        <Card sx={{ p: 4, my: 4 }}>
-          <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Support
+      <Card sx={{ p: 4, my: 4 }}>
+        <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
+          Support
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+              Support:
+            </Typography>
+            <TableContainer>
+              <Table>
+                <TableBody>
+                  <TableRow tabIndex={-1}>
+                    <TableCell align="left">Customer Name: {sentenceCase(support?.customer?.name ?? '')}</TableCell>
+                    <TableCell align="left">Issue: {support?.issue}</TableCell>
+                    <TableCell align="left">Description: {support?.description}</TableCell>
+                    <TableCell align="left">Status: {support?.status}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
+              Support Reply:
+            </Typography>
+            <Reply />
+          </Grid>
+        </Grid>
+
+        <form
+          ref={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          autoComplete="off"
+        >
+          <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 2 }}>
+            Reply:
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Support:
-              </Typography>
-              <TableContainer>
-                <Table>
-                  <TableBody>
-                    <TableRow tabIndex={-1}>
-                      <TableCell align="left">Customer Name: {sentenceCase(support?.customer?.name ?? '')}</TableCell>
-                      <TableCell align="left">Issue: {support?.issue}</TableCell>
-                      <TableCell align="left">Description: {support?.description}</TableCell>
-                      <TableCell align="left">Status: {support?.status}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                name="description"
+                value={values.description}
+                error={touched.description && errors.description && true}
+                label={touched.description && errors.description ? errors.description : 'Description'}
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
             </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Support Reply:
-              </Typography>
-              <Reply />
+            <Grid item xs={12} sm={4}>
+              <span>Attachment: </span>
+              <TextField
+                name="attachment"
+                type={'file'}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setValues({ ...values, attachment: e.target.files[0] });
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <LoadingButton size="large" type="submit" variant="contained">
+                Reply
+              </LoadingButton>
             </Grid>
           </Grid>
+        </form>
+      </Card>
 
-          <form
-            ref={form}
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit(e);
-            }}
-            autoComplete="off"
-          >
-            <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 2 }}>
-              Reply:
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  name="description"
-                  value={values.description}
-                  error={touched.description && errors.description && true}
-                  label={touched.description && errors.description ? errors.description : 'Description'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <span>Attachment: </span>
-                <TextField
-                  name="attachment"
-                  type={'file'}
-                  onBlur={handleBlur}
-                  onChange={(e) => {
-                    setValues({ ...values, attachment: e.target.files[0] });
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sx={{ mt: 2 }}>
-                <LoadingButton size="large" type="submit" variant="contained">
-                  Reply
-                </LoadingButton>
-              </Grid>
-            </Grid>
-          </form>
-        </Card>
-      )}
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }
