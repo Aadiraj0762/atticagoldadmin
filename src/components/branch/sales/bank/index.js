@@ -1,6 +1,10 @@
 import {
   TextField,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Grid,
   Box,
   Button,
@@ -119,48 +123,49 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
       proofType: Yup.string().required('Proof Type is required'),
     });
 
-    const { handleSubmit, handleChange, handleBlur, values, setValues, setFieldValue, resetForm, touched, errors } = useFormik({
-      initialValues: {
-        accountNo: '',
-        accountHolderName: '',
-        ifscCode: '',
-        bankName: '',
-        branch: '',
-        proofType: '',
-        proofFile: {},
-      },
-      validationSchema: schema,
-      onSubmit: (values) => {
-        createBank({ customerId: selectedUser._id, ...values }).then((data) => {
-          if (data.status === false) {
-            setNotify({
-              open: true,
-              message: 'Bank not created',
-              severity: 'error',
-            });
-          } else {
-            getBankById(selectedUser._id).then((data) => {
-              setData(data.data);
-            });
-            const formData = new FormData();
-            formData.append('uploadId', data.data.fileUpload.uploadId);
-            formData.append('uploadName', data.data.fileUpload.uploadName);
-            formData.append('uploadType', 'proof');
-            formData.append('uploadedFile', values.proofFile);
-            formData.append('documentType', values.proofType);
-            createFile(formData);
-            resetForm();
-            setFieldValue('proofFile', {});
-            setBankModal(false);
-            setNotify({
-              open: true,
-              message: 'Bank created',
-              severity: 'success',
-            });
-          }
-        });
-      },
-    });
+    const { handleSubmit, handleChange, handleBlur, values, setValues, setFieldValue, resetForm, touched, errors } =
+      useFormik({
+        initialValues: {
+          accountNo: '',
+          accountHolderName: '',
+          ifscCode: '',
+          bankName: '',
+          branch: '',
+          proofType: '',
+          proofFile: {},
+        },
+        validationSchema: schema,
+        onSubmit: (values) => {
+          createBank({ customerId: selectedUser._id, ...values }).then((data) => {
+            if (data.status === false) {
+              setNotify({
+                open: true,
+                message: 'Bank not created',
+                severity: 'error',
+              });
+            } else {
+              getBankById(selectedUser._id).then((data) => {
+                setData(data.data);
+              });
+              const formData = new FormData();
+              formData.append('uploadId', data.data.fileUpload.uploadId);
+              formData.append('uploadName', data.data.fileUpload.uploadName);
+              formData.append('uploadType', 'proof');
+              formData.append('uploadedFile', values.proofFile);
+              formData.append('documentType', values.proofType);
+              createFile(formData);
+              resetForm();
+              setFieldValue('proofFile', {});
+              setBankModal(false);
+              setNotify({
+                open: true,
+                message: 'Bank created',
+                severity: 'success',
+              });
+            }
+          });
+        },
+      });
 
     return createPortal(
       <Modal
@@ -171,7 +176,7 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
       >
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Customer Bank
+            Add Bank
             <Button
               sx={{ color: '#222', float: 'right' }}
               startIcon={<CloseIcon />}
@@ -246,22 +251,30 @@ function Bank({ setNotify, selectedUser, selectedBank, setSelectedBank }) {
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="proofType"
-                  value={values.proofType}
-                  error={touched.proofType && errors.proofType && true}
-                  label={touched.proofType && errors.proofType ? errors.proofType : 'Proof Type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.proofType && errors.proofType && true}>
+                  <InputLabel id="select-label">Select Proof Type</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.proofType && errors.proofType ? errors.proofType : 'Select Proof Type'}
+                    name="proofType"
+                    value={values.proofType}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="Passbook">Passbook</MenuItem>
+                    <MenuItem value="Cheque Leaf">Cheque Leaf</MenuItem>
+                    <MenuItem value="Bank Statement">Bank Statement</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
+                <span>Attach Proof: </span>
                 <TextField
                   name="proofFile"
                   type={'file'}
                   error={touched.proofFile && errors.proofFile && true}
-                  fullWidth
                   onBlur={handleBlur}
                   onChange={(e) => {
                     setValues({ ...values, proofFile: e.target.files[0] });

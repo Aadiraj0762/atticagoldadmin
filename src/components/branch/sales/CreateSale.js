@@ -465,7 +465,7 @@ function CreateSale(props) {
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ mt: 1, mb: 1 }}>
-                Ornament Detail:
+                Ornaments:
               </Typography>
             </Grid>
             <Grid item xs={12}>

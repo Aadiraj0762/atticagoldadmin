@@ -130,11 +130,17 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   // Form validation
   const schema = Yup.object({
     name: Yup.string().required('Name is required'),
-    phoneNumber: Yup.string().required('Phone is required'),
-    email: Yup.string().required('Email id is required'),
+    phoneNumber: Yup.string()
+      .required('Phone is required')
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(10),
+    alternatePhoneNumber: Yup.string()
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(10),
+    email: Yup.string().required('Email id is required').email(),
     dob: Yup.string().required('DOB is required'),
     gender: Yup.string().required('Gender is required'),
-    otp: Yup.string().required('Otp is required'),
+    otp: Yup.string().required('Otp is required').length(6),
     employmentType: Yup.string().required('Employment type is required'),
     organisation: Yup.string().required('Organisation is required'),
     annualIncome: Yup.string().required('Annual income is required'),
@@ -192,7 +198,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
         if (data.status === false) {
           setNotify({
             open: true,
-            message: 'Customer not created',
+            message: data.message ?? 'Customer not created',
             severity: 'error',
           });
         } else {
@@ -374,7 +380,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
       >
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Customer
+            Add Customer
             <Button
               sx={{ color: '#222', float: 'right' }}
               startIcon={<CloseIcon />}
@@ -419,7 +425,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   label={
                     touched.alternatePhoneNumber && errors.alternatePhoneNumber
                       ? errors.alternatePhoneNumber
-                      : 'Alt Phone'
+                      : 'Alt phone'
                   }
                   fullWidth
                   onBlur={handleBlur}
@@ -437,7 +443,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} md={4}>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DesktopDatePicker
                     name="dob"
@@ -482,15 +488,29 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="employmentType"
-                  value={values.employmentType}
-                  error={touched.employmentType && errors.employmentType && true}
-                  label={touched.employmentType && errors.employmentType ? errors.employmentType : 'Employment Type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.employmentType && errors.employmentType && true}>
+                  <InputLabel id="select-label">Select employment type</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={
+                      touched.employmentType && errors.employmentType ? errors.employmentType : 'Select employment type'
+                    }
+                    name="employmentType"
+                    value={values.employmentType}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="Business Owner">Business Owner</MenuItem>
+                    <MenuItem value="Central Govt Employee">Central Govt Employee</MenuItem>
+                    <MenuItem value="Contract Employee">Contract Employee</MenuItem>
+                    <MenuItem value="Military">Military</MenuItem>
+                    <MenuItem value="Police">Police</MenuItem>
+                    <MenuItem value="Self Employed">Self Employed</MenuItem>
+                    <MenuItem value="State Govt Employee">State Govt Employee</MenuItem>
+                    <MenuItem value="Working Professional">Working Professional</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
@@ -508,7 +528,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   name="annualIncome"
                   value={values.annualIncome}
                   error={touched.annualIncome && errors.annualIncome && true}
-                  label={touched.annualIncome && errors.annualIncome ? errors.annualIncome : 'Annualincome'}
+                  label={touched.annualIncome && errors.annualIncome ? errors.annualIncome : 'Annual income'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -516,7 +536,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.maritalStatus && errors.maritalStatus && true}>
-                  <InputLabel id="select-label">Select maritalStatus</InputLabel>
+                  <InputLabel id="select-label">Select marital status</InputLabel>
                   <Select
                     labelId="select-label"
                     id="select"
@@ -534,26 +554,48 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="source"
-                  value={values.source}
-                  error={touched.source && errors.source && true}
-                  label={touched.source && errors.source ? errors.source : 'Source'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.source && errors.source && true}>
+                  <InputLabel id="select-label">Select source</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.source && errors.source ? errors.source : 'Select source'}
+                    name="source"
+                    value={values.source}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="TV Ad">TV Ad</MenuItem>
+                    <MenuItem value="Newspaper Ad">Newspaper Ad</MenuItem>
+                    <MenuItem value="Friend Reference">Friend Reference</MenuItem>
+                    <MenuItem value="Hoardings">Hoardings</MenuItem>
+                    <MenuItem value="Pamphlet Ad">Pamphlet Ad</MenuItem>
+                    <MenuItem value="Poster Ad">Poster Ad</MenuItem>
+                    <MenuItem value="Google Ad">Google Ad</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="chooseId"
-                  value={values.chooseId}
-                  error={touched.chooseId && errors.chooseId && true}
-                  label={touched.chooseId && errors.chooseId ? errors.chooseId : 'Choose Id'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.chooseId && errors.chooseId && true}>
+                  <InputLabel id="select-label">Select choose id</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.chooseId && errors.chooseId ? errors.chooseId : 'Select choose id'}
+                    name="chooseId"
+                    value={values.chooseId}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="Aadhar Card">Aadhar Card</MenuItem>
+                    <MenuItem value="Driving License">Driving License</MenuItem>
+                    <MenuItem value="PAN Card">PAN Card</MenuItem>
+                    <MenuItem value="Passport">Passport</MenuItem>
+                    <MenuItem value="Ration Card">Ration Card</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
@@ -566,7 +608,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} md={4}>
                 <span>UploadId: </span>
                 <TextField
                   name="uploadId"
@@ -577,7 +619,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} md={4}>
                 <span>Signature: </span>
                 <TextField
                   name="signature"

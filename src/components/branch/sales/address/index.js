@@ -18,7 +18,6 @@ import {
   TablePagination,
   TableHead,
   Modal,
-  Checkbox,
   Paper,
 } from '@mui/material';
 import { sentenceCase } from 'change-case';
@@ -100,7 +99,10 @@ function Address({ step, setStep, setNotify, selectedUser }) {
     area: Yup.string().required('Area is required'),
     city: Yup.string().required('City is required'),
     state: Yup.string().required('State is required'),
-    pincode: Yup.string().required('Pincode is required'),
+    pincode: Yup.string()
+      .required('Pincode is required')
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(6),
     landmark: Yup.string().required('Landmark is required'),
     residential: Yup.string().required('Residential type is required'),
     label: Yup.string().required('Label is required'),
@@ -359,15 +361,22 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="residential"
-                  value={values.residential}
-                  error={touched.residential && errors.residential && true}
-                  label={touched.residential && errors.residential ? errors.residential : 'Residential'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.residential && errors.residential && true}>
+                  <InputLabel id="select-label">Select residential</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.residential && errors.residential ? errors.residential : 'Select residential'}
+                    name="residential"
+                    value={values.residential}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="Indian">Indian</MenuItem>
+                    <MenuItem value="NRI">NRI</MenuItem>
+                    <MenuItem value="Foreign Resident">Foreign Resident</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth error={touched.label && errors.label && true}>
@@ -387,33 +396,42 @@ function Address({ step, setStep, setNotify, selectedUser }) {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="documentType"
-                  value={values.documentType}
-                  error={touched.documentType && errors.documentType && true}
-                  label={touched.documentType && errors.documentType ? errors.documentType : 'Proof document type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.documentType && errors.documentType && true}>
+                  <InputLabel id="select-label">Select address proof</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.documentType && errors.documentType ? errors.documentType : 'Select address proof'}
+                    name="documentType"
+                    value={values.documentType}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="Aadhar Card">Aadhar Card</MenuItem>
+                    <MenuItem value="Driving License">Driving License</MenuItem>
+                    <MenuItem value="Passport">Passport</MenuItem>
+                    <MenuItem value="Ration Card">Ration Card</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
                   name="documentNo"
                   value={values.documentNo}
                   error={touched.documentNo && errors.documentNo && true}
-                  label={touched.documentNo && errors.documentNo ? errors.documentNo : 'Document no'}
+                  label={touched.documentNo && errors.documentNo ? errors.documentNo : 'Address proof number'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
+                <span>Attach address proof: </span>
                 <TextField
                   name="documentFile"
                   type={'file'}
                   error={touched.documentFile && errors.documentFile && true}
-                  fullWidth
                   onBlur={handleBlur}
                   onChange={(e) => {
                     setValues({ ...values, documentFile: e.target.files[0] });

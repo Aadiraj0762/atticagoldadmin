@@ -34,7 +34,6 @@ const TABLE_HEAD = [
   { id: 'date', label: 'Date', alignRight: false },
   { id: 'type', label: 'Type', alignRight: false },
   { id: 'saleType', label: 'Sale Type', alignRight: false },
-  { id: 'branch', label: 'Branch', alignRight: false },
   { id: 'rate', label: 'Rate', alignRight: false },
   { id: 'bills', label: 'Bills', alignRight: false },
   { id: 'grossWeight', label: 'Gross Weight', alignRight: false },
@@ -164,7 +163,6 @@ export default function Report() {
                       date,
                       type,
                       saleType,
-                      branch,
                       rate,
                       bills,
                       grossWeight,
@@ -179,7 +177,6 @@ export default function Report() {
                         <TableCell align="left">{moment(date).format('MMM Do YY')}</TableCell>
                         <TableCell align="left">{sentenceCase(type ?? '')}</TableCell>
                         <TableCell align="left">{sentenceCase(saleType ?? '')}</TableCell>
-                        <TableCell align="left">{branch}</TableCell>
                         <TableCell align="left">{rate}</TableCell>
                         <TableCell align="left">{bills}</TableCell>
                         <TableCell align="left">{grossWeight}</TableCell>

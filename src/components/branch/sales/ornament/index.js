@@ -1,6 +1,10 @@
 import {
   TextField,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Grid,
   Box,
   Button,
@@ -126,7 +130,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, pu
       <Grid item xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mt={2} mb={3}>
           <Typography variant="h4" gutterBottom>
-            Ornament Details
+            Ornaments
           </Typography>
           <Button
             variant="contained"
@@ -222,7 +226,7 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, pu
       >
         <Box sx={style}>
           <Typography variant="h4" gutterBottom sx={{ mt: 1, mb: 3 }}>
-            Ornaments
+            Add Ornament
             <Button
               sx={{ color: '#222', float: 'right' }}
               startIcon={<CloseIcon />}
@@ -237,15 +241,42 @@ function Ornament({ setNotify, ornaments, setOrnaments, goldRate, silverRate, pu
           >
             <Grid container spacing={3}>
               <Grid item xs={12} md={4}>
-                <TextField
-                  name="ornamentType"
-                  value={values.ornamentType}
-                  error={touched.ornamentType && errors.ornamentType && true}
-                  label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Ornament Type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth error={touched.ornamentType && errors.ornamentType && true}>
+                  <InputLabel id="select-label">Select Ornament Type</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.ornamentType && errors.ornamentType ? errors.ornamentType : 'Select Ornament Type'}
+                    name="ornamentType"
+                    value={values.ornamentType}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="22 Carat Bar (91.6)">22 Carat Bar (91.6)</MenuItem>
+                    <MenuItem value="24 Carat Bar (99.9)">24 Carat Bar (99.9)</MenuItem>
+                    <MenuItem value="22 Carat Coin (91.6)">22 Carat Coin (91.6)</MenuItem>
+                    <MenuItem value="24 Carat Coin (99.9)">24 Carat Coin (99.9)</MenuItem>
+                    <MenuItem value="Anklets">Anklets</MenuItem>
+                    <MenuItem value="Baby Bangles">Baby Bangles</MenuItem>
+                    <MenuItem value="Bangles">Bangles</MenuItem>
+                    <MenuItem value="Bracelet">Bracelet</MenuItem>
+                    <MenuItem value="Broad Bangles">Broad Bangles</MenuItem>
+                    <MenuItem value="Chain">Chain</MenuItem>
+                    <MenuItem value="Chain with Locket">Chain with Locket</MenuItem>
+                    <MenuItem value="Drops">Drops</MenuItem>
+                    <MenuItem value="Ear Rings">Ear Rings</MenuItem>
+                    <MenuItem value="Melted Bar">Melted Bar</MenuItem>
+                    <MenuItem value="Locket">Locket</MenuItem>
+                    <MenuItem value="Matti">Matti</MenuItem>
+                    <MenuItem value="Necklace">Necklace</MenuItem>
+                    <MenuItem value="Ring">Ring</MenuItem>
+                    <MenuItem value="Studs">Studs</MenuItem>
+                    <MenuItem value="Studs with drops">Studs with drops</MenuItem>
+                    <MenuItem value="Thali Chain">Thali Chain</MenuItem>
+                    <MenuItem value="Toe Ring">Toe Ring</MenuItem>
+                    <MenuItem value="Waist Belt/Chain">Waist Belt/Chain</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField

@@ -40,11 +40,17 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
   // Form validation
   const schema = Yup.object({
     name: Yup.string().required('Name is required'),
-    phoneNumber: Yup.string().required('Phone is required'),
+    phoneNumber: Yup.string()
+      .required('Phone is required')
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(10),
+    alternatePhoneNumber: Yup.string()
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(10),
     email: Yup.string().required('Email id is required'),
     dob: Yup.string().required('DOB is required'),
     gender: Yup.string().required('Gender is required'),
-    otp: Yup.string().required('Otp is required'),
+    otp: Yup.string().required('Otp is required').length(6),
     employmentType: Yup.string().required('Employment type is required'),
     organisation: Yup.string().required('Organisation is required'),
     annualIncome: Yup.string().required('Annual income is required'),
@@ -101,7 +107,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         if (data.status === false) {
           setNotify({
             open: true,
-            message: 'Customer not created',
+            message: data.message ?? 'Customer not created',
             severity: 'error',
           });
         } else {
@@ -246,15 +252,29 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="employmentType"
-              value={values.employmentType}
-              error={touched.employmentType && errors.employmentType && true}
-              label={touched.employmentType && errors.employmentType ? errors.employmentType : 'Employment Type'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.employmentType && errors.employmentType && true}>
+              <InputLabel id="select-label">Select Employment Type</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={
+                  touched.employmentType && errors.employmentType ? errors.employmentType : 'Select Employment Type'
+                }
+                name="employmentType"
+                value={values.employmentType}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                <MenuItem value="Business Owner">Business Owner</MenuItem>
+                <MenuItem value="Central Govt Employee">Central Govt Employee</MenuItem>
+                <MenuItem value="Contract Employee">Contract Employee</MenuItem>
+                <MenuItem value="Military">Military</MenuItem>
+                <MenuItem value="Police">Police</MenuItem>
+                <MenuItem value="Self Employed">Self Employed</MenuItem>
+                <MenuItem value="State Govt Employee">State Govt Employee</MenuItem>
+                <MenuItem value="Working Professional">Working Professional</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -296,26 +316,48 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="source"
-              value={values.source}
-              error={touched.source && errors.source && true}
-              label={touched.source && errors.source ? errors.source : 'Source'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.source && errors.source && true}>
+              <InputLabel id="select-label">Select source</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.source && errors.source ? errors.source : 'Select source'}
+                name="source"
+                value={values.source}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                <MenuItem value="TV Ad">TV Ad</MenuItem>
+                <MenuItem value="Newspaper Ad">Newspaper Ad</MenuItem>
+                <MenuItem value="Friend Reference">Friend Reference</MenuItem>
+                <MenuItem value="Hoardings">Hoardings</MenuItem>
+                <MenuItem value="Pamphlet Ad">Pamphlet Ad</MenuItem>
+                <MenuItem value="Poster Ad">Poster Ad</MenuItem>
+                <MenuItem value="Google Ad">Google Ad</MenuItem>
+                <MenuItem value="Others">Others</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="chooseId"
-              value={values.chooseId}
-              error={touched.chooseId && errors.chooseId && true}
-              label={touched.chooseId && errors.chooseId ? errors.chooseId : 'Choose Id'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.chooseId && errors.chooseId && true}>
+              <InputLabel id="select-label">Select chooseId</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.chooseId && errors.chooseId ? errors.chooseId : 'Select chooseId'}
+                name="chooseId"
+                value={values.chooseId}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                <MenuItem value="Aadhar Card">Aadhar Card</MenuItem>
+                <MenuItem value="Driving License">Driving License</MenuItem>
+                <MenuItem value="PAN Card">PAN Card</MenuItem>
+                <MenuItem value="Passport">Passport</MenuItem>
+                <MenuItem value="Ration Card">Ration Card</MenuItem>
+                <MenuItem value="Others">Others</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
