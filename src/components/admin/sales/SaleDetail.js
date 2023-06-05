@@ -408,6 +408,22 @@ export default function SaleDetail({ id, setNotify }) {
                         <TableCell align="left">Customer Phone Number: {data?.customer?.phoneNumber}</TableCell>
                       </TableRow>
                     </TableBody>
+                    <TableBody>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">Gender: {data?.customer?.gender}</TableCell>
+                        <TableCell align="left">Custcomer OTP: {data?.customer?.otp}</TableCell>
+                        <TableCell align="left">Employment Type: {data?.customer?.employmentType}</TableCell>
+                        <TableCell align="left">Organisation: {data?.customer?.organisation}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                    <TableBody>
+                      <TableRow tabIndex={-1}>
+                        <TableCell align="left">Annual Income: {data?.customer?.annualIncome}</TableCell>
+                        <TableCell align="left">Marital Status: {data?.customer?.maritalStatus}</TableCell>
+                        <TableCell align="left">Source: {data?.customer?.source}</TableCell>
+                        <TableCell align="left">ChooseId: {data?.customer?.chooseId}</TableCell>
+                      </TableRow>
+                    </TableBody>
                   </Table>
                 </TableContainer>
               </Grid>
