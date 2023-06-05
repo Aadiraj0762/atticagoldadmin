@@ -120,11 +120,8 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
     pledgeId: Yup.string().required('Pledge id is required'),
     pledgedIn: Yup.string().required('Pledged in is required'),
     pledgedBranch: Yup.string().required('Pledged branch is required'),
-    releaseDocument: Yup.string().required('Release document is required'),
     releaseDate: Yup.string().required('Release date is required'),
     comments: Yup.string().required('comments is required'),
-    documentType: Yup.string().required('Document type is required'),
-    documentNo: Yup.string().required('Document no is required'),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors } = useFormik({
@@ -139,12 +136,9 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
       pledgeId: '',
       pledgedIn: '',
       pledgedBranch: '',
-      releaseDocument: '',
       releaseDate: moment(),
       comments: '',
-      documentType: '',
-      documentNo: '',
-      documentFile: {},
+      releaseDocument: {},
       status: 'active',
     },
     validationSchema: schema,
@@ -161,7 +155,6 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
         pledgeId: values.pledgeId,
         pledgedIn: values.pledgedIn,
         pledgedBranch: values.pledgedBranch,
-        releaseDocument: values.releaseDocument,
         releaseDate: values.releaseDate,
         comments: values.comments,
         status: values.status,
@@ -181,9 +174,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
           formData.append('uploadId', data.data.fileUpload.uploadId);
           formData.append('uploadName', data.data.fileUpload.uploadName);
           formData.append('uploadType', 'proof');
-          formData.append('uploadedFile', values.documentFile);
-          formData.append('documentType', values.documentType);
-          formData.append('documentNo', values.documentNo);
+          formData.append('uploadedFile', values.releaseDocument);
           createFile(formData);
           setReleaseModal(false);
           setNotify({
@@ -441,16 +432,17 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                 />
               </Grid>
               <Grid item xs={12} md={4}>
+                <span>Release document: </span>
                 <TextField
                   name="releaseDocument"
-                  value={values.releaseDocument}
+                  type={'file'}
                   error={touched.releaseDocument && errors.releaseDocument && true}
-                  label={
-                    touched.releaseDocument && errors.releaseDocument ? errors.releaseDocument : 'Release document'
-                  }
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setValues({ ...values, releaseDocument: e.target.files[0] });
+                  }}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -473,45 +465,10 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
                   name="comments"
                   value={values.comments}
                   error={touched.comments && errors.comments && true}
-                  label={touched.comments && errors.comments ? errors.comments : 'comments'}
+                  label={touched.comments && errors.comments ? errors.comments : 'Comments'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  name="documentType"
-                  value={values.documentType}
-                  error={touched.documentType && errors.documentType && true}
-                  label={touched.documentType && errors.documentType ? errors.documentType : 'Document type'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  name="documentNo"
-                  value={values.documentNo}
-                  error={touched.documentNo && errors.documentNo && true}
-                  label={touched.documentNo && errors.documentNo ? errors.documentNo : 'Document no'}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  name="documentFile"
-                  type={'file'}
-                  error={touched.documentFile && errors.documentFile && true}
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={(e) => {
-                    setValues({ ...values, documentFile: e.target.files[0] });
-                  }}
-                  required
                 />
               </Grid>
               {values.paymentType === 'bank' && (
