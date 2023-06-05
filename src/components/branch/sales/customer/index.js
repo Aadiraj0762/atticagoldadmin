@@ -191,7 +191,6 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
         annualIncome: values.annualIncome,
         maritalStatus: values.maritalStatus,
         source: values.source,
-        signature: values.signature,
         status: values.status,
       };
       createCustomer(payload).then((data) => {
