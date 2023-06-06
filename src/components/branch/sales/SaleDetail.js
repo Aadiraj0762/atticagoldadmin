@@ -214,7 +214,16 @@ export default function SaleDetail({ id }) {
                   <TableCell align="left">{sentenceCase(e.documentType)}</TableCell>
                   <TableCell align="left">{e.documentNo}</TableCell>
                   <TableCell align="left">
-                    <Link href={`${global.baseURL}/${e?.uploadedFile}`}>View File</Link>
+                    {e?.uploadedFile?.match(/.*(\.jpg|\.jpeg|\.png|\.webp|\.avif)$/i) ? (
+                      <img
+                        key={index}
+                        src={`${global.baseURL}/${e?.uploadedFile}`}
+                        alt="document"
+                        style={{ width: '80px' }}
+                      />
+                    ) : (
+                      <img key={index} src="/assets/doc.svg" alt="document" style={{ width: '80px' }} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
