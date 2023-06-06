@@ -209,7 +209,7 @@ export default function SaleDetail({ id }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.proof?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e) => (
+              {data?.proof?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
                 <TableRow hover key={e._id} tabIndex={-1}>
                   <TableCell align="left">{sentenceCase(e.documentType)}</TableCell>
                   <TableCell align="left">{e.documentNo}</TableCell>
