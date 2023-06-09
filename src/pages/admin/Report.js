@@ -17,18 +17,24 @@ import {
   TablePagination,
   Backdrop,
   CircularProgress,
+  Button,
+  Snackbar,
 } from '@mui/material';
 import moment from 'moment';
+import MuiAlert from '@mui/material/Alert';
 // components
+import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
 import { ListHead } from '../../sections/@dashboard/report';
 // mock
 import { consolidatedSaleReport } from '../../apis/admin/sales';
+import { Sale } from '../../components/admin/report/index';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: '', label: '#', alignRight: false },
   { id: 'date', label: 'Date', alignRight: false },
   { id: 'type', label: 'Type', alignRight: false },
   { id: 'saleType', label: 'Sale Type', alignRight: false },
@@ -40,6 +46,7 @@ const TABLE_HEAD = [
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'releaseAmount', label: 'Release Amount', alignRight: false },
   { id: 'ornaments', label: 'Ornaments', alignRight: false },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -74,6 +81,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Report() {
+  const [openId, setOpenId] = useState({});
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [openBackdrop, setOpenBackdrop] = useState(true);
@@ -81,6 +89,14 @@ export default function Report() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([]);
+  const [toggleContainer, setToggleContainer] = useState(false);
+  const [toggleContainerType, setToggleContainerType] = useState('');
+
+  const [notify, setNotify] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
     consolidatedSaleReport().then((data) => {
@@ -104,26 +120,15 @@ export default function Report() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
-    setPage(0);
-    setFilterName(event.target.value);
-  };
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
   const filteredData = applySortFilter(data, getComparator(order, orderBy), filterName);
   const isNotFound = !filteredData.length && !!filterName;
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    borderRadius: 3,
-    boxShadow: 24,
-    p: 4,
-  };
+  function AlertComponent(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  }
+
+  const Alert = forwardRef(AlertComponent);
 
   return (
     <>
@@ -131,7 +136,29 @@ export default function Report() {
         <title> Report | Benaka Gold </title>
       </Helmet>
 
-      <Container maxWidth="xl">
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={notify.open}
+        onClose={() => {
+          setNotify({ ...notify, open: false });
+        }}
+        autoHideDuration={3000}
+      >
+        <Alert
+          onClose={() => {
+            setNotify({ ...notify, open: false });
+          }}
+          severity={notify.severity}
+          sx={{ width: '100%', color: 'white' }}
+        >
+          {notify.message}
+        </Alert>
+      </Snackbar>
+
+      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Consolidated Sale Report
@@ -167,6 +194,7 @@ export default function Report() {
 
                     return (
                       <TableRow hover key={index} tabIndex={-1}>
+                        <TableCell align="left">{index + 1 + page * rowsPerPage}</TableCell>
                         <TableCell align="left">{moment(date).format('MMM Do YY')}</TableCell>
                         <TableCell align="left">{sentenceCase(type ?? '')}</TableCell>
                         <TableCell align="left">{sentenceCase(saleType ?? '')}</TableCell>
@@ -178,6 +206,18 @@ export default function Report() {
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{releaseAmount}</TableCell>
                         <TableCell align="left">{ornaments}</TableCell>
+                        <TableCell align="left">
+                          <Button
+                            variant="contained"
+                            onClick={(e) => {
+                              setOpenId({ date, type, branch, saleType });
+                              setToggleContainer(!toggleContainer);
+                              setToggleContainerType('view');
+                            }}
+                          >
+                            View
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -239,6 +279,14 @@ export default function Report() {
           />
         </Card>
       </Container>
+
+      <Sale
+        filter={openId}
+        toggleContainer={toggleContainer}
+        setToggleContainer={setToggleContainer}
+        toggleContainerType={toggleContainerType}
+        setNotify={setNotify}
+      />
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />
