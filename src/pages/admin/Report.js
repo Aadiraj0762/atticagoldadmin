@@ -282,10 +282,12 @@ export default function Report() {
 
       <Sale
         filter={openId}
+        setFilter={setOpenId}
         toggleContainer={toggleContainer}
         setToggleContainer={setToggleContainer}
         toggleContainerType={toggleContainerType}
         setNotify={setNotify}
+        setOpenBackdrop={setOpenBackdrop}
       />
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>

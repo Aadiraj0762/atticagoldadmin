@@ -16,8 +16,6 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-  Backdrop,
-  CircularProgress,
 } from '@mui/material';
 import moment from 'moment';
 // components
@@ -61,7 +59,14 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Sale({ filter, toggleContainer, setToggleContainer, toggleContainerType, setNotify }) {
+export default function Sale({
+  filter,
+  toggleContainer,
+  setToggleContainer,
+  toggleContainerType,
+  setNotify,
+  setOpenBackdrop,
+}) {
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -69,16 +74,16 @@ export default function Sale({ filter, toggleContainer, setToggleContainer, togg
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([]);
-  const [openBackdrop, setOpenBackdrop] = useState(true);
 
   useEffect(() => {
+    setOpenBackdrop(true);
     fetchSale({
       createdAt: { $gte: filter.date, $lte: moment(filter.date).add('days', 1) },
       branchName: filter.branch,
       purchaseType: filter.type,
       saleType: filter.saleType,
     });
-  }, [toggleContainer]);
+  }, [filter]);
 
   const fetchSale = (query = {}) => {
     findSales(query).then((data) => {
@@ -262,10 +267,6 @@ export default function Sale({ filter, toggleContainer, setToggleContainer, togg
 
         <SaleDetail id={openId} setNotify={setNotify} />
       </Container>
-
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </>
   );
 }
