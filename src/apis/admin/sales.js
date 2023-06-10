@@ -9,9 +9,9 @@ async function getSales() {
   }
 }
 
-async function consolidatedSaleReport() {
+async function consolidatedSaleReport(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/admin/report/get-consolidated-sale-report');
+    const response = await apiClient().post('/api/v1.0/admin/report/get-consolidated-sale-report', query);
     return response.data;
   } catch (err) {
     return err;

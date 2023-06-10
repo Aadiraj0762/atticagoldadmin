@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getFund() {
+async function getFund(query) {
   try {
-    const response = await apiClient().get('/api/v1.0/admin/fund/get');
+    const response = await apiClient().post('/api/v1.0/admin/fund/get', query);
     return response.data;
   } catch (err) {
     return err;
