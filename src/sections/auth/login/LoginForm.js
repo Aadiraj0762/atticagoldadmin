@@ -171,11 +171,11 @@ export default function LoginForm() {
                         .then((data) => {
                           if (data.status === true) {
                             setToken(data.data.token);
-                            setOtp(data.data.otp);
+                            setOtp(data.data.otp ?? '');
                             setStep(2);
                           } else {
                             setStep(1);
-                            setError('Invalid username');
+                            setError(data.message);
                           }
                           setIsDisable(false);
                         })
