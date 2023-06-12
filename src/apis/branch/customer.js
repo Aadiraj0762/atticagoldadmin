@@ -54,4 +54,31 @@ async function deleteCustomerById(id) {
   }
 }
 
-export { getCustomer, findCustomer, getCustomerById, createCustomer, updateCustomer, deleteCustomerById };
+async function sendOtp(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/branch/customer/send-otp', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function verifyOtp(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/branch/customer/verify-otp', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
+export {
+  getCustomer,
+  findCustomer,
+  getCustomerById,
+  createCustomer,
+  updateCustomer,
+  deleteCustomerById,
+  sendOtp,
+  verifyOtp,
+};
