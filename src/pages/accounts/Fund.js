@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 // @mui
 import {
   Card,
@@ -25,8 +25,20 @@ import {
   Snackbar,
   Backdrop,
   CircularProgress,
+  Grid,
+  FormControl,
+  TextField,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import moment from 'moment';
 // components
 import { UpdateFund } from '../../components/accounts/fund';
@@ -36,7 +48,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { FundListHead, FundListToolbar } from '../../sections/@dashboard/fund';
 // mock
-import { deleteFundById, getFund } from '../../apis/accounts/fund';
+import { deleteFundById, getFund, updateFund } from '../../apis/accounts/fund';
 
 // ----------------------------------------------------------------------
 
@@ -99,6 +111,8 @@ export default function Fund() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const [filterOpen, setFilterOpen] = useState(null);
+  const form = useRef();
 
   const [notify, setNotify] = useState({
     open: false,
@@ -106,12 +120,50 @@ export default function Fund() {
     severity: 'success',
   });
 
+  // Form validation
+  const schema = Yup.object({
+    fromDate: Yup.string().required('From date is required'),
+    toDate: Yup.string().required('To date is required'),
+  });
+
+  const { handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      fromDate: moment().subtract('days', 1),
+      toDate: moment().add('days', 1),
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      setOpenBackdrop(true);
+      getFund({
+        createdAt: {
+          $gte: values.fromDate,
+          $lte: values.toDate,
+        },
+      }).then((data) => {
+        setData(data.data);
+        setOpenBackdrop(false);
+      });
+      setFilterOpen(false);
+    },
+  });
+
   useEffect(() => {
-    getFund().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: values.fromDate ?? moment().subtract('days', 1),
+        $lte: values.toDate ?? moment().add('days', 1),
+      },
+    }
+  ) => {
+    getFund(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -206,11 +258,52 @@ export default function Fund() {
     p: 4,
   };
 
+  const handleFilterOpen = () => {
+    setFilterOpen(true);
+  };
+
+  const handleFilterClose = () => {
+    setFilterOpen(false);
+  };
+
   function AlertComponent(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   }
 
   const Alert = forwardRef(AlertComponent);
+
+  function Status(props) {
+    return (
+      <>
+        <Button
+          variant="contained"
+          onClick={(e) => {
+            updateFund(props._id, { status: 'approved' }).then((data) => {
+              getFund().then((data) => {
+                setData(data.data);
+              });
+            });
+          }}
+        >
+          Approve
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          sx={{ ml: 2 }}
+          onClick={(e) => {
+            updateFund(props._id, { status: 'rejected' }).then((data) => {
+              getFund().then((data) => {
+                setData(data.data);
+              });
+            });
+          }}
+        >
+          Reject
+        </Button>
+      </>
+    );
+  }
 
   return (
     <>
@@ -245,6 +338,13 @@ export default function Fund() {
           <Typography variant="h4" gutterBottom>
             Fund
           </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+            onClick={handleFilterOpen}
+          >
+            Filter
+          </Button>
         </Stack>
 
         <Card>
@@ -286,13 +386,17 @@ export default function Fund() {
                         <TableCell align="left">{to?.branchName}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">
-                          <Label
-                            color={
-                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
-                            }
-                          >
-                            {sentenceCase(status)}
-                          </Label>
+                          {status === 'pending' ? (
+                            <Status status={status} _id={_id} />
+                          ) : (
+                            <Label
+                              color={
+                                (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
+                              }
+                            >
+                              {sentenceCase(status)}
+                            </Label>
+                          )}
                         </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
@@ -466,6 +570,74 @@ export default function Fund() {
           </Stack>
         </Box>
       </Modal>
+
+      <Dialog open={filterOpen} onClose={handleFilterClose}>
+        <form
+          ref={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          autoComplete="off"
+        >
+          <DialogTitle>Filter</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={3} sx={{ p: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
+                    <DesktopDatePicker
+                      label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="fromDate"
+                      value={values.fromDate}
+                      onChange={(value) => {
+                        setFieldValue('fromDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
+                    <DesktopDatePicker
+                      label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="toDate"
+                      value={values.toDate}
+                      onChange={(value) => {
+                        setFieldValue('toDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                setFilterOpen(false);
+                resetForm();
+                fetchData();
+              }}
+            >
+              Clear
+            </Button>
+            <Button variant="contained" onClick={handleFilterClose}>
+              Close
+            </Button>
+            <Button variant="contained" type="submit">
+              Filter
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />

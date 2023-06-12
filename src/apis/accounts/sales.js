@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getSales() {
+async function getSales(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/accounts/sales/get');
+    const response = await apiClient().post('/api/v1.0/accounts/sales/get', query);
     return response.data;
   } catch (err) {
     return err;
@@ -12,6 +12,15 @@ async function getSales() {
 async function getSalesById(id) {
   try {
     const response = await apiClient().get(`/api/v1.0/accounts/sales/get/${id}`);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function findSales(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/accounts/sales/get', query);
     return response.data;
   } catch (err) {
     return err;
@@ -36,4 +45,4 @@ async function deleteSalesById(id) {
   }
 }
 
-export { getSales, getSalesById, updateSales, deleteSalesById };
+export { getSales, getSalesById, findSales, updateSales, deleteSalesById };

@@ -622,9 +622,9 @@ export default function Fund() {
               variant="contained"
               color="error"
               onClick={() => {
-                fetchData();
                 setFilterOpen(false);
                 resetForm();
+                fetchData();
               }}
             >
               Clear

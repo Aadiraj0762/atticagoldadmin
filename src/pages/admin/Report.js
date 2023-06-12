@@ -408,9 +408,9 @@ export default function Report() {
               variant="contained"
               color="error"
               onClick={() => {
-                fetchData();
                 setFilterOpen(false);
                 resetForm();
+                fetchData();
               }}
             >
               Clear

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 // @mui
 import {
   Card,
@@ -23,22 +23,37 @@ import {
   Modal,
   Box,
   Snackbar,
+  TextField,
+  Select,
+  InputLabel,
+  Grid,
   Backdrop,
   CircularProgress,
 } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import MuiAlert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from 'moment';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
-import { SalePrint, SaleDetail } from '../../components/accounts/sales';
+import { SaleDetail, SalePrint } from '../../components/accounts/sales';
 // sections
 import { SaleListHead, SaleListToolbar } from '../../sections/@dashboard/sales';
 // mock
-import { deleteSalesById, getSales } from '../../apis/accounts/sales';
+import { deleteSalesById, findSales, updateSales } from '../../apis/accounts/sales';
+import { getBranch } from '../../apis/accounts/branch';
 
 // ----------------------------------------------------------------------
 
@@ -80,14 +95,15 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.customer?.phoneNumber?.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.customer?.phoneNumber.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function Sale() {
+  const [branches, setBranches] = useState([]);
   const [open, setOpen] = useState(null);
-  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -102,6 +118,39 @@ export default function Sale() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const form = useRef();
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+
+  // Form validation
+  const schema = Yup.object({
+    fromDate: Yup.string().required('From date is required'),
+    toDate: Yup.string().required('To date is required'),
+  });
+
+  const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      fromDate: moment().subtract('days', 1),
+      toDate: moment().add('days', 1),
+      branch: '',
+      phoneNumber: '',
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      setOpenBackdrop(true);
+      findSales({
+        createdAt: {
+          $gte: values.fromDate,
+          $lte: values.toDate,
+        },
+        branch: values.branch,
+        phoneNumber: values.phoneNumber,
+      }).then((data) => {
+        setData(data.data);
+        setOpenBackdrop(false);
+      });
+      setFilterOpen(false);
+    },
+  });
 
   const [notify, setNotify] = useState({
     open: false,
@@ -110,11 +159,25 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    getSales().then((data) => {
+    getBranch().then((data) => {
+      setBranches(data.data);
+    });
+    fetchSale();
+  }, [toggleContainer]);
+
+  const fetchSale = (
+    query = {
+      createdAt: {
+        $gte: values.fromDate ?? moment().subtract('days', 1),
+        $lte: values.toDate ?? moment().add('days', 1),
+      },
+    }
+  ) => {
+    findSales(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -174,9 +237,7 @@ export default function Sale() {
 
   const handleDelete = () => {
     deleteSalesById(openId).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+      fetchSale();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -184,9 +245,7 @@ export default function Sale() {
 
   const handleDeleteSelected = () => {
     deleteSalesById(selected).then(() => {
-      getSales().then((data) => {
-        setData(data.data);
-      });
+      fetchSale();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -225,6 +284,43 @@ export default function Sale() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status(props) {
+    return (
+      <>
+        <Button
+          variant="contained"
+          onClick={(e) => {
+            updateSales(props._id, { status: 'approved' }).then((data) => {
+              fetchSale();
+            });
+          }}
+        >
+          Approve
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          sx={{ ml: 2 }}
+          onClick={(e) => {
+            updateSales(props._id, { status: 'rejected' }).then((data) => {
+              fetchSale();
+            });
+          }}
+        >
+          Reject
+        </Button>
+      </>
+    );
+  }
+
+  const handleFilterOpen = () => {
+    setFilterOpen(true);
+  };
+
+  const handleFilterClose = () => {
+    setFilterOpen(false);
+  };
+
   return (
     <>
       <Helmet>
@@ -258,29 +354,38 @@ export default function Sale() {
           <Typography variant="h4" gutterBottom>
             Sale
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="carbon:document-export" />}
-            onClick={() => {
-              handleExport(
-                data.map((e) => {
-                  console.log(e);
-                  return {
-                    BillId: e.billId,
-                    SaleType: e.saleType,
-                    NetAmount: e.netAmount,
-                    BranchId: e.branch?.branchId,
-                    BranchName: e.branch?.branchName,
-                    OrnamentType: e.purchaseType,
-                    status: e.status,
-                  };
-                }),
-                'Sales'
-              );
-            }}
-          >
-            Export
-          </Button>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+              onClick={handleFilterOpen}
+            >
+              Filter
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="carbon:document-export" />}
+              onClick={() => {
+                handleExport(
+                  data.map((e) => {
+                    console.log(e);
+                    return {
+                      BillId: e.billId,
+                      SaleType: e.saleType,
+                      NetAmount: e.netAmount,
+                      BranchId: e.branch?.branchId,
+                      BranchName: e.branch?.branchName,
+                      OrnamentType: e.purchaseType,
+                      status: e.status,
+                    };
+                  }),
+                  'Sales'
+                );
+              }}
+            >
+              Export
+            </Button>
+          </Stack>
         </Stack>
 
         <Card>
@@ -323,13 +428,17 @@ export default function Sale() {
                         <TableCell align="left">{branch?.branchName}</TableCell>
                         <TableCell align="left">{sentenceCase(purchaseType)}</TableCell>
                         <TableCell align="left">
-                          <Label
-                            color={
-                              (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
-                            }
-                          >
-                            {sentenceCase(status)}
-                          </Label>
+                          {status === 'pending' ? (
+                            <Status status={status} _id={_id} />
+                          ) : (
+                            <Label
+                              color={
+                                (status === 'approved' && 'success') || (status === 'rejected' && 'error') || 'warning'
+                              }
+                            >
+                              {sentenceCase(status)}
+                            </Label>
+                          )}
                         </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
@@ -534,6 +643,106 @@ export default function Sale() {
           </Stack>
         </Box>
       </Modal>
+
+      <Dialog open={filterOpen} onClose={handleFilterClose}>
+        <form
+          ref={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          autoComplete="off"
+        >
+          <DialogTitle>Filter</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={3} sx={{ p: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={touched.branch && errors.branch && true}>
+                  <InputLabel id="select-label">Select branch</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    label={touched.branch && errors.branch ? errors.branch : 'Select branch'}
+                    name="branch"
+                    value={values.branch}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    {branches.map((e) => (
+                      <MenuItem value={e._id}>
+                        {e.branchId} {e.branchName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="phoneNumber"
+                  type="number"
+                  value={values.phoneNumber}
+                  error={touched.phoneNumber && errors.phoneNumber && true}
+                  label={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : 'Phone Number'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
+                    <DesktopDatePicker
+                      label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="fromDate"
+                      value={values.fromDate}
+                      onChange={(value) => {
+                        setFieldValue('fromDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
+                    <DesktopDatePicker
+                      label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="toDate"
+                      value={values.toDate}
+                      onChange={(value) => {
+                        setFieldValue('toDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                fetchSale({ createdAt: { $gte: moment(), $lte: moment() } });
+                setFilterOpen(false);
+                resetForm();
+              }}
+            >
+              Clear
+            </Button>
+            <Button variant="contained" onClick={handleFilterClose}>
+              Close
+            </Button>
+            <Button variant="contained" type="submit">
+              Filter
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />

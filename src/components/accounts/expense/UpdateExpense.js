@@ -10,7 +10,6 @@ function UpdateExpense(props) {
   const schema = Yup.object({
     type: Yup.string().required('Type is required'),
     amount: Yup.string().required('Amount is required'),
-    branchId: Yup.string().required('Branch id is required'),
     note: Yup.string().required('Note is required'),
     status: Yup.string().required('Status is required'),
   });
@@ -19,7 +18,6 @@ function UpdateExpense(props) {
     type: '',
     amount: '',
     from: '',
-    branchId: '',
     note: '',
     status: '',
   };
@@ -84,17 +82,6 @@ function UpdateExpense(props) {
               value={values.amount}
               error={touched.amount && errors.amount && true}
               label={touched.amount && errors.amount ? errors.amount : 'Amount'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="branchId"
-              value={values.branchId}
-              error={touched.branchId && errors.branchId && true}
-              label={touched.branchId && errors.branchId ? errors.branchId : 'Branch id'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
