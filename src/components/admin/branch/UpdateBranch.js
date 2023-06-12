@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { getBranchById, updateBranch } from '../../../apis/admin/branch';
 import { createFile, deleteFileById } from '../../../apis/admin/fileupload';
+import global from '../../../utils/global';
 
 function UpdateBranch(props) {
   // Form validation
@@ -190,27 +191,41 @@ function UpdateBranch(props) {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="city"
-              value={values.city}
-              error={touched.city && errors.city && true}
-              label={touched.city && errors.city ? errors.city : 'City'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth error={touched.state && errors.state && true}>
+              <InputLabel id="select-label">Select state</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.state && errors.state ? errors.state : 'Select state'}
+                name="state"
+                value={values.state}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                {global.states.map((state) => (
+                  <MenuItem value={state}>{state}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              name="state"
-              value={values.state}
-              error={touched.state && errors.state && true}
-              label={touched.state && errors.state ? errors.state : 'State'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth error={touched.city && errors.city && true}>
+              <InputLabel id="select-label">Select city</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.city && errors.city ? errors.city : 'Select city'}
+                name="city"
+                value={values.city}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              >
+                {global.cities[values.state]?.split('|')?.map((city) => (
+                  <MenuItem value={city}>{city}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
