@@ -22,6 +22,8 @@ import {
   TablePagination,
   Modal,
   Box,
+  FormControl,
+  Select,
   Snackbar,
   Backdrop,
   CircularProgress,
@@ -35,7 +37,7 @@ import { SupportReply } from '../../components/admin/support';
 // sections
 import { SupportListHead, SupportListToolbar } from '../../sections/@dashboard/support';
 // mock
-import { deleteSupportById, getSupport } from '../../apis/admin/support';
+import { deleteSupportById, getSupport, updateSupport } from '../../apis/admin/support';
 
 // ----------------------------------------------------------------------
 
@@ -208,6 +210,26 @@ export default function Support() {
 
   const Alert = forwardRef(AlertComponent);
 
+  function Status({ id, st }) {
+    const [status, setStatus] = useState(st);
+    return (
+      <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+        <Select
+          value={status}
+          onChange={(e) => {
+            setStatus(e.target.value);
+            updateSupport(id, {
+              status: e.target.value,
+            });
+          }}
+        >
+          <MenuItem value="active">Active</MenuItem>
+          <MenuItem value="closed">Closed</MenuItem>
+        </Select>
+      </FormControl>
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -278,7 +300,9 @@ export default function Support() {
                         </TableCell>
                         <TableCell align="left">{sentenceCase(customer?.name ?? '')}</TableCell>
                         <TableCell align="left">{issue}</TableCell>
-                        <TableCell align="left">{status}</TableCell>
+                        <TableCell align="left">
+                          <Status st={status} id={_id} />
+                        </TableCell>
                         <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -374,7 +398,7 @@ export default function Support() {
             </Button>
           </Stack>
 
-          <SupportReply id={openId} setNotify={setNotify}/>
+          <SupportReply id={openId} setNotify={setNotify} />
         </Container>
       )}
 

@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getLeave() {
+async function getLeave(query) {
   try {
-    const response = await apiClient().get('/api/v1.0/hr/leave/get');
+    const response = await apiClient().post('/api/v1.0/hr/leave/get', query);
     return response.data;
   } catch (err) {
     return err;

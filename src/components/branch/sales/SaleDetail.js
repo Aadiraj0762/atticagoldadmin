@@ -463,7 +463,14 @@ export default function SaleDetail({ id }) {
                     <TableRow tabIndex={-1}>
                       <TableCell align="left">Net Amount: {Math.round(data.netAmount)}</TableCell>
                       <TableCell align="left">
-                        Margin Amount: {Math.round((data.netAmount * data.margin) / 100)}
+                        Margin Amount:{' '}
+                        {data.status === 'approved'
+                          ? Math.round(
+                              data.netAmount -
+                                data.release?.reduce((prev, cur) => prev + +cur.payableAmount, 0) -
+                                data.payableAmount
+                            )
+                          : Math.round((data.netAmount * data.margin) / 100)}
                       </TableCell>
                       <TableCell align="left">
                         Release Amount:{' '}

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 // @mui
 import {
   Card,
@@ -22,12 +22,24 @@ import {
   TablePagination,
   Modal,
   Box,
+  TextField,
+  FormControl,
+  Grid,
   Snackbar,
   Backdrop,
   CircularProgress,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from 'moment';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 // components
 import { UpdateLeave } from '../../components/hr/leave';
 import Label from '../../components/label';
@@ -99,6 +111,8 @@ export default function Leave() {
   const [deleteType, setDeleteType] = useState('single');
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+  const [filterOpen, setFilterOpen] = useState(null);
+  const form = useRef();
 
   const [notify, setNotify] = useState({
     open: false,
@@ -106,12 +120,50 @@ export default function Leave() {
     severity: 'success',
   });
 
+  // Form validation
+  const schema = Yup.object({
+    fromDate: Yup.string().required('From date is required'),
+    toDate: Yup.string().required('To date is required'),
+  });
+
+  const { handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      fromDate: moment().subtract('days', 1),
+      toDate: moment().add('days', 1),
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      setOpenBackdrop(true);
+      getLeave({
+        createdAt: {
+          $gte: values.fromDate,
+          $lte: values.toDate,
+        },
+      }).then((data) => {
+        setData(data.data);
+        setOpenBackdrop(false);
+      });
+      setFilterOpen(false);
+    },
+  });
+
   useEffect(() => {
-    getLeave().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: values.fromDate ?? moment().subtract('days', 1),
+        $lte: values.toDate ?? moment().add('days', 1),
+      },
+    }
+  ) => {
+    getLeave(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -194,6 +246,14 @@ export default function Leave() {
     });
   };
 
+  const handleFilterOpen = () => {
+    setFilterOpen(true);
+  };
+
+  const handleFilterClose = () => {
+    setFilterOpen(false);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -245,6 +305,15 @@ export default function Leave() {
           <Typography variant="h4" gutterBottom>
             Leave
           </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+              onClick={handleFilterOpen}
+            >
+              Filter
+            </Button>
+          </Stack>
         </Stack>
 
         <Card>
@@ -468,6 +537,74 @@ export default function Leave() {
           </Stack>
         </Box>
       </Modal>
+
+      <Dialog open={filterOpen} onClose={handleFilterClose}>
+        <form
+          ref={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          autoComplete="off"
+        >
+          <DialogTitle>Filter</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={3} sx={{ p: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>
+                    <DesktopDatePicker
+                      label={touched.fromDate && errors.fromDate ? errors.fromDate : 'From Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="fromDate"
+                      value={values.fromDate}
+                      onChange={(value) => {
+                        setFieldValue('fromDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <LocalizationProvider dateAdapter={AdapterMoment} error={touched.toDate && errors.toDate && true}>
+                    <DesktopDatePicker
+                      label={touched.toDate && errors.toDate ? errors.toDate : 'To Date'}
+                      inputFormat="MM/DD/YYYY"
+                      name="toDate"
+                      value={values.toDate}
+                      onChange={(value) => {
+                        setFieldValue('toDate', value, true);
+                      }}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                setFilterOpen(false);
+                resetForm();
+                fetchData();
+              }}
+            >
+              Clear
+            </Button>
+            <Button variant="contained" onClick={handleFilterClose}>
+              Close
+            </Button>
+            <Button variant="contained" type="submit">
+              Filter
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />
