@@ -133,7 +133,7 @@ export default function SupportReply({ id, setNotify }) {
                       )
                     )}
                   </TableCell>
-                  <TableCell align="left">{moment(e.createdAt).format('MMM Do YY')}</TableCell>
+                  <TableCell align="left">{moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (

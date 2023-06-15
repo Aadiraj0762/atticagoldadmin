@@ -326,7 +326,7 @@ export default function User() {
                         <TableCell align="left">
                           <Label color={(status !== 'active' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                         </TableCell>
-                        <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"

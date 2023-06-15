@@ -212,15 +212,19 @@ export default function Support() {
 
   function Status({ id, st }) {
     const [status, setStatus] = useState(st);
-    return (
+    return status === 'closed' ? (
+      <span>{sentenceCase(status)}</span>
+    ) : (
       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
         <Select
           value={status}
           onChange={(e) => {
-            setStatus(e.target.value);
-            updateSupport(id, {
-              status: e.target.value,
-            });
+            if (window.confirm('Do you want to change the status?')) {
+              setStatus(e.target.value);
+              updateSupport(id, {
+                status: e.target.value,
+              });
+            }
           }}
         >
           <MenuItem value="active">Active</MenuItem>
@@ -303,7 +307,7 @@ export default function Support() {
                         <TableCell align="left">
                           <Status st={status} id={_id} />
                         </TableCell>
-                        <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"

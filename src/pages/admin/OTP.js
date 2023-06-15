@@ -29,23 +29,19 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
 // components
-import { CreateEmployee, UpdateEmployee } from '../../components/admin/employee';
-import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
-import { EmployeeListHead, EmployeeListToolbar } from '../../sections/@dashboard/employee';
+import { OTPListHead, OTPListToolbar } from '../../sections/@dashboard/otp';
 // mock
-import { deleteEmployeeById, getEmployee } from '../../apis/admin/employee';
+import { deleteOTPById, getOTP } from '../../apis/admin/otp';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'employeeId', label: 'Employee Id', alignRight: false },
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'gender', label: 'Gender', alignRight: false },
-  { id: 'designation', label: 'Designation', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'phoneNumber', label: 'Phone Number', alignRight: false },
+  { id: 'type', label: 'Type', alignRight: false },
+  { id: 'otp', label: 'OTP', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
@@ -76,12 +72,12 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (row) => row.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (row) => row.phoneNumber.indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Employee() {
+export default function OTP() {
   const [open, setOpen] = useState(null);
   const [openBackdrop, setOpenBackdrop] = useState(true);
   const [openId, setOpenId] = useState(null);
@@ -92,7 +88,6 @@ export default function Employee() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [toggleContainer, setToggleContainer] = useState(false);
-  const [toggleContainerType, setToggleContainerType] = useState('');
   const [data, setData] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState('single');
@@ -106,7 +101,7 @@ export default function Employee() {
   });
 
   useEffect(() => {
-    getEmployee().then((data) => {
+    getOTP().then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
@@ -169,8 +164,8 @@ export default function Employee() {
   const isNotFound = !filteredData.length && !!filterName;
 
   const handleDelete = () => {
-    deleteEmployeeById(openId).then(() => {
-      getEmployee().then((data) => {
+    deleteOTPById(openId).then(() => {
+      getOTP().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
@@ -179,15 +174,15 @@ export default function Employee() {
   };
 
   const handleDeleteSelected = () => {
-    deleteEmployeeById(selected).then(() => {
-      getEmployee().then((data) => {
+    deleteOTPById(selected).then(() => {
+      getOTP().then((data) => {
         setData(data.data);
       });
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
         open: true,
-        message: 'Employee deleted',
+        message: 'OTP deleted',
         severity: 'success',
       });
     });
@@ -214,7 +209,7 @@ export default function Employee() {
   return (
     <>
       <Helmet>
-        <title> Employee | Benaka Gold </title>
+        <title> OTP | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -242,22 +237,12 @@ export default function Employee() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Employee
+            OTP
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-              setToggleContainerType('create');
-            }}
-          >
-            New Employee
-          </Button>
         </Stack>
 
         <Card>
-          <EmployeeListToolbar
+          <OTPListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -270,7 +255,7 @@ export default function Employee() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <EmployeeListHead
+                <OTPListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -281,7 +266,7 @@ export default function Employee() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employeeId, name, gender, designation, status, createdAt } = row;
+                    const { _id, phoneNumber, type, otp, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -289,13 +274,9 @@ export default function Employee() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-                        <TableCell align="left">{employeeId}</TableCell>
-                        <TableCell align="left">{name}</TableCell>
-                        <TableCell align="left">{gender}</TableCell>
-                        <TableCell align="left">{sentenceCase(designation)}</TableCell>
-                        <TableCell align="left">
-                          <Label color={(status !== 'active' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell>
+                        <TableCell align="left">{phoneNumber}</TableCell>
+                        <TableCell align="left">{sentenceCase(type)}</TableCell>
+                        <TableCell align="left">{otp}</TableCell>
                         <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -319,7 +300,7 @@ export default function Employee() {
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={11} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -335,7 +316,7 @@ export default function Employee() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={11} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -371,50 +352,6 @@ export default function Employee() {
         </Card>
       </Container>
 
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'create' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Create Employee
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <CreateEmployee setToggleContainer={setToggleContainer} setNotify={setNotify} />
-      </Container>
-
-      <Container
-        maxWidth="xl"
-        sx={{ display: toggleContainer === true && toggleContainerType === 'update' ? 'block' : 'none' }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Update Employee
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="mdi:arrow-left" />}
-            onClick={() => {
-              setToggleContainer(!toggleContainer);
-            }}
-          >
-            Back
-          </Button>
-        </Stack>
-
-        <UpdateEmployee setToggleContainer={setToggleContainer} id={openId} setNotify={setNotify} />
-      </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -433,17 +370,6 @@ export default function Employee() {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            setOpen(null);
-            setToggleContainerType('update');
-            setToggleContainer(!toggleContainer);
-          }}
-        >
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
         <MenuItem
           sx={{ color: 'error.main' }}
           onClick={() => {
@@ -468,7 +394,7 @@ export default function Employee() {
             Delete
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-            Do you want to delete?
+            Do you want dates delete?
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2} mt={3}>
             <Button

@@ -385,7 +385,7 @@ export default function Attendance() {
                             'No Image'
                           )}
                         </TableCell>
-                        <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"

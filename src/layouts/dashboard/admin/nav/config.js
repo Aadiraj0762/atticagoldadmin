@@ -7,6 +7,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import SellIcon from '@mui/icons-material/Sell';
+import SafetyCheckIcon from '@mui/icons-material/SafetyCheck';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -84,6 +85,11 @@ const navConfig = [
     title: 'Support',
     path: '/admin/support',
     icon: <SupportAgentIcon sx={{ width: 1, height: 1 }} />,
+  },
+  {
+    title: 'OTP',
+    path: '/admin/otp',
+    icon: <SafetyCheckIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 

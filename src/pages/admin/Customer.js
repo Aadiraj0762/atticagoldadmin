@@ -354,7 +354,7 @@ export default function Customer() {
                             {sentenceCase(status)}
                           </Label>
                         </TableCell>
-                        <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"

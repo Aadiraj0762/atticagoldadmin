@@ -356,15 +356,10 @@ export default function GoldRate() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
                         </TableCell>
-
                         <TableCell align="left">{rate}</TableCell>
-
                         <TableCell align="left">{sentenceCase(type)}</TableCell>
-
                         <TableCell align="left">{sentenceCase(state)}</TableCell>
-
-                        <TableCell align="left">{moment(date).format('MMM Do YY')}</TableCell>
-
+                        <TableCell align="left">{moment(date).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"

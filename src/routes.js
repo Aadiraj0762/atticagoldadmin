@@ -19,6 +19,7 @@ import AdminAttendance from './pages/admin/Attendance';
 import AdminEmployee from './pages/admin/Employee';
 import AdminReport from './pages/admin/Report';
 import AdminSupport from './pages/admin/Support';
+import AdminOTP from './pages/admin/OTP';
 import HrDashboardLayout from './layouts/dashboard/hr';
 import HrDashboard from './pages/hr/Dashboard';
 import HrBranch from './pages/hr/Branch';
@@ -83,6 +84,7 @@ export default function Router() {
         { path: 'employee', element: <AdminEmployee /> },
         { path: 'report', element: <AdminReport /> },
         { path: 'support', element: <AdminSupport /> },
+        { path: 'otp', element: <AdminOTP /> },
       ],
     },
     {

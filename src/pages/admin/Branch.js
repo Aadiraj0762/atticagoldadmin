@@ -322,7 +322,7 @@ export default function Branch() {
                         <TableCell align="left">
                           <Status status={status} _id={_id} />
                         </TableCell>
-                        <TableCell align="left">{moment(createdAt).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"

@@ -174,7 +174,7 @@ export default function Report() {
 
                     return (
                       <TableRow hover key={index} tabIndex={-1}>
-                        <TableCell align="left">{moment(date).format('MMM Do YY')}</TableCell>
+                        <TableCell align="left">{moment(date).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="left">{sentenceCase(type ?? '')}</TableCell>
                         <TableCell align="left">{sentenceCase(saleType ?? '')}</TableCell>
                         <TableCell align="left">{rate}</TableCell>

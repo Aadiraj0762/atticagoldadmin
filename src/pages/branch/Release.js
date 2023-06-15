@@ -48,6 +48,7 @@ const TABLE_HEAD = [
   { id: 'pledgedDate', label: 'Pledged Date', alignRight: false },
   { id: 'payableAmount', label: 'Payable Amount', alignRight: false },
   { id: 'paymentType', label: 'Payment Type', alignRight: false },
+  { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
 ];
 
@@ -283,7 +284,6 @@ export default function Release() {
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const {
                       _id,
-                      branch,
                       pledgeId,
                       pledgedIn,
                       weight,
@@ -291,6 +291,7 @@ export default function Release() {
                       pledgedDate,
                       payableAmount,
                       paymentType,
+                      createdAt,
                     } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
@@ -306,6 +307,7 @@ export default function Release() {
                         <TableCell align="left">{moment(pledgedDate).format('YYYY-MM-DD')}</TableCell>
                         <TableCell align="left">{payableAmount}</TableCell>
                         <TableCell align="left">{sentenceCase(paymentType)}</TableCell>
+                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"
@@ -323,12 +325,12 @@ export default function Release() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={9} />
+                      <TableCell colSpan={11} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={11} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -344,7 +346,7 @@ export default function Release() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={11} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
