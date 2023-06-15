@@ -1,6 +1,7 @@
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -38,6 +39,11 @@ const navConfig = [
     title: 'Employee',
     path: '/hr/employee',
     icon: icon('ic_user'),
+  },
+  {
+    title: 'Payprocess',
+    path: '/hr/payprocess',
+    icon: <MonetizationOnIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 
