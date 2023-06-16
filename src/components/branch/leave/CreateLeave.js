@@ -186,6 +186,8 @@ function CreateLeave(props) {
                 }}
                 renderDay={renderPickerDay}
                 renderInput={(params) => <TextField {...params} />}
+                minDate={moment().startOf('month')}
+                maxDate={moment().add(1, 'months').endOf('month')}
               />
             </LocalizationProvider>
           </Grid>

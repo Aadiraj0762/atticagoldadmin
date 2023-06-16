@@ -36,6 +36,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
@@ -90,6 +93,38 @@ function applySortFilter(array, comparator, query) {
   }
   return stabilizedThis.map((el) => el[0]);
 }
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 export default function Attendance() {
   const [open, setOpen] = useState(null);
@@ -109,6 +144,11 @@ export default function Attendance() {
   const handleCloseDeleteModal = () => setOpenDeleteModal(false);
   const [filterOpen, setFilterOpen] = useState(null);
   const form = useRef();
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const [notify, setNotify] = useState({
     open: false,
@@ -339,124 +379,141 @@ export default function Attendance() {
         </Stack>
 
         <Card>
-          <AttendanceListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-            handleDelete={() => {
-              setDeleteType('selected');
-              handleOpenDeleteModal();
-            }}
-          />
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label="Daily Attendance" {...a11yProps(0)} />
+                <Tab label={`${moment().format('MMMM')} Consolidated`} {...a11yProps(1)} />
+                <Tab label={`${moment().subtract(1, 'month').format('MMMM')} Consolidated`} {...a11yProps(2)} />
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <AttendanceListToolbar
+                numSelected={selected.length}
+                filterName={filterName}
+                onFilterName={handleFilterByName}
+                handleDelete={() => {
+                  setDeleteType('selected');
+                  handleOpenDeleteModal();
+                }}
+              />
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <AttendanceListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={data.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employee, attendance, createdAt } = row;
-                    const selectedData = selected.indexOf(_id) !== -1;
+              <Scrollbar>
+                <TableContainer sx={{ minWidth: 800 }}>
+                  <Table>
+                    <AttendanceListHead
+                      order={order}
+                      orderBy={orderBy}
+                      headLabel={TABLE_HEAD}
+                      rowCount={data.length}
+                      numSelected={selected.length}
+                      onRequestSort={handleRequestSort}
+                      onSelectAllClick={handleSelectAllClick}
+                    />
+                    <TableBody>
+                      {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                        const { _id, employee, attendance, createdAt } = row;
+                        const selectedData = selected.indexOf(_id) !== -1;
 
-                    return (
-                      <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedData}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
-                        </TableCell>
-                        <TableCell align="left">{employee?.employeeId}</TableCell>
-                        <TableCell align="left">{employee?.name}</TableCell>
-                        <TableCell align="left">
-                          {attendance?.uploadedFile ? (
-                            <img
-                              key={attendance._id ?? _id}
-                              src={`${global.baseURL}/${attendance?.uploadedFile}`}
-                              alt="attendance"
-                              style={{ width: '80px' }}
-                            />
-                          ) : (
-                            'No Image'
-                          )}
-                        </TableCell>
-                        <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            onClick={(e) => {
-                              setOpenId(_id);
-                              handleOpenMenu(e);
-                            }}
-                          >
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                  {filteredData.length === 0 && (
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography paragraph>No data in table</Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
+                        return (
+                          <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedData}>
+                            <TableCell padding="checkbox">
+                              <Checkbox checked={selectedData} onChange={(event) => handleClick(event, _id)} />
+                            </TableCell>
+                            <TableCell align="left">{employee?.employeeId}</TableCell>
+                            <TableCell align="left">{employee?.name}</TableCell>
+                            <TableCell align="left">
+                              {attendance?.uploadedFile ? (
+                                <img
+                                  key={attendance._id ?? _id}
+                                  src={`${global.baseURL}/${attendance?.uploadedFile}`}
+                                  alt="attendance"
+                                  style={{ width: '80px' }}
+                                />
+                              ) : (
+                                'No Image'
+                              )}
+                            </TableCell>
+                            <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                            <TableCell align="right">
+                              <IconButton
+                                size="large"
+                                color="inherit"
+                                onClick={(e) => {
+                                  setOpenId(_id);
+                                  handleOpenMenu(e);
+                                }}
+                              >
+                                <Iconify icon={'eva:more-vertical-fill'} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                      {filteredData.length === 0 && (
+                        <TableRow>
+                          <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                            <Paper
+                              sx={{
+                                textAlign: 'center',
+                              }}
+                            >
+                              <Typography paragraph>No data in table</Typography>
+                            </Paper>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
 
-                {filteredData.length > 0 && isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
+                    {filteredData.length > 0 && isNotFound && (
+                      <TableBody>
+                        <TableRow>
+                          <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                            <Paper
+                              sx={{
+                                textAlign: 'center',
+                              }}
+                            >
+                              <Typography variant="h6" paragraph>
+                                Not found
+                              </Typography>
 
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                              <Typography variant="body2">
+                                No results found for &nbsp;
+                                <strong>&quot;{filterName}&quot;</strong>.
+                                <br /> Try checking for typos or using complete words.
+                              </Typography>
+                            </Paper>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    )}
+                  </Table>
+                </TableContainer>
+              </Scrollbar>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Item Two
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              Item Three
+            </TabPanel>
+          </Box>
         </Card>
       </Container>
 

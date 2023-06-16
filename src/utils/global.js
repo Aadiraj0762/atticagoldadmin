@@ -1,6 +1,6 @@
 export default {
-  baseURL: 'http://localhost:9000',
-  // baseURL: 'https://benaka.gold/api',
+  // baseURL: 'http://localhost:9000',
+  baseURL: 'https://benaka.gold/api',
   states: [
     'Andaman and Nicobar Islands',
     'Andhra Pradesh',
