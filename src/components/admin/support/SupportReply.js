@@ -34,7 +34,7 @@ export default function SupportReply({ id, setNotify }) {
 
   // Form validation
   const schema = Yup.object({
-    description: Yup.string().required('Description is required'),
+    description: Yup.string(),
   });
 
   const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
