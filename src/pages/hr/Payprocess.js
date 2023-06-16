@@ -42,6 +42,7 @@ import { deletePayprocessById, getPayprocess } from '../../apis/hr/payprocess';
 const TABLE_HEAD = [
   { id: 'employee', label: 'Employee Id', alignRight: false },
   { id: 'employee', label: 'Employee Name', alignRight: false },
+  { id: 'type', label: 'Type', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false },
   { id: 'note', label: 'Note', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
@@ -279,7 +280,7 @@ export default function Payprocess() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employee, amount, note, createdAt } = row;
+                    const { _id, employee, type, amount, note, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -289,6 +290,7 @@ export default function Payprocess() {
                         </TableCell>
                         <TableCell align="left">{employee?.employeeId}</TableCell>
                         <TableCell align="left">{sentenceCase(employee?.name ?? '')}</TableCell>
+                        <TableCell align="left">{type}</TableCell>
                         <TableCell align="left">{amount}</TableCell>
                         <TableCell align="left">{note}</TableCell>
                         <TableCell align="left">{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>

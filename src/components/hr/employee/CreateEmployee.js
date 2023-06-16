@@ -18,6 +18,7 @@ function CreateEmployee(props) {
     name: Yup.string().required('Name is required'),
     gender: Yup.string().required('Gender is required'),
     designation: Yup.string().required('Designation is required'),
+    salary: Yup.string().required('Salary is required'),
     employeeId: Yup.string().required('Employee Id is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     alternatePhoneNumber: Yup.string().required('Alternate phone number is required'),
@@ -32,6 +33,7 @@ function CreateEmployee(props) {
       name: '',
       gender: '',
       designation: '',
+      salary: '',
       employeeId: '',
       phoneNumber: '',
       alternatePhoneNumber: '',
@@ -119,6 +121,17 @@ function CreateEmployee(props) {
               name="designation"
               error={touched.designation && errors.designation && true}
               label={touched.designation && errors.designation ? errors.designation : 'Designation'}
+              fullWidth
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              name="salary"
+              number="number"
+              error={touched.salary && errors.salary && true}
+              label={touched.salary && errors.salary ? errors.salary : 'Salary'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}

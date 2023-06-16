@@ -98,15 +98,25 @@ function UpdatePayprocess(props) {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              name="type"
-              value={values.type}
-              error={touched.type && errors.type && true}
-              label={touched.type && errors.type ? errors.type : 'Type'}
-              fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth error={touched.type && errors.type && true}>
+              <InputLabel id="select-label">Select type</InputLabel>
+              <Select
+                labelId="select-label"
+                id="select"
+                label={touched.type && errors.type ? errors.type : 'Select type'}
+                name="type"
+                value={values.type}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setValues({ ...values, type: e.target.value });
+                  handleChange(e);
+                }}
+              >
+                <MenuItem value="allowances">Allowances</MenuItem>
+                <MenuItem value="deductions">Deductions</MenuItem>
+                <MenuItem value="advance">Advance</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
