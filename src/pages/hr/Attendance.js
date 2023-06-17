@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useEffect, useState, forwardRef, useRef } from 'react';
+import { createPortal } from 'react-dom';
 // @mui
 import {
   Card,
@@ -12,6 +13,7 @@ import {
   Checkbox,
   TableRow,
   MenuItem,
+  TableHead,
   TableBody,
   TableCell,
   Container,
@@ -50,7 +52,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { AttendanceListHead, AttendanceListToolbar } from '../../sections/@dashboard/attendance';
 // mock
-import { deleteAttendanceById, getAttendance } from '../../apis/hr/attendance';
+import { deleteAttendanceById, getAttendance, getConsolidatedAttendance } from '../../apis/hr/attendance';
 import global from '../../utils/global';
 
 // ----------------------------------------------------------------------
@@ -93,6 +95,7 @@ function applySortFilter(array, comparator, query) {
   }
   return stabilizedThis.map((el) => el[0]);
 }
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -124,6 +127,163 @@ function a11yProps(index) {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
+}
+
+function Consolidated({ date }) {
+  const [data, setData] = useState([]);
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    fetchData();
+  }, [date]);
+
+  const fetchData = (
+    query = {
+      date,
+    }
+  ) => {
+    getConsolidatedAttendance(query).then((data) => {
+      setData(data.data);
+      setOpenBackdrop(false);
+    });
+  };
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data?.length) : 0;
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
+
+  const handleExport = (fileData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(fileData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  };
+
+  function Loading() {
+    return createPortal(
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>,
+      document.getElementById('root-modal')
+    );
+  }
+
+  return (
+    <>
+      <Stack direction="row" alignItems="reverse" justifyContent="space-between" gap={2}>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon="carbon:document-export" />}
+          onClick={() => {
+            handleExport(
+              data.map((e) => ({
+                EmployeeId: e.employee.employeeId,
+                EmployeeName: e.employee.name,
+                BranchName: e.employee.branchName,
+                WorkingDays: e.workingDays,
+                Salary: e.salary,
+                Present: e.present,
+                Absent: e.absent,
+                LateDays: e.lateDays,
+                LateMins: e.lateMins,
+                Allowances: e.allowances,
+                Deductions: e.deductions,
+                Advance: e.advance,
+                Payable: e.payable,
+              })),
+              `consolidated-attentance-${moment(date).toISOString()}`
+            );
+          }}
+        >
+          Export
+        </Button>
+      </Stack>
+
+      <Scrollbar>
+        <TableContainer sx={{ minWidth: 800, mb: 1, mt: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="left">EmployeeId</TableCell>
+                <TableCell align="left">Branch</TableCell>
+                <TableCell align="left">Working Days</TableCell>
+                <TableCell align="left">Salary</TableCell>
+                <TableCell align="left">Present</TableCell>
+                <TableCell align="left">Absent</TableCell>
+                <TableCell align="left">Late Days</TableCell>
+                <TableCell align="left">Late Mins</TableCell>
+                <TableCell align="left">Allowances</TableCell>
+                <TableCell align="left">Deductions</TableCell>
+                <TableCell align="left">Advance</TableCell>
+                <TableCell align="left">Payable</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((e, index) => (
+                <TableRow hover key={e._id} tabIndex={-1}>
+                  <TableCell align="left">{e.employee.name}</TableCell>
+                  <TableCell align="left">{e.employee.employeeId}</TableCell>
+                  <TableCell align="left">{e.employee.branchName}</TableCell>
+                  <TableCell align="left">{e.workingDays}</TableCell>
+                  <TableCell align="left">{e.salary}</TableCell>
+                  <TableCell align="left">{e.present}</TableCell>
+                  <TableCell align="left">{e.absent}</TableCell>
+                  <TableCell align="left">{e.lateDays}</TableCell>
+                  <TableCell align="left">{e.lateMins}</TableCell>
+                  <TableCell align="left">{e.allowances}</TableCell>
+                  <TableCell align="left">{e.deductions}</TableCell>
+                  <TableCell align="left">{e.advance}</TableCell>
+                  <TableCell align="left">{e.payable}</TableCell>
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={13} />
+                </TableRow>
+              )}
+              {data?.length === 0 && (
+                <TableRow>
+                  <TableCell align="center" colSpan={13} sx={{ py: 3 }}>
+                    <Paper
+                      sx={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography paragraph>No data in table</Typography>
+                    </Paper>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={data?.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Scrollbar>
+
+      <Loading />
+    </>
+  );
 }
 
 export default function Attendance() {
@@ -351,31 +511,6 @@ export default function Attendance() {
           <Typography variant="h4" gutterBottom>
             Attendance
           </Typography>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-              onClick={handleFilterOpen}
-            >
-              Filter
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="carbon:document-export" />}
-              onClick={() => {
-                handleExport(
-                  data.map((e) => ({
-                    EmployeeId: e?.employee?.employeeId,
-                    EmployeeName: e?.employee?.name,
-                    Date: e.createdAt,
-                  })),
-                  'Attandance'
-                );
-              }}
-            >
-              Export
-            </Button>
-          </Stack>
         </Stack>
 
         <Card>
@@ -388,6 +523,32 @@ export default function Attendance() {
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+                onClick={handleFilterOpen}
+                sx={{ float: 'right', mx: '10px' }}
+              >
+                Filter
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="carbon:document-export" />}
+                onClick={() => {
+                  handleExport(
+                    data.map((e) => ({
+                      EmployeeId: e?.employee?.employeeId,
+                      EmployeeName: e?.employee?.name,
+                      Date: e.createdAt,
+                    })),
+                    'Attandance'
+                  );
+                }}
+                sx={{ float: 'right' }}
+              >
+                Export
+              </Button>
+
               <AttendanceListToolbar
                 numSelected={selected.length}
                 filterName={filterName}
@@ -508,10 +669,10 @@ export default function Attendance() {
               />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              Item Two
+              <Consolidated date={moment()} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              Item Three
+              <Consolidated date={moment().subtract(1, 'month')} />
             </TabPanel>
           </Box>
         </Card>
