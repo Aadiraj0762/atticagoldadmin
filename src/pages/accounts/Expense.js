@@ -40,6 +40,8 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 // components
 import { UpdateExpense } from '../../components/accounts/expense';
 import Label from '../../components/label';
@@ -254,6 +256,16 @@ export default function Expense() {
     setFilterOpen(false);
   };
 
+  const handleExport = (fileData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(fileData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -338,13 +350,35 @@ export default function Expense() {
           <Typography variant="h4" gutterBottom>
             Expense
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-            onClick={handleFilterOpen}
-          >
-            Filter
-          </Button>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+              onClick={handleFilterOpen}
+            >
+              Filter
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="carbon:document-export" />}
+              onClick={() => {
+                handleExport(
+                  data.map((e) => ({
+                    Type: e.type,
+                    Amount: e.amount,
+                    BranchId: e.branch?.branchId,
+                    BranchName: e.branch?.branchName,
+                    Note: e.note,
+                    Status: e.status,
+                    Date: moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+                  })),
+                  'Expenses'
+                );
+              }}
+            >
+              Export
+            </Button>
+          </Stack>
         </Stack>
 
         <Card>

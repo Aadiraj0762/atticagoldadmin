@@ -40,6 +40,8 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 // components
 import { UpdateFund } from '../../components/admin/fund';
 import Label from '../../components/label';
@@ -266,6 +268,16 @@ export default function Fund() {
     setFilterOpen(false);
   };
 
+  const handleExport = (fileData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(fileData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(data, `${fileName}.xlsx`);
+  };
+
   function AlertComponent(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   }
@@ -338,13 +350,35 @@ export default function Fund() {
           <Typography variant="h4" gutterBottom>
             Fund
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-            onClick={handleFilterOpen}
-          >
-            Filter
-          </Button>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+              onClick={handleFilterOpen}
+            >
+              Filter
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="carbon:document-export" />}
+              onClick={() => {
+                handleExport(
+                  data.map((e) => ({
+                    Type: e.type,
+                    Amount: e.amount,
+                    From: e.from?.branchName,
+                    To: e.to?.branchName,
+                    Note: e.note,
+                    Status: e.status,
+                    Date: moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+                  })),
+                  'Funds'
+                );
+              }}
+            >
+              Export
+            </Button>
+          </Stack>
         </Stack>
 
         <Card>
