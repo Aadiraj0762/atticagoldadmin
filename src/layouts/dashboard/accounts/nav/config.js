@@ -3,6 +3,7 @@ import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import SellIcon from '@mui/icons-material/Sell';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -40,6 +41,11 @@ const navConfig = [
     title: 'Sale',
     path: '/accounts/sale',
     icon: <SellIcon sx={{ width: 1, height: 1 }} />,
+  },
+  {
+    title: 'Ornament',
+    path: '/accounts/ornament',
+    icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 

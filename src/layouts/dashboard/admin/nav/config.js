@@ -91,6 +91,11 @@ const navConfig = [
     path: '/admin/otp',
     icon: <SafetyCheckIcon sx={{ width: 1, height: 1 }} />,
   },
+  {
+    title: 'Ornament',
+    path: '/admin/ornament',
+    icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
+  },
 ];
 
 export default navConfig;

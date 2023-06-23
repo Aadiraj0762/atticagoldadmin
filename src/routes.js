@@ -20,6 +20,7 @@ import AdminEmployee from './pages/admin/Employee';
 import AdminReport from './pages/admin/Report';
 import AdminSupport from './pages/admin/Support';
 import AdminOTP from './pages/admin/OTP';
+import AdminOrnament from './pages/admin/Ornament';
 import HrDashboardLayout from './layouts/dashboard/hr';
 import HrDashboard from './pages/hr/Dashboard';
 import HrBranch from './pages/hr/Branch';
@@ -35,6 +36,7 @@ import AccountsBranch from './pages/accounts/Branch';
 import AccountsFund from './pages/accounts/Fund';
 import AccountsExpense from './pages/accounts/Expense';
 import AccountsSale from './pages/accounts/Sale';
+import AccountsOrnament from './pages/accounts/Ornament';
 import BranchDashboardLayout from './layouts/dashboard/branch';
 import BranchDashboard from './pages/branch/Dashboard';
 import BranchFund from './pages/branch/Fund';
@@ -84,6 +86,7 @@ export default function Router() {
         { path: 'release', element: <AdminRelease /> },
         { path: 'employee', element: <AdminEmployee /> },
         { path: 'report', element: <AdminReport /> },
+        { path: 'ornament', element: <AdminOrnament /> },
         { path: 'support', element: <AdminSupport /> },
         { path: 'otp', element: <AdminOTP /> },
       ],
@@ -121,6 +124,7 @@ export default function Router() {
         { path: 'fund', element: <AccountsFund /> },
         { path: 'expense', element: <AccountsExpense /> },
         { path: 'sale', element: <AccountsSale /> },
+        { path: 'ornament', element: <AccountsOrnament /> },
       ],
     },
     {
