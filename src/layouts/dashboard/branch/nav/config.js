@@ -63,6 +63,11 @@ const navConfig = [
     path: '/branch/balancesheet',
     icon: <RequestPageIcon sx={{ width: 1, height: 1 }} />,
   },
+  {
+    title: 'Ornament',
+    path: '/accounts/ornament',
+    icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
+  },
 ];
 
 export default navConfig;

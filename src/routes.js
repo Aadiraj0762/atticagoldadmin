@@ -37,7 +37,6 @@ import AccountsBranch from './pages/accounts/Branch';
 import AccountsFund from './pages/accounts/Fund';
 import AccountsExpense from './pages/accounts/Expense';
 import AccountsSale from './pages/accounts/Sale';
-import AccountsOrnament from './pages/accounts/Ornament';
 import AccountsBalancesheet from './pages/accounts/Balancesheet';
 import BranchDashboardLayout from './layouts/dashboard/branch';
 import BranchDashboard from './pages/branch/Dashboard';
@@ -50,6 +49,7 @@ import BranchCustomer from './pages/branch/Customer';
 import BranchRelease from './pages/branch/Release';
 import BranchReport from './pages/branch/Report';
 import BranchBalancesheet from './pages/branch/Balancesheet';
+import BranchOrnament from './pages/branch/Ornament';
 
 // ----------------------------------------------------------------------
 
@@ -128,7 +128,6 @@ export default function Router() {
         { path: 'fund', element: <AccountsFund /> },
         { path: 'expense', element: <AccountsExpense /> },
         { path: 'sale', element: <AccountsSale /> },
-        { path: 'ornament', element: <AccountsOrnament /> },
         { path: 'balancesheet', element: <AccountsBalancesheet /> },
       ],
     },
@@ -151,6 +150,7 @@ export default function Router() {
         { path: 'sale', element: <BranchSale /> },
         { path: 'report', element: <BranchReport /> },
         { path: 'balancesheet', element: <BranchBalancesheet /> },
+        { path: 'ornament', element: <BranchOrnament /> },
       ],
     },
     {

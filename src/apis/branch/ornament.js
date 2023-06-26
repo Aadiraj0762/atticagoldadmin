@@ -2,7 +2,7 @@ import apiClient from '../http';
 
 async function getOrnament(query = {}) {
   try {
-    const response = await apiClient().post('/api/v1.0/accounts/ornament/get', query);
+    const response = await apiClient().post('/api/v1.0/branch/ornament/get', query);
     return response.data;
   } catch (err) {
     return err;
@@ -11,7 +11,7 @@ async function getOrnament(query = {}) {
 
 async function updateOrnament(query = {}) {
   try {
-    const response = await apiClient().post('/api/v1.0/accounts/ornament/update', query);
+    const response = await apiClient().post('/api/v1.0/branch/ornament/update', query);
     return response.data;
   } catch (err) {
     return err;

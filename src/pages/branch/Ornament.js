@@ -46,8 +46,8 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { ListHead, ListToolbar } from '../../sections/@dashboard/ornament';
 // mock
-import { getOrnament, updateOrnament } from '../../apis/accounts/ornament';
-import { getBranch } from '../../apis/accounts/branch';
+import { getOrnament, updateOrnament } from '../../apis/branch/ornament';
+import { getBranch } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
 
