@@ -64,8 +64,8 @@ const navConfig = [
     icon: <RequestPageIcon sx={{ width: 1, height: 1 }} />,
   },
   {
-    title: 'Ornament',
-    path: '/accounts/ornament',
+    title: 'Move Gold',
+    path: '/branch/ornament',
     icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
   },
 ];

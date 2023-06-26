@@ -248,6 +248,12 @@ export default function Balancesheet() {
           </Stack>
         </Stack>
 
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}, Branch:{' '}
+          {branches.find((e) => e._id === values.branch)?.branchName}
+        </p>
+
         <Card>
           <ListToolbar filterName={filterName} onFilterName={handleFilterByName} />
 

@@ -132,7 +132,6 @@ export default function Ornament() {
           $lte: values.toDate,
         },
         branch: values.branch,
-        status: 'hold',
       }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
@@ -154,7 +153,6 @@ export default function Ornament() {
         $gte: values.fromDate ?? moment().subtract('days', 1),
         $lte: values.toDate ?? moment().add('days', 1),
       },
-      status: 'hold',
     }
   ) => {
     getOrnament(query).then((data) => {
@@ -199,7 +197,7 @@ export default function Ornament() {
   return (
     <>
       <Helmet>
-        <title> Ornament | Benaka Gold </title>
+        <title> Move Gold | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -227,7 +225,7 @@ export default function Ornament() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Ornament
+            Move Gold
           </Typography>
           <Button
             variant="contained"
@@ -237,6 +235,12 @@ export default function Ornament() {
             Filter
           </Button>
         </Stack>
+
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}, Branch:{' '}
+          {branches.find((e) => e._id === values.branch)?.branchName}
+        </p>
 
         <Card>
           <Scrollbar>

@@ -93,7 +93,7 @@ const navConfig = [
     icon: <SafetyCheckIcon sx={{ width: 1, height: 1 }} />,
   },
   {
-    title: 'Ornament',
+    title: 'Move Gold',
     path: '/admin/ornament',
     icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
   },

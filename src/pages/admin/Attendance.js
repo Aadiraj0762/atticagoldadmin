@@ -338,6 +338,11 @@ export default function Attendance() {
           </Stack>
         </Stack>
 
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}
+        </p>
+
         <Card>
           <AttendanceListToolbar
             numSelected={selected.length}

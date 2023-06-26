@@ -40,6 +40,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useSelector } from 'react-redux';
 // components
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -47,7 +48,7 @@ import Scrollbar from '../../components/scrollbar';
 import { ListHead, ListToolbar } from '../../sections/@dashboard/ornament';
 // mock
 import { getOrnament, updateOrnament } from '../../apis/branch/ornament';
-import { getBranch } from '../../apis/branch/branch';
+import { getBranch, getBranchByBranchId } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
 
@@ -96,6 +97,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Ornament() {
+  const auth = useSelector((state) => state.auth);
+  const [branch, setBranch] = useState({});
   const [branches, setBranches] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -151,7 +154,12 @@ export default function Ornament() {
     getBranch().then((data) => {
       setBranches(data.data);
     });
-    fetchData();
+    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
+      setBranch(data.data);
+      fetchData({
+        branch: data.data?._id,
+      });
+    });
   }, []);
 
   const fetchData = (
@@ -162,6 +170,7 @@ export default function Ornament() {
       },
     }
   ) => {
+    if (!query.branch) query.branch = branch._id;
     getOrnament(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
@@ -249,7 +258,7 @@ export default function Ornament() {
   return (
     <>
       <Helmet>
-        <title> Ornament | Benaka Gold </title>
+        <title> Move Gold | Benaka Gold </title>
       </Helmet>
 
       <Snackbar
@@ -277,7 +286,7 @@ export default function Ornament() {
       <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'none' : 'block' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Ornament
+            Move Gold
           </Typography>
           <Button
             variant="contained"

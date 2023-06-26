@@ -323,6 +323,11 @@ export default function GoldRate() {
           </Stack>
         </Stack>
 
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}
+        </p>
+
         <Card>
           <GoldRateListToolbar
             numSelected={selected.length}

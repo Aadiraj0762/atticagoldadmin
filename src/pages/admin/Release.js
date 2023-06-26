@@ -313,6 +313,12 @@ export default function Release() {
           </Button>
         </Stack>
 
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}, Branch:{' '}
+          {branches.find((e) => e._id === values.branch)?.branchName}, Phone Number: {values.phoneNumber}
+        </p>
+
         <Card>
           <ReleaseListToolbar
             numSelected={selected.length}
@@ -348,7 +354,7 @@ export default function Release() {
                       pledgedDate,
                       payableAmount,
                       paymentType,
-                      createdAt
+                      createdAt,
                     } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 

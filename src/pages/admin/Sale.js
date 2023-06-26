@@ -388,6 +388,12 @@ export default function Sale() {
           </Stack>
         </Stack>
 
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}, Branch:{' '}
+          {branches.find((e) => e._id === values.branch)?.branchName}, Phone Number: {values.phoneNumber}
+        </p>
+
         <Card>
           <SaleListToolbar
             numSelected={selected.length}

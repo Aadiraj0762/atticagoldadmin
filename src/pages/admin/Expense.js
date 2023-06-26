@@ -381,6 +381,11 @@ export default function Expense() {
           </Stack>
         </Stack>
 
+        <p>
+          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
+          {moment(values.toDate).format('YYYY-MM-DD')}
+        </p>
+
         <Card>
           <ExpenseListToolbar
             numSelected={selected.length}
