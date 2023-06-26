@@ -20,6 +20,7 @@ import AdminEmployee from './pages/admin/Employee';
 import AdminReport from './pages/admin/Report';
 import AdminSupport from './pages/admin/Support';
 import AdminOTP from './pages/admin/OTP';
+import AdminBalancesheet from './pages/admin/Balancesheet';
 import AdminOrnament from './pages/admin/Ornament';
 import HrDashboardLayout from './layouts/dashboard/hr';
 import HrDashboard from './pages/hr/Dashboard';
@@ -37,6 +38,7 @@ import AccountsFund from './pages/accounts/Fund';
 import AccountsExpense from './pages/accounts/Expense';
 import AccountsSale from './pages/accounts/Sale';
 import AccountsOrnament from './pages/accounts/Ornament';
+import AccountsBalancesheet from './pages/accounts/Balancesheet';
 import BranchDashboardLayout from './layouts/dashboard/branch';
 import BranchDashboard from './pages/branch/Dashboard';
 import BranchFund from './pages/branch/Fund';
@@ -47,6 +49,7 @@ import BranchSale from './pages/branch/Sale';
 import BranchCustomer from './pages/branch/Customer';
 import BranchRelease from './pages/branch/Release';
 import BranchReport from './pages/branch/Report';
+import BranchBalancesheet from './pages/branch/Balancesheet';
 
 // ----------------------------------------------------------------------
 
@@ -89,6 +92,7 @@ export default function Router() {
         { path: 'ornament', element: <AdminOrnament /> },
         { path: 'support', element: <AdminSupport /> },
         { path: 'otp', element: <AdminOTP /> },
+        { path: 'balancesheet', element: <AdminBalancesheet /> },
       ],
     },
     {
@@ -125,6 +129,7 @@ export default function Router() {
         { path: 'expense', element: <AccountsExpense /> },
         { path: 'sale', element: <AccountsSale /> },
         { path: 'ornament', element: <AccountsOrnament /> },
+        { path: 'balancesheet', element: <AccountsBalancesheet /> },
       ],
     },
     {
@@ -145,6 +150,7 @@ export default function Router() {
         { path: 'release', element: <BranchRelease /> },
         { path: 'sale', element: <BranchSale /> },
         { path: 'report', element: <BranchReport /> },
+        { path: 'balancesheet', element: <BranchBalancesheet /> },
       ],
     },
     {

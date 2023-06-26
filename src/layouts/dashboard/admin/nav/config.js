@@ -8,6 +8,7 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import SellIcon from '@mui/icons-material/Sell';
 import SafetyCheckIcon from '@mui/icons-material/SafetyCheck';
+import RequestPageIcon from '@mui/icons-material/RequestPage';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -95,6 +96,11 @@ const navConfig = [
     title: 'Ornament',
     path: '/admin/ornament',
     icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
+  },
+  {
+    title: 'Balancesheet',
+    path: '/admin/balancesheet',
+    icon: <RequestPageIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 

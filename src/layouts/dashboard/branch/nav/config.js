@@ -4,6 +4,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SellIcon from '@mui/icons-material/Sell';
+import RequestPageIcon from '@mui/icons-material/RequestPage';
 // component
 import SvgColor from '../../../../components/svg-color';
 
@@ -56,6 +57,11 @@ const navConfig = [
     title: 'Report',
     path: '/branch/report',
     icon: <AssessmentIcon sx={{ width: 1, height: 1 }} />,
+  },
+  {
+    title: 'Balancesheet',
+    path: '/branch/balancesheet',
+    icon: <RequestPageIcon sx={{ width: 1, height: 1 }} />,
   },
 ];
 
