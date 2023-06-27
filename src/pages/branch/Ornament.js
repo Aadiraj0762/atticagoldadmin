@@ -495,7 +495,12 @@ export default function Ornament() {
               onClick={() => {
                 setFilterOpen(false);
                 resetForm();
-                fetchData();
+                fetchData({
+                  createdAt: {
+                    $gte: moment().subtract('days', 1),
+                    $lte: moment().add('days', 1),
+                  },
+                });
               }}
             >
               Clear

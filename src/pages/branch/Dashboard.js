@@ -58,7 +58,7 @@ export default function DashboardAppPage() {
             </Link>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
@@ -114,7 +114,7 @@ export default function DashboardAppPage() {
                 theme.palette.error.main,
               ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>
