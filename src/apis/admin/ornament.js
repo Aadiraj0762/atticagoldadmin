@@ -9,4 +9,13 @@ async function getOrnament(query = {}) {
   }
 }
 
-export { getOrnament };
+async function groupByBranchAndMovedAt(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/admin/ornament/group-by', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
+export { getOrnament, groupByBranchAndMovedAt };

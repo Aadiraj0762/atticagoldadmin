@@ -18,12 +18,9 @@ import {
   Backdrop,
   CircularProgress,
   Button,
-  MenuItem,
   Snackbar,
   Grid,
   FormControl,
-  Select,
-  InputLabel,
   Checkbox,
   TextField,
   Modal,
@@ -60,7 +57,6 @@ const TABLE_HEAD = [
   { id: 'grossWeight', label: 'Gross Weight', alignRight: false },
   { id: 'stoneWeight', label: 'Stone Weight', alignRight: false },
   { id: 'netWeight', label: 'Net Weight', alignRight: false },
-  { id: 'purity', label: 'Purity', alignRight: false },
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
 ];
@@ -283,13 +279,18 @@ export default function Ornament() {
           <Typography variant="h4" gutterBottom>
             Move Gold
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
-            onClick={handleFilterOpen}
-          >
-            Filter
-          </Button>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:filter-alt-off" />}
+              onClick={handleFilterOpen}
+            >
+              Filter
+            </Button>
+            <Button variant="contained" startIcon={<Iconify icon={'material-symbols:print'} />}>
+              Print Latest Report
+            </Button>
+          </Stack>
         </Stack>
 
         <p>
@@ -327,7 +328,6 @@ export default function Ornament() {
                       grossWeight,
                       stoneWeight,
                       netWeight,
-                      purity,
                       netAmount,
                       status,
                     } = row;
@@ -348,7 +348,6 @@ export default function Ornament() {
                         <TableCell align="left">{grossWeight}</TableCell>
                         <TableCell align="left">{stoneWeight}</TableCell>
                         <TableCell align="left">{netWeight}</TableCell>
-                        <TableCell align="left">{purity}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{sentenceCase(status ?? '')}</TableCell>
                       </TableRow>

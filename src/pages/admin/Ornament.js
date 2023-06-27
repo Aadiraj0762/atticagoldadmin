@@ -43,7 +43,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { ListHead } from '../../sections/@dashboard/ornament';
 // mock
-import { getOrnament } from '../../apis/admin/ornament';
+import { groupByBranchAndMovedAt } from '../../apis/admin/ornament';
 import { getBranch } from '../../apis/admin/branch';
 
 // ----------------------------------------------------------------------
@@ -51,15 +51,14 @@ import { getBranch } from '../../apis/admin/branch';
 const TABLE_HEAD = [
   { id: '', label: '#', alignRight: false },
   { id: 'branchName', label: 'Branch Name', alignRight: false },
-  { id: 'ornamentType', label: 'Ornament Type', alignRight: false },
   { id: 'quantity', label: 'Quantity', alignRight: false },
   { id: 'grossWeight', label: 'Gross Weight', alignRight: false },
   { id: 'stoneWeight', label: 'Stone Weight', alignRight: false },
   { id: 'netWeight', label: 'Net Weight', alignRight: false },
-  { id: 'purity', label: 'Purity', alignRight: false },
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'movedAt', label: 'MovedAt', alignRight: false },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -127,12 +126,13 @@ export default function Ornament() {
     validationSchema: schema,
     onSubmit: (values) => {
       setOpenBackdrop(true);
-      getOrnament({
+      groupByBranchAndMovedAt({
         createdAt: {
           $gte: values.fromDate,
           $lte: values.toDate,
         },
         branch: values.branch,
+        status: 'moved',
       }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
@@ -154,9 +154,10 @@ export default function Ornament() {
         $gte: values.fromDate ?? moment().subtract('days', 1),
         $lte: values.toDate ?? moment().add('days', 1),
       },
+      status: 'moved',
     }
   ) => {
-    getOrnament(query).then((data) => {
+    groupByBranchAndMovedAt(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
@@ -256,32 +257,27 @@ export default function Ornament() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const {
-                      branchName,
-                      ornamentType,
-                      quantity,
-                      grossWeight,
-                      stoneWeight,
-                      netWeight,
-                      purity,
-                      netAmount,
-                      status,
-                      movedAt,
-                    } = row;
+                    const { branchName, quantity, grossWeight, stoneWeight, netWeight, netAmount, status, movedAt } =
+                      row;
 
                     return (
                       <TableRow hover key={index} tabIndex={-1}>
                         <TableCell align="left">{index + 1 + page * rowsPerPage}</TableCell>
                         <TableCell align="left">{branchName}</TableCell>
-                        <TableCell align="left">{ornamentType}</TableCell>
                         <TableCell align="left">{quantity}</TableCell>
                         <TableCell align="left">{grossWeight}</TableCell>
                         <TableCell align="left">{stoneWeight}</TableCell>
                         <TableCell align="left">{netWeight}</TableCell>
-                        <TableCell align="left">{purity}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{sentenceCase(status ?? '')}</TableCell>
-                        <TableCell align="left">{movedAt ? moment(movedAt).format('YYYY-MM-DD') : ''}</TableCell>
+                        <TableCell align="left">
+                          {movedAt ? moment(movedAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Button variant="contained" startIcon={<Iconify icon={'material-symbols:print'} />}>
+                            Print
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -422,6 +418,7 @@ export default function Ornament() {
                     $gte: moment().subtract('days', 1),
                     $lte: moment().add('days', 1),
                   },
+                  status: 'moved',
                 });
               }}
             >
