@@ -139,6 +139,7 @@ export default function Ornament() {
           $gte: values.fromDate,
           $lte: values.toDate,
         },
+        branch: branch._id,
       }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
