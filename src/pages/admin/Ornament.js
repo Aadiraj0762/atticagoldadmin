@@ -59,6 +59,7 @@ const TABLE_HEAD = [
   { id: 'purity', label: 'Purity', alignRight: false },
   { id: 'netAmount', label: 'Net Amount', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'movedAt', label: 'MovedAt', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -265,6 +266,7 @@ export default function Ornament() {
                       purity,
                       netAmount,
                       status,
+                      movedAt,
                     } = row;
 
                     return (
@@ -279,6 +281,7 @@ export default function Ornament() {
                         <TableCell align="left">{purity}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
                         <TableCell align="left">{sentenceCase(status ?? '')}</TableCell>
+                        <TableCell align="left">{movedAt ? moment(movedAt).format('YYYY-MM-DD') : ''}</TableCell>
                       </TableRow>
                     );
                   })}
