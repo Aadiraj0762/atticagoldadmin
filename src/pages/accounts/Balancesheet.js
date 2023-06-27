@@ -132,9 +132,9 @@ export default function Balancesheet() {
 
   const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
-      branch: '',
+      fromDate: null,
+      toDate: null,
+      branch: null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -247,6 +247,12 @@ export default function Balancesheet() {
             </Button>
           </Stack>
         </Stack>
+
+        <p>
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}, Branch:{' '}
+          {branches.find((e) => e._id === values.branch)?.branchName}
+        </p>
 
         <Card>
           <ListToolbar filterName={filterName} onFilterName={handleFilterByName} />

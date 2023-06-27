@@ -130,8 +130,8 @@ export default function Fund() {
 
   const { handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
+      fromDate: null,
+      toDate: null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -382,8 +382,8 @@ export default function Fund() {
         </Stack>
 
         <p>
-          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
-          {moment(values.toDate).format('YYYY-MM-DD')}
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}
         </p>
 
         <Card>

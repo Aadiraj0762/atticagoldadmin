@@ -99,7 +99,6 @@ function applySortFilter(array, comparator, query) {
 export default function Ornament() {
   const auth = useSelector((state) => state.auth);
   const [branch, setBranch] = useState({});
-  const [branches, setBranches] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [openBackdrop, setOpenBackdrop] = useState(true);
@@ -129,9 +128,8 @@ export default function Ornament() {
 
   const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
-      branch: '',
+      fromDate: null,
+      toDate: null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -141,7 +139,6 @@ export default function Ornament() {
           $gte: values.fromDate,
           $lte: values.toDate,
         },
-        branch: values.branch,
       }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
@@ -151,9 +148,6 @@ export default function Ornament() {
   });
 
   useEffect(() => {
-    getBranch().then((data) => {
-      setBranches(data.data);
-    });
     getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
       setBranch(data.data);
       fetchData({
@@ -296,6 +290,11 @@ export default function Ornament() {
             Filter
           </Button>
         </Stack>
+
+        <p>
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}
+        </p>
 
         <Card>
           <ListToolbar
@@ -454,26 +453,6 @@ export default function Ornament() {
           <DialogTitle>Filter</DialogTitle>
           <DialogContent>
             <Grid container spacing={3} sx={{ p: 1 }}>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={touched.branch && errors.branch && true}>
-                  <InputLabel id="select-label">Select branch</InputLabel>
-                  <Select
-                    labelId="select-label"
-                    id="select"
-                    label={touched.branch && errors.branch ? errors.branch : 'Select branch'}
-                    name="branch"
-                    value={values.branch}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  >
-                    {branches.map((e) => (
-                      <MenuItem value={e._id}>
-                        {e.branchId} {e.branchName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl sx={{ minWidth: 120 }}>
                   <LocalizationProvider dateAdapter={AdapterMoment} error={touched.fromDate && errors.fromDate && true}>

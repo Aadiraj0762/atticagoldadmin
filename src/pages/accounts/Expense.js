@@ -130,8 +130,8 @@ export default function Expense() {
 
   const { handleSubmit, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
+      fromDate: null,
+      toDate: null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -380,6 +380,11 @@ export default function Expense() {
             </Button>
           </Stack>
         </Stack>
+
+        <p>
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}
+        </p>
 
         <Card>
           <ExpenseListToolbar

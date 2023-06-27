@@ -122,8 +122,8 @@ export default function Customer() {
 
   const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
+      fromDate: null,
+      toDate: null,
       phoneNumber: '',
     },
     validationSchema: schema,
@@ -308,8 +308,8 @@ export default function Customer() {
         </Stack>
 
         <p>
-          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
-          {moment(values.toDate).format('YYYY-MM-DD')}
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}
         </p>
 
         <Card>

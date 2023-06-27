@@ -125,8 +125,8 @@ export default function Release() {
 
   const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
+      fromDate: null,
+      toDate: null,
       branch: '',
       phoneNumber: '',
     },
@@ -314,8 +314,8 @@ export default function Release() {
         </Stack>
 
         <p>
-          From Date: {moment(values.fromDate).format('YYYY-MM-DD')}, To Date:{' '}
-          {moment(values.toDate).format('YYYY-MM-DD')}, Branch:{' '}
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}, Branch:{' '}
           {branches.find((e) => e._id === values.branch)?.branchName}, Phone Number: {values.phoneNumber}
         </p>
 

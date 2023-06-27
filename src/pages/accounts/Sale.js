@@ -129,8 +129,8 @@ export default function Sale() {
 
   const { handleSubmit, handleBlur, handleChange, touched, errors, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
-      fromDate: moment().subtract('days', 1),
-      toDate: moment().add('days', 1),
+      fromDate: null,
+      toDate: null,
       branch: '',
       phoneNumber: '',
     },
@@ -387,6 +387,12 @@ export default function Sale() {
             </Button>
           </Stack>
         </Stack>
+
+        <p>
+          From Date: {values.fromDate ? moment(values.fromDate).format('YYYY-MM-DD') : ''}, To Date:{' '}
+          {values.toDate ? moment(values.toDate).format('YYYY-MM-DD') : ''}, Branch:{' '}
+          {branches.find((e) => e._id === values.branch)?.branchName}, Phone Number: {values.phoneNumber}
+        </p>
 
         <Card>
           <SaleListToolbar
