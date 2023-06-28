@@ -153,9 +153,7 @@ export default function Customer() {
     fetchCustomer();
   }, [toggleContainer]);
 
-  const fetchCustomer = (
-    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
-  ) => {
+  const fetchCustomer = (query = { createdAt: { $gte: moment(), $lte: moment() } }) => {
     findCustomer(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
@@ -596,9 +594,14 @@ export default function Customer() {
               variant="contained"
               color="error"
               onClick={() => {
-                fetchCustomer();
                 setFilterOpen(false);
                 resetForm();
+                fetchCustomer({
+                  createdAt: {
+                    $gte: moment(),
+                    $lte: moment(),
+                  },
+                });
               }}
             >
               Clear

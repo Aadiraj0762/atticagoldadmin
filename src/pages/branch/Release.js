@@ -112,8 +112,8 @@ export default function Release() {
       setBranch(data.data);
       fetchRelease({
         createdAt: {
-          $gte: moment().subtract('days', 1),
-          $lte: moment().add('days', 1),
+          $gte: moment(),
+          $lte: moment(),
         },
         branch: data.data?._id,
       });
@@ -121,6 +121,7 @@ export default function Release() {
   }, []);
 
   const fetchRelease = (query = {}) => {
+    if (!query.branch) query.branch = branch._id;
     findRelease(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);

@@ -114,17 +114,15 @@ export default function Customer() {
       setBranch(data.data);
       fetchCustomer({
         createdAt: {
-          $gte: moment().subtract('days', 1),
-          $lte: moment().add('days', 1),
+          $gte: moment(),
+          $lte: moment(),
         },
         branch: data.data?._id,
       });
     });
   }, [toggleContainer]);
 
-  const fetchCustomer = (
-    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
-  ) => {
+  const fetchCustomer = (query = { createdAt: { $gte: moment(), $lte: moment() } }) => {
     if (!query.branch) query.branch = branch._id;
     findCustomer(query).then((data) => {
       setData(data.data);

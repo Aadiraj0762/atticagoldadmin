@@ -116,8 +116,8 @@ export default function Sale() {
       setBranch(data.data);
       fetchSale({
         createdAt: {
-          $gte: moment().subtract('days', 1),
-          $lte: moment().add('days', 1),
+          $gte: moment(),
+          $lte: moment(),
         },
         branch: data.data?._id,
       });
@@ -127,8 +127,8 @@ export default function Sale() {
   const fetchSale = (
     query = {
       createdAt: {
-        $gte: moment().subtract('days', 1),
-        $lte: moment().add('days', 1),
+        $gte: moment(),
+        $lte: moment(),
       },
     }
   ) => {

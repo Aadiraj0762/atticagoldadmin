@@ -150,8 +150,8 @@ export default function Attendance() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: values.fromDate ?? moment().subtract('days', 1),
-        $lte: values.toDate ?? moment().add('days', 1),
+        $gte: values.fromDate ?? moment(),
+        $lte: values.toDate ?? moment(),
       },
     }
   ) => {
@@ -583,7 +583,12 @@ export default function Attendance() {
               onClick={() => {
                 setFilterOpen(false);
                 resetForm();
-                fetchData();
+                fetchData({
+                  createdAt: {
+                    $gte: moment(),
+                    $lte: moment(),
+                  },
+                });
               }}
             >
               Clear
