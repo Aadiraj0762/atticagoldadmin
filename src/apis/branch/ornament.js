@@ -9,6 +9,15 @@ async function getOrnament(query = {}) {
   }
 }
 
+async function getLatestPrint(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/branch/ornament/get-latest-print', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function updateOrnament(query = {}) {
   try {
     const response = await apiClient().post('/api/v1.0/branch/ornament/update', query);
@@ -18,4 +27,4 @@ async function updateOrnament(query = {}) {
   }
 }
 
-export { getOrnament, updateOrnament };
+export { getOrnament, updateOrnament, getLatestPrint };

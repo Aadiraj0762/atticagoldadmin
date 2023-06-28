@@ -44,7 +44,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { ListHead, ListToolbar } from '../../sections/@dashboard/ornament';
 // mock
-import { getOrnament, updateOrnament } from '../../apis/branch/ornament';
+import { getLatestPrint, getOrnament, updateOrnament } from '../../apis/branch/ornament';
 import { getBranch, getBranchByBranchId } from '../../apis/branch/branch';
 
 // ----------------------------------------------------------------------
@@ -287,7 +287,13 @@ export default function Ornament() {
             >
               Filter
             </Button>
-            <Button variant="contained" startIcon={<Iconify icon={'material-symbols:print'} />}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon={'material-symbols:print'} />}
+              onClick={() => {
+                setToggleContainer(!toggleContainer);
+              }}
+            >
               Print Latest Report
             </Button>
           </Stack>
@@ -412,6 +418,25 @@ export default function Ornament() {
         </Card>
       </Container>
 
+      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'block' : 'none' }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Print Report
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <Print data={{ branch: branch._id }} />
+      </Container>
+
       <Modal
         open={openDeleteModal}
         onClose={handleCloseMoveModal}
@@ -517,6 +542,269 @@ export default function Ornament() {
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
+    </>
+  );
+}
+
+function Print({ data }) {
+  const [ornament, setOrnament] = useState([]);
+
+  useEffect(() => {
+    getLatestPrint(data).then((data) => {
+      setOrnament(data.data);
+    });
+  }, [data]);
+
+  return (
+    <>
+      <iframe id="iframe" style={{ display: 'none', height: '0px', width: '0px', position: 'absolute' }} title="pdf" />
+      <div id="pdf">
+        <img
+          alt="Logo"
+          src="/assets/logo.png"
+          style={{ width: '100px', display: 'block', margin: '20px auto', borderRadius: '50%' }}
+        />
+        <div style={{ display: 'block', textAlign: 'center', margin: '10px auto' }}>
+          <span>
+            Benaka Gold Company, {ornament[0]?.branch?.branchName ?? ''}
+            <br /> {ornament[0]?.branch?.address?.city ?? ''}, {ornament[0]?.branch?.address?.state ?? ''} -{' '}
+            {ornament[0]?.branch?.address?.pincode ?? ''}, {ornament[0]?.branch?.address?.landmark ?? ''}
+          </span>
+          <br />
+          <br />
+          <div style={{ display: 'block', margin: '20px 0' }}>
+            <table style={{ width: '100%', textAlign: 'left' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '50%' }}>
+                    <b>GST:</b> {ornament[0]?.branch?.gstNumber ?? ''}
+                  </td>
+                  <td style={{ width: '50%', textAlign: 'right' }}>
+                    <b>Date:</b> {ornament[0]?.movedAt ? moment(ornament[0]?.movedAt).format('DD MMM, YYYY') : ''}
+                    <br />
+                    <b>Call:</b> 1234567890
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <hr style={{ border: '0', borderBottom: '1px solid' }} />
+        <div style={{ margin: '30px 0' }}>
+          <center style={{ margin: '40px auto' }}>
+            <h3>GOLD MOVEMENT DETAILS</h3>
+          </center>
+          <table
+            style={{
+              width: '100%',
+              textAlign: 'center',
+              border: '1px solid',
+              borderCollapse: 'collapse',
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  SNo
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Ornament Type
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Quantity
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  GrossWeight
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Stone
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Netweight
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Status
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  BillDate
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  MoveDate
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {ornament?.map((e, index) => (
+                <tr key={e._id}>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {index}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.ornamentType}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.quantity}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.grossWeight?.toFixed(2)} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.stoneWeight?.toFixed(2)} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.netWeight?.toFixed(2)} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.status}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.billDate ? moment(e.billDate).format('YYYY-MM-DD') : ''}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.movedAt ? moment(e.movedAt).format('YYYY-MM-DD') : ''}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <hr style={{ border: '0', borderBottom: '1px solid' }} />
+        <div style={{ display: 'block', margin: '30px 0' }}>
+          <table style={{ width: '100%', textAlign: 'left' }}>
+            <tbody>
+              <tr>
+                <td style={{ width: '50%' }}>
+                  <b>Carried By:</b>
+                </td>
+                <td style={{ width: '50%' }}>
+                  <b>Expected Delivery:</b>
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>
+                  <b>Designation:</b>
+                </td>
+                <td style={{ width: '50%' }}>
+                  <b>Signature:</b>
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>
+                  <b>Contact:</b>
+                </td>
+                <td style={{ width: '50%' }} />
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <Button
+        variant="contained"
+        startIcon={<Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />}
+        onClick={() => {
+          const content = document.getElementById('pdf');
+          const pri = document.getElementById('iframe').contentWindow;
+          pri.document.open();
+          pri.document.write(content.innerHTML);
+          pri.document.close();
+          pri.onload = function () {
+            pri.focus();
+            pri.print();
+          };
+        }}
+      >
+        Print
+      </Button>
     </>
   );
 }

@@ -18,4 +18,13 @@ async function groupByBranchAndMovedAt(query = {}) {
   }
 }
 
-export { getOrnament, groupByBranchAndMovedAt };
+async function updateOrnament(query = {}) {
+  try {
+    const response = await apiClient().post('/api/v1.0/admin/ornament/update', query);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
+export { getOrnament, groupByBranchAndMovedAt, updateOrnament };

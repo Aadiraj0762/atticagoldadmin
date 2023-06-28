@@ -43,7 +43,7 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { ListHead } from '../../sections/@dashboard/ornament';
 // mock
-import { groupByBranchAndMovedAt } from '../../apis/admin/ornament';
+import { groupByBranchAndMovedAt, updateOrnament, getOrnament } from '../../apis/admin/ornament';
 import { getBranch } from '../../apis/admin/branch';
 
 // ----------------------------------------------------------------------
@@ -94,6 +94,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function Ornament() {
   const [branches, setBranches] = useState([]);
+  const [openData, setOpenData] = useState({});
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [openBackdrop, setOpenBackdrop] = useState(true);
@@ -132,7 +133,6 @@ export default function Ornament() {
           $lte: values.toDate,
         },
         branch: values.branch,
-        status: 'moved',
       }).then((data) => {
         setData(data.data);
         setOpenBackdrop(false);
@@ -154,7 +154,6 @@ export default function Ornament() {
         $gte: values.fromDate ?? moment().subtract('days', 1),
         $lte: values.toDate ?? moment().add('days', 1),
       },
-      status: 'moved',
     }
   ) => {
     groupByBranchAndMovedAt(query).then((data) => {
@@ -195,6 +194,38 @@ export default function Ornament() {
   }
 
   const Alert = forwardRef(AlertComponent);
+
+  function Status({ id, st }) {
+    const [status, setStatus] = useState(st);
+    return status === 'received' ? (
+      <span>{sentenceCase(status)}</span>
+    ) : (
+      <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+        <Select
+          value={status}
+          onChange={(e) => {
+            if (window.confirm('Do you want to change the status?')) {
+              setStatus(e.target.value);
+              updateOrnament({
+                id,
+                status: e.target.value,
+              });
+            }
+          }}
+        >
+          <MenuItem value="hold" selected={status === 'hold'}>
+            Hold
+          </MenuItem>
+          <MenuItem value="moved" selected={status === 'moved'}>
+            Moved
+          </MenuItem>
+          <MenuItem value="received" selected={status === 'received'}>
+            Received
+          </MenuItem>
+        </Select>
+      </FormControl>
+    );
+  }
 
   return (
     <>
@@ -257,8 +288,18 @@ export default function Ornament() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { branchName, quantity, grossWeight, stoneWeight, netWeight, netAmount, status, movedAt } =
-                      row;
+                    const {
+                      ids,
+                      branch,
+                      branchName,
+                      quantity,
+                      grossWeight,
+                      stoneWeight,
+                      netWeight,
+                      netAmount,
+                      status,
+                      movedAt,
+                    } = row;
 
                     return (
                       <TableRow hover key={index} tabIndex={-1}>
@@ -269,12 +310,21 @@ export default function Ornament() {
                         <TableCell align="left">{stoneWeight}</TableCell>
                         <TableCell align="left">{netWeight}</TableCell>
                         <TableCell align="left">{netAmount}</TableCell>
-                        <TableCell align="left">{sentenceCase(status ?? '')}</TableCell>
+                        <TableCell align="left">
+                          <Status id={ids} st={status} />
+                        </TableCell>
                         <TableCell align="left">
                           {movedAt ? moment(movedAt).format('YYYY-MM-DD HH:mm:ss') : ''}
                         </TableCell>
                         <TableCell align="right">
-                          <Button variant="contained" startIcon={<Iconify icon={'material-symbols:print'} />}>
+                          <Button
+                            variant="contained"
+                            startIcon={<Iconify icon={'material-symbols:print'} />}
+                            onClick={() => {
+                              setOpenData({ movedAt, status, branch });
+                              setToggleContainer(!toggleContainer);
+                            }}
+                          >
                             Print
                           </Button>
                         </TableCell>
@@ -338,6 +388,25 @@ export default function Ornament() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+      </Container>
+
+      <Container maxWidth="xl" sx={{ display: toggleContainer === true ? 'block' : 'none' }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Print Report
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mdi:arrow-left" />}
+            onClick={() => {
+              setToggleContainer(!toggleContainer);
+            }}
+          >
+            Back
+          </Button>
+        </Stack>
+
+        <Print data={openData} />
       </Container>
 
       <Dialog open={filterOpen} onClose={handleFilterClose}>
@@ -418,7 +487,6 @@ export default function Ornament() {
                     $gte: moment().subtract('days', 1),
                     $lte: moment().add('days', 1),
                   },
-                  status: 'moved',
                 });
               }}
             >
@@ -437,6 +505,269 @@ export default function Ornament() {
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
+    </>
+  );
+}
+
+function Print({ data }) {
+  const [ornament, setOrnament] = useState([]);
+
+  useEffect(() => {
+    getOrnament(data).then((data) => {
+      setOrnament(data.data);
+    });
+  }, [data]);
+
+  return (
+    <>
+      <iframe id="iframe" style={{ display: 'none', height: '0px', width: '0px', position: 'absolute' }} title="pdf" />
+      <div id="pdf">
+        <img
+          alt="Logo"
+          src="/assets/logo.png"
+          style={{ width: '100px', display: 'block', margin: '20px auto', borderRadius: '50%' }}
+        />
+        <div style={{ display: 'block', textAlign: 'center', margin: '10px auto' }}>
+          <span>
+            Benaka Gold Company, {ornament[0]?.branch?.branchName ?? ''}
+            <br /> {ornament[0]?.branch?.address?.city ?? ''}, {ornament[0]?.branch?.address?.state ?? ''} -{' '}
+            {ornament[0]?.branch?.address?.pincode ?? ''}, {ornament[0]?.branch?.address?.landmark ?? ''}
+          </span>
+          <br />
+          <br />
+          <div style={{ display: 'block', margin: '20px 0' }}>
+            <table style={{ width: '100%', textAlign: 'left' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '50%' }}>
+                    <b>GST:</b> {ornament[0]?.branch?.gstNumber ?? ''}
+                  </td>
+                  <td style={{ width: '50%', textAlign: 'right' }}>
+                    <b>Date:</b> {ornament[0]?.movedAt ? moment(ornament[0]?.movedAt).format('DD MMM, YYYY') : ''}
+                    <br />
+                    <b>Call:</b> 1234567890
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <hr style={{ border: '0', borderBottom: '1px solid' }} />
+        <div style={{ margin: '30px 0' }}>
+          <center style={{ margin: '40px auto' }}>
+            <h3>GOLD MOVEMENT DETAILS</h3>
+          </center>
+          <table
+            style={{
+              width: '100%',
+              textAlign: 'center',
+              border: '1px solid',
+              borderCollapse: 'collapse',
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  SNo
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Ornament Type
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Quantity
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  GrossWeight
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Stone
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Netweight
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  Status
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  BillDate
+                </th>
+                <th
+                  style={{
+                    border: '1px solid',
+                    padding: '5px',
+                  }}
+                >
+                  MoveDate
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {ornament?.map((e, index) => (
+                <tr key={e._id}>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {index}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.ornamentType}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.quantity}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.grossWeight?.toFixed(2)} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.stoneWeight?.toFixed(2)} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.netWeight?.toFixed(2)} Gram
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.status}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.billDate ? moment(e.billDate).format('YYYY-MM-DD') : ''}
+                  </td>
+                  <td
+                    style={{
+                      border: '1px solid',
+                      padding: '5px',
+                    }}
+                  >
+                    {e.movedAt ? moment(e.movedAt).format('YYYY-MM-DD') : ''}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <hr style={{ border: '0', borderBottom: '1px solid' }} />
+        <div style={{ display: 'block', margin: '30px 0' }}>
+          <table style={{ width: '100%', textAlign: 'left' }}>
+            <tbody>
+              <tr>
+                <td style={{ width: '50%' }}>
+                  <b>Carried By:</b>
+                </td>
+                <td style={{ width: '50%' }}>
+                  <b>Expected Delivery:</b>
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>
+                  <b>Designation:</b>
+                </td>
+                <td style={{ width: '50%' }}>
+                  <b>Signature:</b>
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width: '50%' }}>
+                  <b>Contact:</b>
+                </td>
+                <td style={{ width: '50%' }} />
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <Button
+        variant="contained"
+        startIcon={<Iconify icon={'material-symbols:print'} sx={{ mr: 2 }} />}
+        onClick={() => {
+          const content = document.getElementById('pdf');
+          const pri = document.getElementById('iframe').contentWindow;
+          pri.document.open();
+          pri.document.write(content.innerHTML);
+          pri.document.close();
+          pri.onload = function () {
+            pri.focus();
+            pri.print();
+          };
+        }}
+      >
+        Print
+      </Button>
     </>
   );
 }
