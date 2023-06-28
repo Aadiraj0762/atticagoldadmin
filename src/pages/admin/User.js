@@ -47,6 +47,7 @@ const TABLE_HEAD = [
   { id: 'username', label: 'Username', alignRight: false },
   { id: 'password', label: 'Password', alignRight: false },
   { id: 'userType', label: 'User Type', alignRight: false },
+  { id: 'employee', label: 'Employee', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -288,12 +289,12 @@ export default function User() {
               onClick={() => {
                 handleExport(
                   data.map((e) => ({
-                      Username: e.username,
-                      Password: e.password,
-                      UserType: e.userType,
-                      Status: e.status,
-                      Date: e.createdAt,
-                    })),
+                    Username: e.username,
+                    Password: e.password,
+                    UserType: e.userType,
+                    Status: e.status,
+                    Date: e.createdAt,
+                  })),
                   'Users'
                 );
               }}
@@ -328,7 +329,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, username, password, userType, status, createdAt } = row;
+                    const { _id, username, password, userType, employee, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -339,6 +340,7 @@ export default function User() {
                         <TableCell align="left">{username}</TableCell>
                         <TableCell align="left">{password}</TableCell>
                         <TableCell align="left">{sentenceCase(userType)}</TableCell>
+                        <TableCell align="left">{employee?.employeeId}</TableCell>
                         <TableCell align="left">
                           <Status status={status} _id={_id} />
                         </TableCell>
@@ -360,12 +362,12 @@ export default function User() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={12} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={12} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -381,7 +383,7 @@ export default function User() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={12} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

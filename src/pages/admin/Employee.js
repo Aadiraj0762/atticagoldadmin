@@ -45,6 +45,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'gender', label: 'Gender', alignRight: false },
   { id: 'designation', label: 'Designation', alignRight: false },
+  { id: 'phoneNumber', label: 'Phone Number', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false },
   { id: '' },
@@ -281,7 +282,7 @@ export default function Employee() {
                 />
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, employeeId, name, gender, designation, status, createdAt } = row;
+                    const { _id, employeeId, name, gender, designation, phoneNumber, status, createdAt } = row;
                     const selectedData = selected.indexOf(_id) !== -1;
 
                     return (
@@ -293,6 +294,7 @@ export default function Employee() {
                         <TableCell align="left">{name}</TableCell>
                         <TableCell align="left">{gender}</TableCell>
                         <TableCell align="left">{sentenceCase(designation)}</TableCell>
+                        <TableCell align="left">{phoneNumber}</TableCell>
                         <TableCell align="left">
                           <Label color={(status !== 'active' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                         </TableCell>
@@ -314,12 +316,12 @@ export default function Employee() {
                   })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={12} />
                     </TableRow>
                   )}
                   {filteredData.length === 0 && (
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={12} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -335,7 +337,7 @@ export default function Employee() {
                 {filteredData.length > 0 && isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={8} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={12} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

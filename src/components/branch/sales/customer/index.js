@@ -37,7 +37,7 @@ import moment from 'moment';
 import Webcam from 'react-webcam';
 import Iconify from '../../../iconify';
 import Label from '../../../label';
-import { findCustomer, createCustomer, deleteCustomerById } from '../../../../apis/branch/customer';
+import { findCustomer, createCustomer, deleteCustomerById, sendOtp, verifyOtp } from '../../../../apis/branch/customer';
 import { createFile } from '../../../../apis/branch/fileupload';
 import { getBranchByBranchId } from '../../../../apis/branch/branch';
 import Scrollbar from '../../../scrollbar';
@@ -59,6 +59,7 @@ const style = {
 function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   const auth = useSelector((state) => state.auth);
   const [branch, setBranch] = useState({});
+  const [token, setToken] = useState(null);
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [customerModal, setCustomerModal] = useState(false);
@@ -147,7 +148,18 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
     maritalStatus: Yup.string().required('Marital is required'),
   });
 
-  const { handleSubmit, handleChange, handleBlur, values, setValues, touched, errors, resetForm } = useFormik({
+  const {
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    values,
+    setValues,
+    touched,
+    errors,
+    setFieldError,
+    setFieldTouched,
+    resetForm,
+  } = useFormik({
     initialValues: {
       name: '',
       phoneNumber: '',
@@ -168,12 +180,24 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
       uploadId: {},
     },
     validationSchema: schema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      setFieldTouched('otp', true);
+      const res = await verifyOtp({ otp: values.otp, token });
+      if (res.status === false) {
+        setFieldError('otp', res.message);
+        setNotify({
+          open: true,
+          message: res.message,
+          severity: 'error',
+        });
+        return;
+      }
+      setFieldError('otp', '');
       if (!img) {
         setNotify({
           open: true,
           message: 'Please capture photo',
-          severity: 'info',
+          severity: 'error',
         });
         return;
       }
@@ -413,7 +437,16 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   label={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : 'Phone'}
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (e.target.value.length === 10) {
+                      sendOtp({ phoneNumber: e.target.value }).then((res) => {
+                        if (res.status === true) {
+                          setToken(res.data.token);
+                        }
+                      });
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
