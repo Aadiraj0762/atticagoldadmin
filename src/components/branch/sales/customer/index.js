@@ -60,6 +60,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   const auth = useSelector((state) => state.auth);
   const [branch, setBranch] = useState({});
   const [token, setToken] = useState(null);
+  const [altToken, setAltToken] = useState(null);
   const [data, setData] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [customerModal, setCustomerModal] = useState(false);
@@ -139,7 +140,11 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
     email: Yup.string().required('Email id is required').email(),
     dob: Yup.string().required('DOB is required'),
     gender: Yup.string().required('Gender is required'),
-    otp: Yup.string().required('Otp is required').length(6),
+    otp: Yup.string().required('Phone number otp is required').length(6),
+    altOtp: Yup.string().when('alternatePhoneNumber', {
+      is: (v) => !!v,
+      then: Yup.string().required('Alt phone number otp is required').length(6),
+    }),
     employmentType: Yup.string().required('Employment type is required'),
     organisation: Yup.string().required('Organisation is required'),
     annualIncome: Yup.string().required('Annual income is required'),
@@ -166,6 +171,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
       dob: moment(),
       gender: '',
       otp: '',
+      altOtp: '',
       employmentType: '',
       organisation: '',
       annualIncome: '',
@@ -191,6 +197,20 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
         return;
       }
       setFieldError('otp', '');
+      if (!!values.altOtp && !!values.alternatePhoneNumber) {
+        setFieldTouched('altOtp', true);
+        const altRes = await verifyOtp({ otp: values.altOtp, token: altToken });
+        if (altRes.status === false) {
+          setFieldError('altOtp', altRes.message);
+          setNotify({
+            open: true,
+            message: altRes.message,
+            severity: 'error',
+          });
+          return;
+        }
+        setFieldError('altOtp', '');
+      }
       if (!img) {
         setNotify({
           open: true,
@@ -459,7 +479,16 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   }
                   fullWidth
                   onBlur={handleBlur}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (e.target.value.length === 10) {
+                      sendOtp({ phoneNumber: e.target.value }).then((res) => {
+                        if (res.status === true) {
+                          setAltToken(res.data.token);
+                        }
+                      });
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -511,7 +540,18 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
                   name="otp"
                   value={values.otp}
                   error={touched.otp && errors.otp && true}
-                  label={touched.otp && errors.otp ? errors.otp : 'OTP'}
+                  label={touched.otp && errors.otp ? errors.otp : 'Phone Number OTP'}
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  name="altOtp"
+                  value={values.altOtp}
+                  error={touched.altOtp && errors.altOtp && true}
+                  label={touched.altOtp && errors.altOtp ? errors.altOtp : 'Alt Phone Number OTP'}
                   fullWidth
                   onBlur={handleBlur}
                   onChange={handleChange}

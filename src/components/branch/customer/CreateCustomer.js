@@ -17,6 +17,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
   const auth = useSelector((state) => state.auth);
   const [branch, setBranch] = useState({});
   const [token, setToken] = useState(null);
+  const [altToken, setAltToken] = useState(null);
   const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
   const form = useRef();
@@ -49,7 +50,11 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
     email: Yup.string().required('Email id is required'),
     dob: Yup.string().required('DOB is required'),
     gender: Yup.string().required('Gender is required'),
-    otp: Yup.string().required('Otp is required').length(6),
+    otp: Yup.string().required('Phone number otp is required').length(6),
+    altOtp: Yup.string().when('alternatePhoneNumber', {
+      is: (v) => !!v,
+      then: Yup.string().required('Alt phone number otp is required').length(6),
+    }),
     employmentType: Yup.string().required('Employment type is required'),
     organisation: Yup.string().required('Organisation is required'),
     annualIncome: Yup.string().required('Annual income is required'),
@@ -76,6 +81,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
       dob: moment(),
       gender: '',
       otp: '',
+      altOtp: '',
       employmentType: '',
       organisation: '',
       annualIncome: '',
@@ -101,6 +107,20 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
         return;
       }
       setFieldError('otp', '');
+      if (!!values.altOtp && !!values.alternatePhoneNumber) {
+        setFieldTouched('altOtp', true);
+        const altRes = await verifyOtp({ otp: values.altOtp, token: altToken });
+        if (altRes.status === false) {
+          setFieldError('altOtp', altRes.message);
+          setNotify({
+            open: true,
+            message: altRes.message,
+            severity: 'error',
+          });
+          return;
+        }
+        setFieldError('altOtp', '');
+      }
       if (!img) {
         setNotify({
           open: true,
@@ -224,7 +244,16 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               }
               fullWidth
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                if (e.target.value.length === 10) {
+                  sendOtp({ phoneNumber: e.target.value }).then((res) => {
+                    if (res.status === true) {
+                      setAltToken(res.data.token);
+                    }
+                  });
+                }
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -276,7 +305,18 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
               name="otp"
               value={values.otp}
               error={touched.otp && errors.otp && true}
-              label={touched.otp && errors.otp ? errors.otp : 'OTP'}
+              label={touched.otp && errors.otp ? errors.otp : 'Phone Number OTP'}
+              fullWidth
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              name="altOtp"
+              value={values.altOtp}
+              error={touched.altOtp && errors.altOtp && true}
+              label={touched.altOtp && errors.altOtp ? errors.altOtp : 'Alt Phone Number OTP'}
               fullWidth
               onBlur={handleBlur}
               onChange={handleChange}
