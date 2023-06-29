@@ -90,25 +90,23 @@ function CreateSale(props) {
   };
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      if (data.data) {
+      setBranch(auth.user.branch);
+      if (auth.user.branch) {
         getGoldRateByState({
-          state: data.data.address.state,
+          state: auth.user.branch.address.state,
           type: 'gold',
           date: moment().format('YYYY-MM-DD'),
         }).then((data) => {
           setGoldRate(data.data);
         });
         getGoldRateByState({
-          state: data.data.address.state,
+          state: auth.user.branch.address.state,
           type: 'silver',
           date: moment().format('YYYY-MM-D'),
         }).then((data) => {
           setSilverRate(data.data);
         });
       }
-    });
   }, [auth]);
 
   // Form validation

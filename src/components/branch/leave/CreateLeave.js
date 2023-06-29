@@ -36,9 +36,7 @@ function CreateLeave(props) {
   const [branch, setBranch] = useState({});
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-    });
+    setBranch(auth.user.branch);
     getEmployee().then((data) => {
       setEmloyees(data.data);
     });
@@ -55,7 +53,7 @@ function CreateLeave(props) {
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: {
       branch: branch?._id,
-      employee: auth.user.employee,
+      employee: auth.user.employee._id,
       leaveType: '',
       proof: {},
       dates: [moment(moment().format('YYYY-MM-DD'))],

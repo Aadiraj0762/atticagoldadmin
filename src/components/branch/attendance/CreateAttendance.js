@@ -39,7 +39,7 @@ function CreateAttendance(props) {
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({
     initialValues: {
-      employee: auth.user.employee,
+      employee: auth.user.employee._id,
     },
     validationSchema: schema,
     onSubmit: (values) => {

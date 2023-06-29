@@ -23,7 +23,14 @@ function CreateUser(props) {
 
   // Form validation
   const schema = Yup.object({
-    username: Yup.string().required('Username is required'),
+    username: Yup.string().when('userType', {
+      is: (v) => v !== 'branch',
+      then: Yup.string().required('Username is required'),
+    }),
+    branch: Yup.string().when('userType', {
+      is: (v) => v === 'branch',
+      then: Yup.string().required('Branch is required'),
+    }),
     password: Yup.string().when('userType', {
       is: (v) => v !== 'branch',
       then: Yup.string().required('Password is required'),
@@ -38,10 +45,14 @@ function CreateUser(props) {
       password: '',
       userType: '',
       employee: '',
+      branch: '',
       status: 'active',
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      if (values.userType === 'branch') {
+        values.username = employees.find((e) => e._id === values.employee)?.phoneNumber ?? null;
+      }
       createUser(values).then((data) => {
         if (data.status === false) {
           props.setNotify({
@@ -95,19 +106,19 @@ function CreateUser(props) {
           </Grid>
           {values.userType === 'branch' ? (
             <Grid item xs={12} sm={4}>
-              <FormControl fullWidth error={touched.username && errors.username && true}>
+              <FormControl fullWidth error={touched.branch && errors.branch && true}>
                 <InputLabel id="select-label">Select branch</InputLabel>
                 <Select
                   labelId="select-label"
                   id="select"
-                  label={touched.username && errors.username ? errors.username : 'Select branch'}
-                  name="username"
-                  value={values.username}
+                  label={touched.branch && errors.branch ? errors.branch : 'Select branch'}
+                  name="branch"
+                  value={values.branch}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 >
                   {branches.map((e) => (
-                    <MenuItem value={e.branchId} key={e._id}>
+                    <MenuItem value={e._id} key={e._id}>
                       {e.branchId} {e.branchName}
                     </MenuItem>
                   ))}

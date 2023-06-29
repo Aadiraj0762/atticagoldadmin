@@ -108,15 +108,13 @@ export default function Release() {
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchRelease({
-        createdAt: {
-          $gte: moment(),
-          $lte: moment(),
-        },
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchRelease({
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+      branch: auth.user.branch._id,
     });
   }, []);
 

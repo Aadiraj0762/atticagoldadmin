@@ -110,15 +110,13 @@ export default function Customer() {
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchCustomer({
-        createdAt: {
-          $gte: moment(),
-          $lte: moment(),
-        },
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchCustomer({
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+      branch: auth.user.branch._id,
     });
   }, [toggleContainer]);
 

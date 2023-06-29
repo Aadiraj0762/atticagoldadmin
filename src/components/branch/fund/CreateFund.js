@@ -24,9 +24,7 @@ function CreateFund(props) {
         }
       });
     });
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-    });
+    setBranch(auth.user.branch);
   }, [auth]);
 
   // Form validation

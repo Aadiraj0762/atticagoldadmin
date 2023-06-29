@@ -13,9 +13,7 @@ function CreateExpense(props) {
   const [branch, setBranch] = useState({});
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-    });
+    setBranch(auth.user.branch);
   }, []);
 
   // Form validation

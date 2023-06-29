@@ -22,9 +22,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
   const form = useRef();
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-    });
+    setBranch(auth.user.branch);
   }, [auth]);
 
   const videoConstraints = {

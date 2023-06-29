@@ -112,15 +112,13 @@ export default function Sale() {
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchSale({
-        createdAt: {
-          $gte: moment(),
-          $lte: moment(),
-        },
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchSale({
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+      branch: auth.user.branch._id,
     });
   }, [toggleContainer]);
 

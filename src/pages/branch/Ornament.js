@@ -145,11 +145,9 @@ export default function Ornament() {
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchData({
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchData({
+      branch: auth.user.branch._id,
     });
   }, []);
 

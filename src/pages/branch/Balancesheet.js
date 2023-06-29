@@ -45,6 +45,7 @@ const TABLE_HEAD = [
   { id: 'openingBalance', label: 'Opening Balance', alignRight: false },
   { id: 'fundRequested', label: 'Funds requested', alignRight: false },
   { id: 'fundTransferred', label: 'Funds transferred', alignRight: false },
+  { id: 'fundReceived', label: 'Fund Received', alignRight: false },
   { id: 'totalExpense', label: 'Expenses', alignRight: false },
   { id: 'totalSale', label: 'Sales', alignRight: false },
   { id: 'closingBalance', label: 'Closing cash', alignRight: false },
@@ -101,11 +102,9 @@ export default function Balancesheet() {
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchBalancesheet({
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchBalancesheet({
+      branch: auth.user.branch._id,
     });
   }, []);
 
@@ -231,6 +230,7 @@ export default function Balancesheet() {
                       openingBalance,
                       fundRequested,
                       fundTransferred,
+                      fundReceived,
                       totalExpense,
                       totalSale,
                       closingBalance,
@@ -243,6 +243,7 @@ export default function Balancesheet() {
                         <TableCell align="left">{openingBalance}</TableCell>
                         <TableCell align="left">{fundRequested}</TableCell>
                         <TableCell align="left">{fundTransferred}</TableCell>
+                        <TableCell align="left">{fundReceived}</TableCell>
                         <TableCell align="left">{totalExpense}</TableCell>
                         <TableCell align="left">{totalSale}</TableCell>
                         <TableCell align="left">{closingBalance}</TableCell>

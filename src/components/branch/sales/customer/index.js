@@ -73,9 +73,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   const webcamRef = useRef(null);
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-    });
+    setBranch(auth.user.branch);
   }, [auth]);
 
   const videoConstraints = {

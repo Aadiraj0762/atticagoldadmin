@@ -111,11 +111,9 @@ export default function Fund() {
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchFund({
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchFund({
+      branch: auth.user.branch._id,
     });
   }, [toggleContainer]);
 

@@ -156,9 +156,7 @@ function Release({ setNotify, selectedUser, selectedRelease, setSelectedRelease 
   });
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-    });
+    setBranch(auth.user.branch);
   }, [auth]);
 
   const updateDimensions = () => {

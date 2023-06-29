@@ -86,11 +86,9 @@ export default function Report() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    getBranchByBranchId({ branchId: auth.user.username }).then((data) => {
-      setBranch(data.data);
-      fetchReport({
-        branch: data.data?._id,
-      });
+    setBranch(auth.user.branch);
+    fetchReport({
+      branch: auth.user.branch._id,
     });
   }, []);
 

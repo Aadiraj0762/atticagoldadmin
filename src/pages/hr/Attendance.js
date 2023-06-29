@@ -674,10 +674,10 @@ export default function Attendance() {
               />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <Consolidated date={moment()} />
+              <Consolidated date={moment().add(1, 'month')} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <Consolidated date={moment().subtract(1, 'month')} />
+              <Consolidated date={moment()} />
             </TabPanel>
           </Box>
         </Card>
