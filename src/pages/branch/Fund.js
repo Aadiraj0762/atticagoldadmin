@@ -112,12 +112,23 @@ export default function Fund() {
 
   useEffect(() => {
     setBranch(auth.user.branch);
-    fetchFund({
+    fetchData({
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
       branch: auth.user.branch._id,
     });
   }, [toggleContainer]);
 
-  const fetchFund = (query = {}) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
     if (!query.branch) query.branch = branch._id;
     findFund(query).then((data) => {
       setData(data.data);
@@ -183,9 +194,7 @@ export default function Fund() {
 
   const handleDelete = () => {
     deleteFundById(openId).then(() => {
-      fetchFund().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -193,9 +202,7 @@ export default function Fund() {
 
   const handleDeleteSelected = () => {
     deleteFundById(selected).then(() => {
-      fetchFund().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

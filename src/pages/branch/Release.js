@@ -109,7 +109,7 @@ export default function Release() {
 
   useEffect(() => {
     setBranch(auth.user.branch);
-    fetchRelease({
+    fetchData({
       createdAt: {
         $gte: moment(),
         $lte: moment(),
@@ -118,7 +118,14 @@ export default function Release() {
     });
   }, []);
 
-  const fetchRelease = (query = {}) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
     if (!query.branch) query.branch = branch._id;
     findRelease(query).then((data) => {
       setData(data.data);
@@ -184,7 +191,7 @@ export default function Release() {
 
   const handleDelete = () => {
     deleteReleaseById(openId).then(() => {
-      fetchRelease();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -192,7 +199,7 @@ export default function Release() {
 
   const handleDeleteSelected = () => {
     deleteReleaseById(selected).then(() => {
-      fetchRelease();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

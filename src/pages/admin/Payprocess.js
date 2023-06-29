@@ -102,11 +102,22 @@ export default function Payprocess() {
   });
 
   useEffect(() => {
-    getPayprocess().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getPayprocess(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -166,9 +177,7 @@ export default function Payprocess() {
 
   const handleDelete = () => {
     deletePayprocessById(openId).then(() => {
-      getPayprocess().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -176,9 +185,7 @@ export default function Payprocess() {
 
   const handleDeleteSelected = () => {
     deletePayprocessById(selected).then(() => {
-      getPayprocess().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

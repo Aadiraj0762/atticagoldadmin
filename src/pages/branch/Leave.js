@@ -109,11 +109,22 @@ export default function Leave() {
   });
 
   useEffect(() => {
-    getLeave().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getLeave(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -173,9 +184,7 @@ export default function Leave() {
 
   const handleDelete = () => {
     deleteLeaveById(openId).then(() => {
-      getLeave().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -183,9 +192,7 @@ export default function Leave() {
 
   const handleDeleteSelected = () => {
     deleteLeaveById(selected).then(() => {
-      getLeave().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

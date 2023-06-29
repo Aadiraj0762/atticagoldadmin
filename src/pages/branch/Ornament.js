@@ -147,6 +147,10 @@ export default function Ornament() {
   useEffect(() => {
     setBranch(auth.user.branch);
     fetchData({
+      createdAt: {
+        $gte: values.fromDate ?? moment(),
+        $lte: values.toDate ?? moment(),
+      },
       branch: auth.user.branch._id,
     });
   }, []);

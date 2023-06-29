@@ -219,9 +219,7 @@ export default function Attendance() {
 
   const handleDelete = () => {
     deleteAttendanceById(openId).then(() => {
-      getAttendance().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -229,9 +227,7 @@ export default function Attendance() {
 
   const handleDeleteSelected = () => {
     deleteAttendanceById(selected).then(() => {
-      getAttendance().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

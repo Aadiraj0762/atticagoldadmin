@@ -225,9 +225,7 @@ export default function Expense() {
 
   const handleDelete = () => {
     deleteExpenseById(openId).then(() => {
-      getExpense().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -235,9 +233,7 @@ export default function Expense() {
 
   const handleDeleteSelected = () => {
     deleteExpenseById(selected).then(() => {
-      getExpense().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

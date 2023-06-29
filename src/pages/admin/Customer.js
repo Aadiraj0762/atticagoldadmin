@@ -150,10 +150,17 @@ export default function Customer() {
   });
 
   useEffect(() => {
-    fetchCustomer();
+    fetchData();
   }, [toggleContainer]);
 
-  const fetchCustomer = (query = { createdAt: { $gte: moment(), $lte: moment() } }) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
     findCustomer(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
@@ -218,7 +225,7 @@ export default function Customer() {
 
   const handleDelete = () => {
     deleteCustomerById(openId).then(() => {
-      fetchCustomer();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -226,7 +233,7 @@ export default function Customer() {
 
   const handleDeleteSelected = () => {
     deleteCustomerById(selected).then(() => {
-      fetchCustomer();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -596,7 +603,7 @@ export default function Customer() {
               onClick={() => {
                 setFilterOpen(false);
                 resetForm();
-                fetchCustomer({
+                fetchData({
                   createdAt: {
                     $gte: moment(),
                     $lte: moment(),

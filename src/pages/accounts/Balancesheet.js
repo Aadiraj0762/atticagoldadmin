@@ -110,20 +110,6 @@ export default function Balancesheet() {
     severity: 'success',
   });
 
-  useEffect(() => {
-    getBranch().then((data) => {
-      setBranches(data.data);
-    });
-    fetchData();
-  }, []);
-
-  const fetchData = (query = {}) => {
-    getBalancesheet(query).then((data) => {
-      setData(data.data);
-      setOpenBackdrop(false);
-    });
-  };
-
   // Form validation
   const schema = Yup.object({
     fromDate: Yup.string().required('From date is required'),
@@ -150,6 +136,25 @@ export default function Balancesheet() {
       setFilterOpen(false);
     },
   });
+
+  useEffect(() => {
+    getBranch().then((data) => {
+      setBranches(data.data);
+    });
+    fetchData();
+  }, []);
+
+  const fetchData = (
+    query = {
+      fromDate: values.fromDate ?? moment(),
+      toDate: values.toDate ?? moment(),
+    }
+  ) => {
+    getBalancesheet(query).then((data) => {
+      setData(data.data);
+      setOpenBackdrop(false);
+    });
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -407,7 +412,10 @@ export default function Balancesheet() {
               onClick={() => {
                 setFilterOpen(false);
                 resetForm();
-                fetchData();
+                fetchData({
+                  fromDate: moment(),
+                  toDate: moment(),
+                });
               }}
             >
               Clear

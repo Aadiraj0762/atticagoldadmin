@@ -105,11 +105,18 @@ export default function Support() {
   });
 
   useEffect(() => {
-    fetchSupport();
+    fetchData();
   }, [toggleContainer]);
 
-  const fetchSupport = () => {
-    getSupport().then((data) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getSupport(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
@@ -173,7 +180,7 @@ export default function Support() {
 
   const handleDelete = () => {
     deleteSupportById(openId).then(() => {
-      fetchSupport();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -181,7 +188,7 @@ export default function Support() {
 
   const handleDeleteSelected = () => {
     deleteSupportById(selected).then(() => {
-      fetchSupport();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

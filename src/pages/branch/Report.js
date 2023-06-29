@@ -87,12 +87,23 @@ export default function Report() {
 
   useEffect(() => {
     setBranch(auth.user.branch);
-    fetchReport({
+    fetchData({
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
       branch: auth.user.branch._id,
     });
   }, []);
 
-  const fetchReport = (query = {}) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
     if (!query.branch) query.branch = branch._id;
     consolidatedSaleReport(query).then((data) => {
       setData(data.data);

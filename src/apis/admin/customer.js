@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getCustomer() {
+async function getCustomer(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/admin/customer/get');
+    const response = await apiClient().post('/api/v1.0/admin/customer/get', query);
     return response.data;
   } catch (err) {
     return err;

@@ -107,11 +107,22 @@ export default function Expense() {
   });
 
   useEffect(() => {
-    getExpense().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getExpense(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -171,9 +182,7 @@ export default function Expense() {
 
   const handleDelete = () => {
     deleteExpenseById(openId).then(() => {
-      getExpense().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -181,9 +190,7 @@ export default function Expense() {
 
   const handleDeleteSelected = () => {
     deleteExpenseById(selected).then(() => {
-      getExpense().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

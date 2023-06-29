@@ -225,9 +225,7 @@ export default function Expense() {
 
   const handleDelete = () => {
     deleteExpenseById(openId).then(() => {
-      getExpense().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -235,9 +233,7 @@ export default function Expense() {
 
   const handleDeleteSelected = () => {
     deleteExpenseById(selected).then(() => {
-      getExpense().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -291,9 +287,7 @@ export default function Expense() {
           variant="contained"
           onClick={(e) => {
             updateExpense(props._id, { status: 'approved' }).then((data) => {
-              getExpense().then((data) => {
-                setData(data.data);
-              });
+              fetchData();
             });
           }}
         >
@@ -305,9 +299,7 @@ export default function Expense() {
           sx={{ ml: 2 }}
           onClick={(e) => {
             updateExpense(props._id, { status: 'rejected' }).then((data) => {
-              getExpense().then((data) => {
-                setData(data.data);
-              });
+              fetchData();
             });
           }}
         >

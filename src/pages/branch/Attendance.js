@@ -104,11 +104,22 @@ export default function Attendance() {
   });
 
   useEffect(() => {
-    getAttendance().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getAttendance(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -168,9 +179,7 @@ export default function Attendance() {
 
   const handleDelete = () => {
     deleteAttendanceById(openId).then(() => {
-      getAttendance().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -178,9 +187,7 @@ export default function Attendance() {
 
   const handleDeleteSelected = () => {
     deleteAttendanceById(selected).then(() => {
-      getAttendance().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

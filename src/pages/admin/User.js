@@ -111,11 +111,22 @@ export default function User() {
   });
 
   useEffect(() => {
-    getUser().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getUser(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -175,9 +186,7 @@ export default function User() {
 
   const handleDelete = () => {
     deleteUserById(openId).then(() => {
-      getUser().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -185,9 +194,7 @@ export default function User() {
 
   const handleDeleteSelected = () => {
     deleteUserById(selected).then(() => {
-      getUser().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

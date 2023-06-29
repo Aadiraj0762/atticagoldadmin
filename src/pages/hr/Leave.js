@@ -223,9 +223,7 @@ export default function Leave() {
 
   const handleDelete = () => {
     deleteLeaveById(openId).then(() => {
-      getLeave().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -233,9 +231,7 @@ export default function Leave() {
 
   const handleDeleteSelected = () => {
     deleteLeaveById(selected).then(() => {
-      getLeave().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

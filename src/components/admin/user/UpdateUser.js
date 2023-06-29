@@ -71,7 +71,7 @@ function UpdateUser(props) {
     resetForm();
     if (props.id) {
       getUserById(props.id).then((data) => {
-        setValues({ ...data.data, employee: data.data?.employee?._id });
+        setValues({ ...data.data, employee: data.data?.employee?._id, branch: data.data?.branch?._id });
         getLoginNotCreatedEmployee().then((employee) => {
           const employees = [...employee.data, data.data.employee];
           setEmloyees(employees.filter((e) => e?._id));

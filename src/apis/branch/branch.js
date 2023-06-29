@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getState() {
+async function getState(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/admin/branch/state');
+    const response = await apiClient().post('/api/v1.0/admin/branch/state', query);
     return response.data;
   } catch (err) {
     return err;

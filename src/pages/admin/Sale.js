@@ -162,10 +162,10 @@ export default function Sale() {
     getBranch().then((data) => {
       setBranches(data.data);
     });
-    fetchSale();
+    fetchData();
   }, [toggleContainer]);
 
-  const fetchSale = (
+  const fetchData = (
     query = {
       createdAt: {
         $gte: values.fromDate ?? moment(),
@@ -237,7 +237,7 @@ export default function Sale() {
 
   const handleDelete = () => {
     deleteSalesById(openId).then(() => {
-      fetchSale();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -245,7 +245,7 @@ export default function Sale() {
 
   const handleDeleteSelected = () => {
     deleteSalesById(selected).then(() => {
-      fetchSale();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -291,7 +291,7 @@ export default function Sale() {
           variant="contained"
           onClick={(e) => {
             updateSales(props._id, { status: 'approved' }).then((data) => {
-              fetchSale();
+              fetchData();
             });
           }}
         >
@@ -303,7 +303,7 @@ export default function Sale() {
           sx={{ ml: 2 }}
           onClick={(e) => {
             updateSales(props._id, { status: 'rejected' }).then((data) => {
-              fetchSale();
+              fetchData();
             });
           }}
         >
@@ -735,7 +735,7 @@ export default function Sale() {
               onClick={() => {
                 setFilterOpen(false);
                 resetForm();
-                fetchSale({
+                fetchData({
                   createdAt: {
                     $gte: moment(),
                     $lte: moment(),

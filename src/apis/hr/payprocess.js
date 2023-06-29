@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getPayprocess() {
+async function getPayprocess(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/hr/payprocess/get');
+    const response = await apiClient().post('/api/v1.0/hr/payprocess/get', query);
     return response.data;
   } catch (err) {
     return err;

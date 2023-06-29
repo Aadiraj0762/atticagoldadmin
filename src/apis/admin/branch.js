@@ -9,9 +9,9 @@ async function getState() {
   }
 }
 
-async function getBranch() {
+async function getBranch(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/admin/branch/get');
+    const response = await apiClient().post('/api/v1.0/admin/branch/get', query);
     return response.data;
   } catch (err) {
     return err;

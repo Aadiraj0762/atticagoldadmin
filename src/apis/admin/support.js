@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getSupport() {
+async function getSupport(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/admin/support/get');
+    const response = await apiClient().post('/api/v1.0/admin/support/get', query);
     return response.data;
   } catch (err) {
     return err;

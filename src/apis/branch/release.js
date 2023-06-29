@@ -9,9 +9,9 @@ async function findRelease(query) {
   }
 }
 
-async function getRelease() {
+async function getRelease(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/branch/release/get');
+    const response = await apiClient().post('/api/v1.0/branch/release/get', query);
     return response.data;
   } catch (err) {
     return err;
@@ -65,4 +65,12 @@ async function deleteReleaseById(id) {
   }
 }
 
-export { findRelease, getRelease, getReleaseById, getReleaseByCustomerId, createRelease, updateRelease, deleteReleaseById };
+export {
+  findRelease,
+  getRelease,
+  getReleaseById,
+  getReleaseByCustomerId,
+  createRelease,
+  updateRelease,
+  deleteReleaseById,
+};

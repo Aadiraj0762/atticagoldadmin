@@ -225,9 +225,7 @@ export default function Fund() {
 
   const handleDelete = () => {
     deleteFundById(openId).then(() => {
-      getFund().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -235,9 +233,7 @@ export default function Fund() {
 
   const handleDeleteSelected = () => {
     deleteFundById(selected).then(() => {
-      getFund().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -291,9 +287,7 @@ export default function Fund() {
           variant="contained"
           onClick={(e) => {
             updateFund(props._id, { status: 'approved' }).then((data) => {
-              getFund().then((data) => {
-                setData(data.data);
-              });
+              fetchData();
             });
           }}
         >
@@ -305,9 +299,7 @@ export default function Fund() {
           sx={{ ml: 2 }}
           onClick={(e) => {
             updateFund(props._id, { status: 'rejected' }).then((data) => {
-              getFund().then((data) => {
-                setData(data.data);
-              });
+              fetchData();
             });
           }}
         >

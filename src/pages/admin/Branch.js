@@ -107,11 +107,22 @@ export default function Branch() {
   });
 
   useEffect(() => {
-    getBranch().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getBranch(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -171,9 +182,7 @@ export default function Branch() {
 
   const handleDelete = () => {
     deleteBranchById(openId).then(() => {
-      getBranch().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -181,9 +190,7 @@ export default function Branch() {
 
   const handleDeleteSelected = () => {
     deleteBranchById(selected).then(() => {
-      getBranch().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

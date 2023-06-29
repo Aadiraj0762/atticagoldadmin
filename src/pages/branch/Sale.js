@@ -113,7 +113,7 @@ export default function Sale() {
 
   useEffect(() => {
     setBranch(auth.user.branch);
-    fetchSale({
+    fetchData({
       createdAt: {
         $gte: moment(),
         $lte: moment(),
@@ -122,7 +122,7 @@ export default function Sale() {
     });
   }, [toggleContainer]);
 
-  const fetchSale = (
+  const fetchData = (
     query = {
       createdAt: {
         $gte: moment(),
@@ -195,7 +195,7 @@ export default function Sale() {
 
   const handleDelete = () => {
     deleteSalesById(openId).then(() => {
-      fetchSale();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -203,7 +203,7 @@ export default function Sale() {
 
   const handleDeleteSelected = () => {
     deleteSalesById(selected).then(() => {
-      fetchSale();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

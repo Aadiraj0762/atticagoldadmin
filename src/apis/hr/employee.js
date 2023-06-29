@@ -1,8 +1,8 @@
 import apiClient from '../http';
 
-async function getEmployee() {
+async function getEmployee(query = {}) {
   try {
-    const response = await apiClient().get('/api/v1.0/hr/employee/get');
+    const response = await apiClient().post('/api/v1.0/hr/employee/get', query);
     return response.data;
   } catch (err) {
     return err;
@@ -12,6 +12,15 @@ async function getEmployee() {
 async function getEmployeeById(id) {
   try {
     const response = await apiClient().get(`/api/v1.0/hr/employee/get/${id}`);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function getLoginNotCreatedEmployee() {
+  try {
+    const response = await apiClient().get('/api/v1.0/hr/employee/login-not-created');
     return response.data;
   } catch (err) {
     return err;
@@ -45,4 +54,4 @@ async function deleteEmployeeById(id) {
   }
 }
 
-export { getEmployee, getEmployeeById, createEmployee, updateEmployee, deleteEmployeeById };
+export { getEmployee, getEmployeeById, getLoginNotCreatedEmployee, createEmployee, updateEmployee, deleteEmployeeById };

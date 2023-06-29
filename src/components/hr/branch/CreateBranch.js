@@ -17,7 +17,10 @@ function CreateBranch(props) {
     area: Yup.string().required('Area is required'),
     city: Yup.string().required('City is required'),
     state: Yup.string().required('State is required'),
-    pincode: Yup.string().required('Pincode is required'),
+    pincode: Yup.string()
+      .required('Pincode is required')
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(6),
     landmark: Yup.string().required('Landmark is required'),
     longitude: Yup.string().required('Longitude is required'),
     latitude: Yup.string().required('Latitude is required'),

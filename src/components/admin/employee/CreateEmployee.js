@@ -20,8 +20,13 @@ function CreateEmployee(props) {
     designation: Yup.string().required('Designation is required'),
     salary: Yup.string().required('Salary is required'),
     employeeId: Yup.string().required('Employee Id is required'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    alternatePhoneNumber: Yup.string().required('Alternate phone number is required'),
+    phoneNumber: Yup.string()
+      .required('Phone is required')
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(10),
+    alternatePhoneNumber: Yup.string()
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .length(10),
     dob: Yup.string().required('DOB is required'),
     shiftStartTime: Yup.string().required('Login Time is required'),
     shiftEndTime: Yup.string().required('Logout Time is required'),

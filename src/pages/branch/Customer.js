@@ -111,7 +111,7 @@ export default function Customer() {
 
   useEffect(() => {
     setBranch(auth.user.branch);
-    fetchCustomer({
+    fetchData({
       createdAt: {
         $gte: moment(),
         $lte: moment(),
@@ -120,7 +120,14 @@ export default function Customer() {
     });
   }, [toggleContainer]);
 
-  const fetchCustomer = (query = { createdAt: { $gte: moment(), $lte: moment() } }) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
     if (!query.branch) query.branch = branch._id;
     findCustomer(query).then((data) => {
       setData(data.data);
@@ -186,7 +193,7 @@ export default function Customer() {
 
   const handleDelete = () => {
     deleteCustomerById(openId).then(() => {
-      fetchCustomer();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -194,7 +201,7 @@ export default function Customer() {
 
   const handleDeleteSelected = () => {
     deleteCustomerById(selected).then(() => {
-      fetchCustomer();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

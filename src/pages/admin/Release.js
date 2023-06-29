@@ -158,10 +158,17 @@ export default function Release() {
     getBranch().then((data) => {
       setBranches(data.data);
     });
-    fetchRelease();
+    fetchData();
   }, []);
 
-  const fetchRelease = (query = {}) => {
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: values.fromDate ?? moment(),
+        $lte: values.toDate ?? moment(),
+      },
+    }
+  ) => {
     findRelease(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
@@ -226,7 +233,7 @@ export default function Release() {
 
   const handleDelete = () => {
     deleteReleaseById(openId).then(() => {
-      fetchRelease();
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -234,7 +241,7 @@ export default function Release() {
 
   const handleDeleteSelected = () => {
     deleteReleaseById(selected).then(() => {
-      fetchRelease();
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
@@ -594,9 +601,14 @@ export default function Release() {
               variant="contained"
               color="error"
               onClick={() => {
-                fetchRelease();
                 setFilterOpen(false);
                 resetForm();
+                fetchData({
+                  createdAt: {
+                    $gte: moment(),
+                    $lte: moment(),
+                  },
+                });
               }}
             >
               Clear

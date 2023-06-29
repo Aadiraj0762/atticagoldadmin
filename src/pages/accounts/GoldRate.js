@@ -220,9 +220,7 @@ export default function GoldRate() {
 
   const handleDelete = () => {
     deleteGoldRateById(openId).then(() => {
-      getGoldRate().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -230,9 +228,7 @@ export default function GoldRate() {
 
   const handleDeleteSelected = () => {
     deleteGoldRateById(selected).then(() => {
-      getGoldRate().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

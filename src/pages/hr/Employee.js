@@ -106,11 +106,22 @@ export default function Employee() {
   });
 
   useEffect(() => {
-    getEmployee().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getEmployee(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -170,9 +181,7 @@ export default function Employee() {
 
   const handleDelete = () => {
     deleteEmployeeById(openId).then(() => {
-      getEmployee().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -180,9 +189,7 @@ export default function Employee() {
 
   const handleDeleteSelected = () => {
     deleteEmployeeById(selected).then(() => {
-      getEmployee().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({

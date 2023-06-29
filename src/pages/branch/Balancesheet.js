@@ -103,12 +103,19 @@ export default function Balancesheet() {
 
   useEffect(() => {
     setBranch(auth.user.branch);
-    fetchBalancesheet({
+    fetchData({
       branch: auth.user.branch._id,
+      fromDate: moment(),
+      toDate: moment(),
     });
   }, []);
 
-  const fetchBalancesheet = (query = {}) => {
+  const fetchData = (
+    query = {
+      fromDate: moment(),
+      toDate: moment(),
+    }
+  ) => {
     if (!query.branch) query.branch = branch._id;
     getBalancesheet(query).then((data) => {
       setData(data.data);

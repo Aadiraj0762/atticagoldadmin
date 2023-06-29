@@ -101,11 +101,22 @@ export default function OTP() {
   });
 
   useEffect(() => {
-    getOTP().then((data) => {
+    fetchData();
+  }, [toggleContainer]);
+
+  const fetchData = (
+    query = {
+      createdAt: {
+        $gte: moment(),
+        $lte: moment(),
+      },
+    }
+  ) => {
+    getOTP(query).then((data) => {
       setData(data.data);
       setOpenBackdrop(false);
     });
-  }, [toggleContainer]);
+  };
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -165,9 +176,7 @@ export default function OTP() {
 
   const handleDelete = () => {
     deleteOTPById(openId).then(() => {
-      getOTP().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected(selected.filter((e) => e !== openId));
     });
@@ -175,9 +184,7 @@ export default function OTP() {
 
   const handleDeleteSelected = () => {
     deleteOTPById(selected).then(() => {
-      getOTP().then((data) => {
-        setData(data.data);
-      });
+      fetchData();
       handleCloseDeleteModal();
       setSelected([]);
       setNotify({
