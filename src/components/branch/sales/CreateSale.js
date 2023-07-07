@@ -122,7 +122,7 @@ function CreateSale(props) {
     initialValues: {
       purchaseType: '',
       saleType: '',
-      dop: moment(),
+      dop: moment()?.format("YYYY-MM-DD"),
       paymentType: '',
       cashAmount: '',
       bankAmount: '',

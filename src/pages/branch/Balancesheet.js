@@ -105,15 +105,15 @@ export default function Balancesheet() {
     setBranch(auth.user.branch);
     fetchData({
       branch: auth.user.branch._id,
-      fromDate: moment(),
-      toDate: moment(),
+      fromDate: moment()?.format("YYYY-MM-DD"),
+      toDate: moment()?.format("YYYY-MM-DD"),
     });
   }, []);
 
   const fetchData = (
     query = {
-      fromDate: moment(),
-      toDate: moment(),
+      fromDate: moment()?.format("YYYY-MM-DD"),
+      toDate: moment()?.format("YYYY-MM-DD"),
     }
   ) => {
     if (!query.branch) query.branch = branch._id;

@@ -30,7 +30,7 @@ function CreateGoldRate(props) {
       rate: '',
       type: '',
       state: '',
-      date: moment(),
+      date: moment()?.format("YYYY-MM-DD"),
     },
     validationSchema: schema,
     onSubmit: (values) => {

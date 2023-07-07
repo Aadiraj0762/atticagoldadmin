@@ -133,8 +133,8 @@ export default function GoldRate() {
       setOpenBackdrop(true);
       getGoldRate({
         date: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
+          $gte: values.fromDate?.format("YYYY-MM-DD"),
+          $lte: values.toDate?.format("YYYY-MM-DD"),
         },
       }).then((data) => {
         setData(data.data);
@@ -151,8 +151,8 @@ export default function GoldRate() {
   const fetchData = (
     query = {
       date: {
-        $gte: values.fromDate ?? moment(),
-        $lte: values.toDate ?? moment(),
+        $gte: values.fromDate ?? moment()?.format("YYYY-MM-DD"),
+        $lte: values.toDate ?? moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {
@@ -615,8 +615,8 @@ export default function GoldRate() {
                 resetForm();
                 fetchData({
                   createdAt: {
-                    $gte: moment(),
-                    $lte: moment(),
+                    $gte: moment()?.format("YYYY-MM-DD"),
+                    $lte: moment()?.format("YYYY-MM-DD"),
                   },
                 });
               }}

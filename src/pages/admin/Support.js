@@ -133,8 +133,8 @@ export default function Support() {
       setOpenBackdrop(true);
       getSupport({
         createdAt: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
+          $gte: values.fromDate?.format("YYYY-MM-DD"),
+          $lte: values.toDate?.format("YYYY-MM-DD"),
         },
       }).then((data) => {
         setData(data.data);
@@ -151,8 +151,8 @@ export default function Support() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: moment(),
-        $lte: moment(),
+        $gte: moment()?.format("YYYY-MM-DD"),
+        $lte: moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {
@@ -603,8 +603,8 @@ export default function Support() {
                 resetForm();
                 fetchData({
                   createdAt: {
-                    $gte: moment(),
-                    $lte: moment(),
+                    $gte: moment()?.format("YYYY-MM-DD"),
+                    $lte: moment()?.format("YYYY-MM-DD"),
                   },
                 });
               }}

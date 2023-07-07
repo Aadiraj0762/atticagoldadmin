@@ -78,7 +78,7 @@ function CreateCustomer({ setToggleContainer, setNotify }) {
       phoneNumber: '',
       alternatePhoneNumber: '',
       email: '',
-      dob: moment(),
+      dob: null,
       gender: '',
       otp: '',
       altOtp: '',

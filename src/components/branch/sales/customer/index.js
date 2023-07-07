@@ -168,7 +168,7 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
       phoneNumber: '',
       alternatePhoneNumber: '',
       email: '',
-      dob: moment(),
+      dob: null,
       gender: '',
       otp: '',
       altOtp: '',

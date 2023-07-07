@@ -114,8 +114,8 @@ export default function Fund() {
     setBranch(auth.user.branch);
     fetchData({
       createdAt: {
-        $gte: moment(),
-        $lte: moment(),
+        $gte: moment()?.format("YYYY-MM-DD"),
+        $lte: moment()?.format("YYYY-MM-DD"),
       },
       branch: auth.user.branch._id,
     });
@@ -124,8 +124,8 @@ export default function Fund() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: moment(),
-        $lte: moment(),
+        $gte: moment()?.format("YYYY-MM-DD"),
+        $lte: moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {

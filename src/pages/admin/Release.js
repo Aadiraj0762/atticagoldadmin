@@ -135,8 +135,8 @@ export default function Release() {
       setOpenBackdrop(true);
       findRelease({
         createdAt: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
+          $gte: values.fromDate?.format("YYYY-MM-DD"),
+          $lte: values.toDate?.format("YYYY-MM-DD"),
         },
         branch: values.branch,
         phoneNumber: values.phoneNumber,
@@ -164,8 +164,8 @@ export default function Release() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: values.fromDate ?? moment(),
-        $lte: values.toDate ?? moment(),
+        $gte: values.fromDate ?? moment()?.format("YYYY-MM-DD"),
+        $lte: values.toDate ?? moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {
@@ -605,8 +605,8 @@ export default function Release() {
                 resetForm();
                 fetchData({
                   createdAt: {
-                    $gte: moment(),
-                    $lte: moment(),
+                    $gte: moment()?.format("YYYY-MM-DD"),
+                    $lte: moment()?.format("YYYY-MM-DD"),
                   },
                 });
               }}

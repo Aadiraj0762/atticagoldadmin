@@ -126,8 +126,8 @@ export default function Balancesheet() {
     onSubmit: (values) => {
       setOpenBackdrop(true);
       getBalancesheet({
-        fromDate: values.fromDate,
-        toDate: values.toDate,
+        fromDate: values.fromDate?.format("YYYY-MM-DD"),
+        toDate: values.toDate?.format("YYYY-MM-DD"),
         branch: values.branch,
       }).then((data) => {
         setData(data.data);
@@ -146,8 +146,8 @@ export default function Balancesheet() {
 
   const fetchData = (
     query = {
-      fromDate: values.fromDate ?? moment(),
-      toDate: values.toDate ?? moment(),
+      fromDate: values.fromDate ?? moment()?.format("YYYY-MM-DD"),
+      toDate: values.toDate ?? moment()?.format("YYYY-MM-DD"),
     }
   ) => {
     getBalancesheet(query).then((data) => {
@@ -413,8 +413,8 @@ export default function Balancesheet() {
                 setFilterOpen(false);
                 resetForm();
                 fetchData({
-                  fromDate: moment(),
-                  toDate: moment(),
+                  fromDate: moment()?.format("YYYY-MM-DD"),
+                  toDate: moment()?.format("YYYY-MM-DD"),
                 });
               }}
             >

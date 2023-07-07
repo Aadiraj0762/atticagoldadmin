@@ -26,7 +26,7 @@ function UpdateGoldRate(props) {
     rate: '',
     type: '',
     state: '',
-    date: moment(),
+    date: moment()?.format("YYYY-MM-DD"),
   };
 
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setValues, resetForm } = useFormik({

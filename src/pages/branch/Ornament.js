@@ -132,8 +132,8 @@ export default function Ornament() {
       setOpenBackdrop(true);
       getOrnament({
         createdAt: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
+          $gte: values.fromDate?.format("YYYY-MM-DD"),
+          $lte: values.toDate?.format("YYYY-MM-DD"),
         },
         branch: branch._id,
       }).then((data) => {
@@ -148,8 +148,8 @@ export default function Ornament() {
     setBranch(auth.user.branch);
     fetchData({
       createdAt: {
-        $gte: values.fromDate ?? moment(),
-        $lte: values.toDate ?? moment(),
+        $gte: values.fromDate ?? moment()?.format("YYYY-MM-DD"),
+        $lte: values.toDate ?? moment()?.format("YYYY-MM-DD"),
       },
       branch: auth.user.branch._id,
     });
@@ -158,8 +158,8 @@ export default function Ornament() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: values.fromDate ?? moment(),
-        $lte: values.toDate ?? moment(),
+        $gte: values.fromDate ?? moment()?.format("YYYY-MM-DD"),
+        $lte: values.toDate ?? moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {
@@ -523,8 +523,8 @@ export default function Ornament() {
                 resetForm();
                 fetchData({
                   createdAt: {
-                    $gte: moment(),
-                    $lte: moment(),
+                    $gte: moment()?.format("YYYY-MM-DD"),
+                    $lte: moment()?.format("YYYY-MM-DD"),
                   },
                 });
               }}

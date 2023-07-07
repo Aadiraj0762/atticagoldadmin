@@ -131,8 +131,8 @@ export default function Customer() {
       setOpenBackdrop(true);
       findCustomer({
         createdAt: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
+          $gte: values.fromDate?.format("YYYY-MM-DD"),
+          $lte: values.toDate?.format("YYYY-MM-DD"),
         },
         phoneNumber: values.phoneNumber,
       }).then((data) => {
@@ -156,8 +156,8 @@ export default function Customer() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: moment(),
-        $lte: moment(),
+        $gte: moment()?.format("YYYY-MM-DD"),
+        $lte: moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {
@@ -605,8 +605,8 @@ export default function Customer() {
                 resetForm();
                 fetchData({
                   createdAt: {
-                    $gte: moment(),
-                    $lte: moment(),
+                    $gte: moment()?.format("YYYY-MM-DD"),
+                    $lte: moment()?.format("YYYY-MM-DD"),
                   },
                 });
               }}

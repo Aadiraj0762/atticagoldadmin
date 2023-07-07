@@ -110,8 +110,8 @@ export default function Branch() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: moment(),
-        $lte: moment(),
+        $gte: moment()?.format("YYYY-MM-DD"),
+        $lte: moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {

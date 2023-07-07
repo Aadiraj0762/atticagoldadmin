@@ -138,8 +138,8 @@ export default function Leave() {
       setOpenBackdrop(true);
       getLeave({
         createdAt: {
-          $gte: values.fromDate,
-          $lte: values.toDate,
+          $gte: values.fromDate?.format("YYYY-MM-DD"),
+          $lte: values.toDate?.format("YYYY-MM-DD"),
         },
       }).then((data) => {
         setData(data.data);
@@ -156,8 +156,8 @@ export default function Leave() {
   const fetchData = (
     query = {
       createdAt: {
-        $gte: values.fromDate ?? moment(),
-        $lte: values.toDate ?? moment(),
+        $gte: values.fromDate ?? moment()?.format("YYYY-MM-DD"),
+        $lte: values.toDate ?? moment()?.format("YYYY-MM-DD"),
       },
     }
   ) => {
@@ -631,8 +631,8 @@ export default function Leave() {
                 resetForm();
                 fetchData({
                   createdAt: {
-                    $gte: moment(),
-                    $lte: moment(),
+                    $gte: moment()?.format("YYYY-MM-DD"),
+                    $lte: moment()?.format("YYYY-MM-DD"),
                   },
                 });
               }}
