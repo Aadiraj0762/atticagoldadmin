@@ -137,6 +137,7 @@ function Address({ step, setStep, setNotify, selectedUser }) {
         } else {
           getAddressById(selectedUser._id).then((data) => {
             setData(data.data);
+            selectedUser.address = data.data;
           });
           setAddressModal(false);
           const formData = new FormData();

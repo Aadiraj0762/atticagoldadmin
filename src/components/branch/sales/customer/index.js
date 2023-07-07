@@ -120,7 +120,12 @@ function Customer({ step, setStep, setNotify, selectedUser, setSelectedUser }) {
   }, []);
 
   const fetchCustomer = (
-    query = { createdAt: { $gte: moment().subtract('days', 1), $lte: moment().add('days', 1) } }
+    query = {
+      createdAt: {
+        $gte: moment()?.format('YYYY-MM-DD'),
+        $lte: moment()?.format('YYYY-MM-DD'),
+      },
+    }
   ) => {
     findCustomer(query).then((data) => {
       setData(data.data);
