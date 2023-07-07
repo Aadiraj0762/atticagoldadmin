@@ -256,7 +256,12 @@ function ProofDocument({ step, setStep, setNotify, proofDocument, setProofDocume
                     onBlur={handleBlur}
                     onChange={handleChange}
                   >
-                    <MenuItem value="bill">Bill</MenuItem>
+                    <MenuItem value="ornaments photo">Ornaments Photo</MenuItem>
+                    <MenuItem value="purchase bill">Purchase bill</MenuItem>
+                    <MenuItem value="pledge receipt">Pledge Receipt</MenuItem>
+                    <MenuItem value="interest slip">Interest slip</MenuItem>
+                    <MenuItem value="release copy">Release Copy</MenuItem>
+                    <MenuItem value="others">others</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
