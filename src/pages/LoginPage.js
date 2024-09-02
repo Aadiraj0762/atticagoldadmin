@@ -45,7 +45,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Benaka Gold </title>
+        <title> Login | Attica Gold </title>
       </Helmet>
 
       <StyledRoot>
@@ -62,7 +62,7 @@ export default function LoginPage() {
             {/* <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
               Hi, Welcome Back
             </Typography> */}
-            <img src="/assets/login.png" alt="login" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="/assets/login.webp" alt="login" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </StyledSection>
         )}
 

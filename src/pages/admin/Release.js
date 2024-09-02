@@ -281,7 +281,7 @@ export default function Release() {
   return (
     <>
       <Helmet>
-        <title> Release | Benaka Gold </title>
+        <title> Release | Attica Gold </title>
       </Helmet>
 
       <Snackbar

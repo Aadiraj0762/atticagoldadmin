@@ -230,7 +230,7 @@ export default function Ornament() {
   return (
     <>
       <Helmet>
-        <title> Move Gold | Benaka Gold </title>
+        <title> Move Gold | Attica Gold </title>
       </Helmet>
 
       <Snackbar
@@ -529,7 +529,7 @@ function Print({ data }) {
         />
         <div style={{ display: 'block', textAlign: 'center', margin: '10px auto' }}>
           <span>
-            Benaka Gold Company, {ornament[0]?.branch?.branchName ?? ''}
+            Attica Gold Company, {ornament[0]?.branch?.branchName ?? ''}
             <br /> {ornament[0]?.branch?.address?.city ?? ''}, {ornament[0]?.branch?.address?.state ?? ''} -{' '}
             {ornament[0]?.branch?.address?.pincode ?? ''}, {ornament[0]?.branch?.address?.landmark ?? ''}
           </span>

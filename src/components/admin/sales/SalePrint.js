@@ -23,7 +23,7 @@ export default function SalePrint({ id }) {
         />
         <div style={{ display: 'block', textAlign: 'center', margin: '10px auto' }}>
           <span>
-            Benaka Gold, {data?.branch?.branchName}, {data?.branch?.address?.city}
+            Attica Gold, {data?.branch?.branchName}, {data?.branch?.address?.city}
           </span>
           <br />
           <b>Ph:</b> 63661 11999
@@ -207,7 +207,7 @@ export default function SalePrint({ id }) {
         <hr style={{ border: '0', borderBottom: '1px solid' }} />
         <div style={{ textAlign: 'center', margin: '20px 0' }}>
           Thanks For your billing
-          <br /> www.benakagoldcompany.com
+          <br /> www.atticagoldcompany.com
         </div>
       </div>
       <Button

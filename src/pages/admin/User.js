@@ -294,7 +294,7 @@ export default function User() {
   return (
     <>
       <Helmet>
-        <title> User | Benaka Gold </title>
+        <title> User | Attica Gold </title>
       </Helmet>
 
       <Snackbar

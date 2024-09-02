@@ -324,7 +324,7 @@ export default function Sale() {
   return (
     <>
       <Helmet>
-        <title> Sale | Benaka Gold </title>
+        <title> Sale | Attica Gold </title>
       </Helmet>
 
       <Snackbar

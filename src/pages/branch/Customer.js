@@ -233,7 +233,7 @@ export default function Customer() {
   return (
     <>
       <Helmet>
-        <title> Customer | Benaka Gold </title>
+        <title> Customer | Attica Gold </title>
       </Helmet>
 
       <Snackbar

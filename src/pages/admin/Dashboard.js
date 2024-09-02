@@ -24,7 +24,7 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Benaka Gold </title>
+        <title> Dashboard | Attica Gold </title>
       </Helmet>
 
       <Container maxWidth="xl">

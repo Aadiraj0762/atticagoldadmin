@@ -292,7 +292,7 @@ export default function Support() {
   return (
     <>
       <Helmet>
-        <title> Support | Benaka Gold </title>
+        <title> Support | Attica Gold </title>
       </Helmet>
 
       <Snackbar

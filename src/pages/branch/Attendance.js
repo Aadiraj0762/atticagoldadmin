@@ -219,7 +219,7 @@ export default function Attendance() {
   return (
     <>
       <Helmet>
-        <title> Attendance | Benaka Gold </title>
+        <title> Attendance | Attica Gold </title>
       </Helmet>
 
       <Snackbar

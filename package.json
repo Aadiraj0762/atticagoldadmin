@@ -92,5 +92,8 @@
   },
   "overrides": {
     "@svgr/webpack": "^6.5.0"
-  }
+  },
+  "description": "![license](https://img.shields.io/badge/license-MIT-blue.svg)",
+  "main": "index.js",
+  "license": "ISC"
 }

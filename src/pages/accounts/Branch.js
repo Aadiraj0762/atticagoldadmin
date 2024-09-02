@@ -219,7 +219,7 @@ export default function Branch() {
   return (
     <>
       <Helmet>
-        <title> Branch | Benaka Gold </title>
+        <title> Branch | Attica Gold </title>
       </Helmet>
 
       <Snackbar

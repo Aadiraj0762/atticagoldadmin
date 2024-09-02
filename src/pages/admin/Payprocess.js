@@ -217,7 +217,7 @@ export default function Payprocess() {
   return (
     <>
       <Helmet>
-        <title> Payprocess | Benaka Gold </title>
+        <title> Payprocess | Attica Gold </title>
       </Helmet>
 
       <Snackbar

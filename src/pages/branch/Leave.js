@@ -224,7 +224,7 @@ export default function Leave() {
   return (
     <>
       <Helmet>
-        <title> Leave | Benaka Gold </title>
+        <title> Leave | Attica Gold </title>
       </Helmet>
 
       <Snackbar

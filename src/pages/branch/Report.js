@@ -145,7 +145,7 @@ export default function Report() {
   return (
     <>
       <Helmet>
-        <title> Report | Benaka Gold </title>
+        <title> Report | Attica Gold </title>
       </Helmet>
 
       <Container maxWidth="xl">

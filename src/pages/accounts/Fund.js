@@ -312,7 +312,7 @@ export default function Fund() {
   return (
     <>
       <Helmet>
-        <title> Fund | Benaka Gold </title>
+        <title> Fund | Attica Gold </title>
       </Helmet>
 
       <Snackbar

@@ -171,7 +171,7 @@ export default function Balancesheet() {
   return (
     <>
       <Helmet>
-        <title> Balancesheet | Benaka Gold </title>
+        <title> Balancesheet | Attica Gold </title>
       </Helmet>
 
       <Snackbar

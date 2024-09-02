@@ -216,7 +216,7 @@ export default function OTP() {
   return (
     <>
       <Helmet>
-        <title> OTP | Benaka Gold </title>
+        <title> OTP | Attica Gold </title>
       </Helmet>
 
       <Snackbar

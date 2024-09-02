@@ -316,7 +316,7 @@ export default function Expense() {
   return (
     <>
       <Helmet>
-        <title> Expense | Benaka Gold </title>
+        <title> Expense | Attica Gold </title>
       </Helmet>
 
       <Snackbar

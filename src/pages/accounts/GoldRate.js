@@ -268,7 +268,7 @@ export default function GoldRate() {
   return (
     <>
       <Helmet>
-        <title> Gold Rate | Benaka Gold </title>
+        <title> Gold Rate | Attica Gold </title>
       </Helmet>
 
       <Snackbar
